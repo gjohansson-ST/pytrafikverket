@@ -2,7 +2,7 @@
 python module for communicating with the swedish trafikverket api
 
 ## Example
-```yaml
+```python
 from trafikverket_train import TrafikverketTrain, StationInfo
 import aiohttp
 import asyncio
@@ -16,7 +16,7 @@ async def main(loop):
 		for station in stations:
 			print(station.name + " " + station.signature)
 
-		from_station = await train_api.get_train_station("Sölvesborg")
+		from_station = await train_api.get_train_station("SÃ¶lvesborg")
 		to_station = await train_api.get_train_station("Kristianstad C")
 		print("from_station_signature: " + from_station.signature)
 		print("to_station_signature:   " + to_station.signature)
