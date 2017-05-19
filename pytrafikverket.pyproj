@@ -34,10 +34,13 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="trafikverket.py">
+    <Compile Include="pytrafikverket\__init__.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="trafikverket_train.py">
+    <Compile Include="pytrafikverket\trafikverket.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="pytrafikverket\trafikverket_train.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
