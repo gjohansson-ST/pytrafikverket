@@ -4,8 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>fd896284-6d42-487a-9045-83b14edac487</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>pytrafikverket\__main__.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -13,6 +12,10 @@
     <Name>pytrafikverket</Name>
     <RootNamespace>pytrafikverket</RootNamespace>
     <InterpreterId>MSBuild|pytrafikverket|$(MSBuildProjectFullPath)</InterpreterId>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterArguments>--key test</InterpreterArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +37,9 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="cli.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="pytrafikverket\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -41,6 +47,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="pytrafikverket\trafikverket_train.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="pytrafikverket\__main__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="setup.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
