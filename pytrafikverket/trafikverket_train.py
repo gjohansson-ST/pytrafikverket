@@ -1,7 +1,7 @@
-from trafikverket import Trafikverket, OperationFilter, FilterOperation, OrFilter, NodeHelper
 from enum import Enum
 import typing
 from datetime import datetime
+from trafikverket import Trafikverket, OperationFilter, FilterOperation, OrFilter, NodeHelper
 
 class StationInfo(object):
     """Contains information about a train station"""
