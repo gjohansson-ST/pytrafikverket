@@ -11,7 +11,7 @@ from datetime import datetime
 
 async def main(loop):
 	async with aiohttp.ClientSession(loop=loop) as session:
-		train_api = TrafikverketTrain(loop, "api_key_here")
+		train_api = TrafikverketTrain(session, "api_key_here")
 		stations = await train_api.search_train_stations("kristianstad")
 		for station in stations:
 			print(station.name + " " + station.signature)

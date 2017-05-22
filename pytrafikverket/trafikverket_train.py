@@ -1,5 +1,6 @@
 from enum import Enum
 import typing
+import aiohttp
 from datetime import datetime
 from trafikverket import Trafikverket, FieldFilter, FilterOperation, OrFilter, NodeHelper
 
@@ -76,9 +77,9 @@ class TrainStop(object):
 class TrafikverketTrain(object):
     """class used to communicate with trafikverket's train api"""
 
-    def __init__(self, loop, api_key:str):
+    def __init__(self, client_session:aiohttp.ClientSession, api_key:str):
         """Initialize TrainInfo object"""
-        self._api = Trafikverket(loop, api_key)
+        self._api = Trafikverket(client_session, api_key)
 
     async def get_train_station(self, location_name: str) -> StationInfo:
         train_stations = await self._api.make_request("TrainStation",

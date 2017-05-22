@@ -3,7 +3,6 @@ import typing
 from enum import Enum
 from datetime import datetime
 import aiohttp
-import async_timeout
 from lxml import etree
 
 class FilterOperation(Enum):
@@ -71,9 +70,9 @@ class Trafikverket(object):
     date_time_format = "%Y-%m-%dT%H:%M:%S"
     date_time_format_for_modified = "%Y-%m-%dT%H:%M:%S.%fZ"
 
-    def __init__(self, loop, api_key:str):
+    def __init__(self, client_session:aiohttp.ClientSession, api_key:str):
         """Initialize TrafikInfo object"""
-        self._loop = loop
+        self._client_session = client_session
         self._api_key = api_key
 
     def _generate_request_data(self, objecttype:str,
@@ -98,20 +97,18 @@ class Trafikverket(object):
         request_data = self._generate_request_data(objecttype, includes, filters)
         request_data_text = etree.tostring(request_data, pretty_print=False)
         headers = {"content-type": "text/xml"}
-        async with aiohttp.ClientSession(loop=self._loop) as session:
-            with async_timeout.timeout(10):
-                async with session.post(Trafikverket._api_url,
-                                        data=request_data_text,
-                                        headers=headers) as response:
-                    content = await response.text()
-                    error_nodes = etree.fromstring(content).xpath("/RESPONSE/RESULT/ERROR")
-                    if len(error_nodes) > 0:
-                        error_node = error_nodes[0]
-                        helper = NodeHelper(error_node)
-                        source = helper.get_text("SOURCE")
-                        message = helper.get_text("MESSAGE")
-                        raise ValueError("Source: " + source + ", message: " + message)
-                    return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
+        async with self._client_session.post(Trafikverket._api_url,
+                                             data=request_data_text,
+                                             headers=headers) as response:
+            content = await response.text()
+            error_nodes = etree.fromstring(content).xpath("/RESPONSE/RESULT/ERROR")
+            if len(error_nodes) > 0:
+                error_node = error_nodes[0]
+                helper = NodeHelper(error_node)
+                source = helper.get_text("SOURCE")
+                message = helper.get_text("MESSAGE")
+                raise ValueError("Source: " + source + ", message: " + message)
+            return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
 
 class NodeHelper(object):
     """Helper class to get node content"""
