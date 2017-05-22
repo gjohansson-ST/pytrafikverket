@@ -1,7 +1,7 @@
 from enum import Enum
 import typing
 from datetime import datetime
-from trafikverket import Trafikverket, OperationFilter, FilterOperation, OrFilter, NodeHelper
+from trafikverket import Trafikverket, FieldFilter, FilterOperation, OrFilter, NodeHelper
 
 class StationInfo(object):
     """Contains information about a train station"""
@@ -19,12 +19,14 @@ class StationInfo(object):
         advertised_location_name = node_helper.get_text("AdvertisedLocationName")
         return cls(location_signature, advertised_location_name)
 
-class TrainStatus(Enum):
+class TrainStopStatus(Enum):
+    """Contains the different train stop statuses"""
     on_time = "scheduled to arrive on schedule"
     delayed = "delayed"
     canceled = "canceled"
 
 class TrainStop(object):
+    """Contains information about a train stop"""
 
     required_fields = ["ActivityId", "Canceled", "AdvertisedTimeAtLocation",
                        "EstimatedTimeAtLocation", "TimeAtLocation", "OtherInformation",
@@ -43,18 +45,18 @@ class TrainStop(object):
         self.deviations = deviations
         self.modified_time = modified_time
 
-    def get_state(self) -> TrainStatus:
+    def get_state(self) -> TrainStopStatus:
         if self.canceled:
-            return TrainStatus.canceled
+            return TrainStopStatus.canceled
         if (self.advertised_time_at_location is not None and
-            self.time_at_location is not None and
-            self.advertised_time_at_location != self.time_at_location):
-            return TrainStatus.delayed
+                self.time_at_location is not None and
+                self.advertised_time_at_location != self.time_at_location):
+            return TrainStopStatus.delayed
         if (self.advertised_time_at_location is not None and
-            self.estimated_time_at_location is not None and
-            self.advertised_time_at_location != self.estimated_time_at_location):
-            return TrainStatus.delayed
-        return TrainStatus.on_time
+                self.estimated_time_at_location is not None and
+                self.advertised_time_at_location != self.estimated_time_at_location):
+            return TrainStopStatus.delayed
+        return TrainStopStatus.on_time
 
     @classmethod
     def from_xml_node(cls, node):
@@ -81,9 +83,9 @@ class TrafikverketTrain(object):
     async def get_train_station(self, location_name: str) -> StationInfo:
         train_stations = await self._api.make_request("TrainStation",
                                                       StationInfo.required_fields,
-                                                      [OperationFilter(FilterOperation.equal,
-                                                                       "AdvertisedLocationName",
-                                                                       location_name)])
+                                                      [FieldFilter(FilterOperation.equal,
+                                                                   "AdvertisedLocationName",
+                                                                   location_name)])
         if len(train_stations) == 0:
             raise ValueError("Could not find a station with the specified name")
         if len(train_stations) > 1:
@@ -95,9 +97,9 @@ class TrafikverketTrain(object):
         train_stations = await self._api.make_request("TrainStation",
                                                       ["AdvertisedLocationName",
                                                        "LocationSignature"],
-                                                      [OperationFilter(FilterOperation.like,
-                                                                       "AdvertisedLocationName",
-                                                                       location_name)])
+                                                      [FieldFilter(FilterOperation.like,
+                                                                   "AdvertisedLocationName",
+                                                                   location_name)])
         if len(train_stations) == 0:
             raise ValueError("Could not find a station with the specified name")
 
@@ -111,17 +113,17 @@ class TrafikverketTrain(object):
     async def get_train_stop(self, from_station: StationInfo,
                              to_station: StationInfo,
                              time_at_location: datetime) -> TrainStop:
-        date_as_text = time_at_location.strftime(Trafikverket.date_format)
+        date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
 
-        filters = [OperationFilter(FilterOperation.equal, "ActivityType", "Avgang"),
-                   OperationFilter(FilterOperation.equal, "LocationSignature",
-                                   from_station.signature),
-                   OperationFilter(FilterOperation.equal, "AdvertisedTimeAtLocation",
-                                   date_as_text),
-                   OrFilter([OperationFilter(FilterOperation.equal, "ViaToLocation.LocationName",
-                                             to_station.signature),
-                             OperationFilter(FilterOperation.equal, "ToLocation.LocationName",
-                                             to_station.signature)])]
+        filters = [FieldFilter(FilterOperation.equal, "ActivityType", "Avgang"),
+                   FieldFilter(FilterOperation.equal, "LocationSignature",
+                               from_station.signature),
+                   FieldFilter(FilterOperation.equal, "AdvertisedTimeAtLocation",
+                               date_as_text),
+                   OrFilter([FieldFilter(FilterOperation.equal, "ViaToLocation.LocationName",
+                                         to_station.signature),
+                             FieldFilter(FilterOperation.equal, "ToLocation.LocationName",
+                                         to_station.signature)])]
         train_announcements = await self._api.make_request("TrainAnnouncement",
                                                            TrainStop.required_fields,
                                                            filters)

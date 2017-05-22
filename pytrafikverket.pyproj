@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>fd896284-6d42-487a-9045-83b14edac487</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>pytrafikverket\__main__.py</StartupFile>
+    <StartupFile>pytrafikverket.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -13,9 +13,11 @@
     <RootNamespace>pytrafikverket</RootNamespace>
     <InterpreterId>MSBuild|pytrafikverket|$(MSBuildProjectFullPath)</InterpreterId>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <InterpreterArguments>--key test</InterpreterArguments>
+    <InterpreterArguments>
+    </InterpreterArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
+    <CommandLineArguments>-key [api_key_here] -method get-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg" -date-time "2017-05-22T16:38:00"</CommandLineArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,7 +39,7 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cli.py">
+    <Compile Include="pytrafikverket.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="pytrafikverket\__init__.py">
@@ -57,6 +59,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LICENSE" />
+    <Content Include="README.md" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

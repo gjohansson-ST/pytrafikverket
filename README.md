@@ -1,7 +1,7 @@
 # pytrafikverket
 python module for communicating with the swedish trafikverket api
 
-## Example
+## Code example
 ```python
 from trafikverket_train import TrafikverketTrain, StationInfo
 import aiohttp
@@ -25,4 +25,9 @@ async def main(loop):
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main(loop))
+```
+
+## CLI example
+```bash
+$ py pytrafikverket.py -key [api_key_here] -method get-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg" -date-time "2017-05-19T16:38:00"
 ```
