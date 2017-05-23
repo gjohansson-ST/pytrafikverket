@@ -1,6 +1,6 @@
 from enum import Enum
 import typing
-from datetime import datetime
+from datetime import datetime, timedelta
 import aiohttp
 from trafikverket import Trafikverket, FieldFilter, FilterOperation, \
                          OrFilter, SortOrder, FieldSort, NodeHelper
@@ -59,6 +59,19 @@ class TrainStop(object):
                 self.advertised_time_at_location != self.estimated_time_at_location):
             return TrainStopStatus.delayed
         return TrainStopStatus.on_time
+
+    def get_delay_time(self) -> timedelta:
+        if self.canceled:
+            return None
+        if (self.advertised_time_at_location is not None and
+                self.time_at_location is not None and
+                self.advertised_time_at_location != self.time_at_location):
+            return self.time_at_location - self.advertised_time_at_location
+        if (self.advertised_time_at_location is not None and
+                self.estimated_time_at_location is not None and
+                self.advertised_time_at_location != self.estimated_time_at_location):
+            return self.estimated_time_at_location - self.advertised_time_at_location
+        return None
 
     @classmethod
     def from_xml_node(cls, node):
