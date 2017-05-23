@@ -29,5 +29,7 @@ loop.run_until_complete(main(loop))
 
 ## CLI example
 ```bash
+$ py pytrafikverket.py -key [api_key_here] -method search-for-station -station "Kristianstad"
+$ py pytrafikverket.py -key [api_key_here] -method get-next-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg"
 $ py pytrafikverket.py -key [api_key_here] -method get-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg" -date-time "2017-05-19T16:38:00"
 ```

@@ -17,7 +17,7 @@
     </InterpreterArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <IsWindowsApplication>False</IsWindowsApplication>
-    <CommandLineArguments>-key [api_key_here] -method get-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg" -date-time "2017-05-22T16:38:00"</CommandLineArguments>
+    <CommandLineArguments>-key [api_key_here] -method get-next-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg"</CommandLineArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

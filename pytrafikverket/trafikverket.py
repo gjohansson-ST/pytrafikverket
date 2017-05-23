@@ -20,6 +20,20 @@ class FilterOperation(Enum):
     not_in = "NOTIN"
     with_in = "WITHIN"
 
+class SortOrder(Enum):
+    """Specifies how rows of data are sorted."""
+    ascending = "asc"
+    decending = "desc"
+
+class FieldSort:
+    """What field and how to sort on it"""
+    def __init__(self, field: str, sort_order: SortOrder):
+        self._field = field
+        self._sort_order = sort_order
+
+    def to_string(self):
+        return self._field + " " + self._sort_order.value
+
 class Filter:
     """Base class for all filters"""
     __metaclass__ = ABCMeta
@@ -77,12 +91,18 @@ class Trafikverket(object):
 
     def _generate_request_data(self, objecttype:str,
                                includes: typing.List[str],
-                               filters: typing.List[Filter]):
+                               filters: typing.List[Filter],
+                               limit:int = None,
+                               sorting: typing.List[FieldSort] = None):
         root_node = etree.Element("REQUEST")
         login_node = etree.SubElement(root_node, "LOGIN")
         login_node.attrib["authenticationkey"] = self._api_key
         query_node = etree.SubElement(root_node, "QUERY")
         query_node.attrib["objecttype"] = objecttype
+        if limit is not None:
+            query_node.attrib["limit"] = str(limit)
+        if sorting is not None and len(sorting) > 0:
+            query_node.attrib["orderby"] = ", ".join([fs.to_string() for fs in sorting])
         for include in includes:
             include_node = etree.SubElement(query_node, "INCLUDE")
             include_node.text = include
@@ -93,8 +113,10 @@ class Trafikverket(object):
 
     async def make_request(self, objecttype:str,
                            includes: typing.List[str],
-                           filters: typing.List[Filter]):
-        request_data = self._generate_request_data(objecttype, includes, filters)
+                           filters: typing.List[Filter],
+                           limit:int = None,
+                           sorting: typing.List[FieldSort] = None):
+        request_data = self._generate_request_data(objecttype, includes, filters, limit, sorting)
         request_data_text = etree.tostring(request_data, pretty_print=False)
         headers = {"content-type": "text/xml"}
         async with self._client_session.post(Trafikverket._api_url,

@@ -3,18 +3,21 @@ import argparse
 import asyncio
 import aiohttp
 import async_timeout
-from trafikverket_train import TrafikverketTrain, StationInfo
+from trafikverket_train import TrafikverketTrain
 from trafikverket import Trafikverket
 
 SEARCH_FOR_STATION = "search-for-station"
 GET_TRAIN_STOP = "get-train-stop"
+GET_NEXT_TRAIN_STOP = "get-next-train-stop"
 
 async def async_main(loop):
     async with aiohttp.ClientSession(loop=loop) as session:
         #parse arguments!
         parser = argparse.ArgumentParser(description="CLI used to get data from trafikverket")
         parser.add_argument("-key", type=str)
-        parser.add_argument("-method", choices=(SEARCH_FOR_STATION, GET_TRAIN_STOP))
+        parser.add_argument("-method", choices=(SEARCH_FOR_STATION,
+                                                GET_TRAIN_STOP,
+                                                GET_NEXT_TRAIN_STOP))
         parser.add_argument("-station", type=str)
         parser.add_argument("-from-station", type=str)
         parser.add_argument("-to-station", type=str)
@@ -37,6 +40,22 @@ async def async_main(loop):
                 print("to_station_signature:   " + to_station.signature)
                 time = datetime.strptime(args.date_time, Trafikverket.date_time_format)
                 train_stop = await train_api.get_train_stop(from_station, to_station, time)
+
+                print("id: %s, canceled: %s, advertised time: %s, " %
+                      (train_stop.id, train_stop.canceled, train_stop.advertised_time_at_location) +
+                      "estimated time: %s, time: %s, state: %s" %
+                      (train_stop.estimated_time_at_location, train_stop.time_at_location,
+                       train_stop.get_state()))
+            elif args.method == GET_NEXT_TRAIN_STOP:
+                from_station = await train_api.get_train_station(args.from_station)
+                to_station = await train_api.get_train_station(args.to_station)
+                print("from_station_signature: " + from_station.signature)
+                print("to_station_signature:   " + to_station.signature)
+                if args.date_time is not None:
+                    time = datetime.strptime(args.date_time, Trafikverket.date_time_format)
+                else:
+                    time = datetime.now()
+                train_stop = await train_api.get_next_train_stop(from_station, to_station, time)
 
                 print("id: %s, canceled: %s, advertised time: %s, " %
                       (train_stop.id, train_stop.canceled, train_stop.advertised_time_at_location) +

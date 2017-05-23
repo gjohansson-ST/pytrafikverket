@@ -1,3 +1,3 @@
-py setup.py sdist
-py setup.py bdist_wheel
-py setup.py sdist
+py setup.py sdist bdist_wheel
+pause
+twine upload dist/*

@@ -1,8 +1,9 @@
 from enum import Enum
 import typing
-import aiohttp
 from datetime import datetime
-from trafikverket import Trafikverket, FieldFilter, FilterOperation, OrFilter, NodeHelper
+import aiohttp
+from trafikverket import Trafikverket, FieldFilter, FilterOperation, \
+                         OrFilter, SortOrder, FieldSort, NodeHelper
 
 class StationInfo(object):
     """Contains information about a train station"""
@@ -128,6 +129,31 @@ class TrafikverketTrain(object):
         train_announcements = await self._api.make_request("TrainAnnouncement",
                                                            TrainStop.required_fields,
                                                            filters)
+        if len(train_announcements) == 0:
+            raise ValueError("No TrainAnnouncement found")
+        if len(train_announcements) > 1:
+            raise ValueError("Multiple TrainAnnouncements found")
+        train_announcement = train_announcements[0]
+        return TrainStop.from_xml_node(train_announcement)
+
+    async def get_next_train_stop(self, from_station: StationInfo,
+                                  to_station: StationInfo,
+                                  after_time: datetime) -> TrainStop:
+        date_as_text = after_time.strftime(Trafikverket.date_time_format)
+
+        filters = [FieldFilter(FilterOperation.equal, "ActivityType", "Avgang"),
+                   FieldFilter(FilterOperation.equal, "LocationSignature",
+                               from_station.signature),
+                   FieldFilter(FilterOperation.greater_than_equal, "AdvertisedTimeAtLocation",
+                               date_as_text),
+                   OrFilter([FieldFilter(FilterOperation.equal, "ViaToLocation.LocationName",
+                                         to_station.signature),
+                             FieldFilter(FilterOperation.equal, "ToLocation.LocationName",
+                                         to_station.signature)])]
+        sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ascending)]
+        train_announcements = await self._api.make_request("TrainAnnouncement",
+                                                           TrainStop.required_fields,
+                                                           filters, 1, sorting)
         if len(train_announcements) == 0:
             raise ValueError("No TrainAnnouncement found")
         if len(train_announcements) > 1:
