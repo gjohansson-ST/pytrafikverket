@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="pytrafikverket",
-    version="0.1.3",
+    version="0.1.4",
     description="api for trafikverket in sweden",
     url='https://github.com/AnderssonPeter/pytrafikverket',
     author="Peter Andersson",
