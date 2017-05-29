@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 import typing
 from enum import Enum
 from datetime import datetime
+import asyncio
 import aiohttp
 from lxml import etree
 
@@ -131,6 +132,32 @@ class Trafikverket(object):
                 message = helper.get_text("MESSAGE")
                 raise ValueError("Source: " + source + ", message: " + message)
             return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
+
+    @asyncio.coroutine
+    def async_make_request(self, objecttype:str,
+                           includes: typing.List[str],
+                           filters: typing.List[Filter],
+                           limit:int = None,
+                           sorting: typing.List[FieldSort] = None):
+        request_data = self._generate_request_data(objecttype, includes, filters, limit, sorting)
+        request_data_text = etree.tostring(request_data, pretty_print=False)
+        headers = {"content-type": "text/xml"}
+        try:
+            request = yield from self._client_session.post(Trafikverket._api_url,
+                                                           data=request_data_text,
+                                                           headers=headers)
+            content = yield from request.text()
+            error_nodes = etree.fromstring(content).xpath("/RESPONSE/RESULT/ERROR")
+            if len(error_nodes) > 0:
+                error_node = error_nodes[0]
+                helper = NodeHelper(error_node)
+                source = helper.get_text("SOURCE")
+                message = helper.get_text("MESSAGE")
+                raise ValueError("Source: " + source + ", message: " + message)
+            return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
+        finally:
+            if request is not None:
+                request.release()
 
 class NodeHelper(object):
     """Helper class to get node content"""
