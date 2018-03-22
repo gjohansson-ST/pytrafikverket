@@ -112,29 +112,7 @@ class Trafikverket(object):
             filter.generate_node(filters_node)
         return root_node
 
-    #async def make_request(self, objecttype:str,
-    #                       includes: typing.List[str],
-    #                       filters: typing.List[Filter],
-    #                       limit:int = None,
-    #                       sorting: typing.List[FieldSort] = None):
-    #    request_data = self._generate_request_data(objecttype, includes, filters, limit, sorting)
-    #    request_data_text = etree.tostring(request_data, pretty_print=False)
-    #    headers = {"content-type": "text/xml"}
-    #    async with self._client_session.post(Trafikverket._api_url,
-    #                                         data=request_data_text,
-    #                                         headers=headers) as response:
-    #        content = await response.text()
-    #        error_nodes = etree.fromstring(content).xpath("/RESPONSE/RESULT/ERROR")
-    #        if len(error_nodes) > 0:
-    #            error_node = error_nodes[0]
-    #            helper = NodeHelper(error_node)
-    #            source = helper.get_text("SOURCE")
-    #            message = helper.get_text("MESSAGE")
-    #            raise ValueError("Source: " + source + ", message: " + message)
-    #        return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
-
-    @asyncio.coroutine
-    def async_make_request(self, objecttype:str,
+    async def async_make_request(self, objecttype:str,
                            includes: typing.List[str],
                            filters: typing.List[Filter],
                            limit:int = None,
@@ -142,11 +120,10 @@ class Trafikverket(object):
         request_data = self._generate_request_data(objecttype, includes, filters, limit, sorting)
         request_data_text = etree.tostring(request_data, pretty_print=False)
         headers = {"content-type": "text/xml"}
-        try:
-            request = yield from self._client_session.post(Trafikverket._api_url,
-                                                           data=request_data_text,
-                                                           headers=headers)
-            content = yield from request.text()
+        async with self._client_session.post(Trafikverket._api_url,
+                                             data=request_data_text,
+                                             headers=headers) as response:
+            content = await response.text()
             error_nodes = etree.fromstring(content).xpath("/RESPONSE/RESULT/ERROR")
             if len(error_nodes) > 0:
                 error_node = error_nodes[0]
@@ -155,9 +132,6 @@ class Trafikverket(object):
                 message = helper.get_text("MESSAGE")
                 raise ValueError("Source: " + source + ", message: " + message)
             return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
-        finally:
-            if request is not None:
-                request.release()
 
 class NodeHelper(object):
     """Helper class to get node content"""

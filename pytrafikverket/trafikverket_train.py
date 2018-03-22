@@ -97,26 +97,12 @@ class TrafikverketTrain(object):
         """Initialize TrainInfo object"""
         self._api = Trafikverket(client_session, api_key)
 
-    #async def get_train_station(self, location_name: str) -> StationInfo:
-    #    train_stations = await self._api.make_request("TrainStation",
-    #                                                  StationInfo.required_fields,
-    #                                                  [FieldFilter(FilterOperation.equal,
-    #                                                               "AdvertisedLocationName",
-    #                                                               location_name)])
-    #    if len(train_stations) == 0:
-    #        raise ValueError("Could not find a station with the specified name")
-    #    if len(train_stations) > 1:
-    #        raise ValueError("Found multiple stations with the specified name")
-
-    #    return StationInfo.from_xml_node(train_stations[0])
-
-    @asyncio.coroutine
-    def async_get_train_station(self, location_name: str) -> StationInfo:
-        train_stations = yield from self._api.async_make_request("TrainStation",
-                                                                 StationInfo.required_fields,
-                                                                 [FieldFilter(FilterOperation.equal,
-                                                                              "AdvertisedLocationName",
-                                                                              location_name)])
+    async def async_get_train_station(self, location_name: str) -> StationInfo:
+        train_stations = await self._api.async_make_request("TrainStation",
+                                                      StationInfo.required_fields,
+                                                      [FieldFilter(FilterOperation.equal,
+                                                                   "AdvertisedLocationName",
+                                                                   location_name)])
         if len(train_stations) == 0:
             raise ValueError("Could not find a station with the specified name")
         if len(train_stations) > 1:
@@ -124,31 +110,13 @@ class TrafikverketTrain(object):
 
         return StationInfo.from_xml_node(train_stations[0])
 
-    #async def search_train_stations(self, location_name: str) -> typing.List[StationInfo]:
-    #    train_stations = await self._api.make_request("TrainStation",
-    #                                                  ["AdvertisedLocationName",
-    #                                                   "LocationSignature"],
-    #                                                  [FieldFilter(FilterOperation.like,
-    #                                                               "AdvertisedLocationName",
-    #                                                               location_name)])
-    #    if len(train_stations) == 0:
-    #        raise ValueError("Could not find a station with the specified name")
-
-    #    result = [StationInfo] * 0
-
-    #    for train_station in train_stations:
-    #        result.append(StationInfo.from_xml_node(train_station))
-
-    #    return result
-
-    @asyncio.coroutine
-    def async_search_train_stations(self, location_name: str) -> typing.List[StationInfo]:
-        train_stations = yield from self._api.async_make_request("TrainStation",
-                                                                 ["AdvertisedLocationName",
-                                                                  "LocationSignature"],
-                                                                 [FieldFilter(FilterOperation.like,
-                                                                              "AdvertisedLocationName",
-                                                                              location_name)])
+    async def async_search_train_stations(self, location_name: str) -> typing.List[StationInfo]:
+        train_stations = await self._api.async_make_request("TrainStation",
+                                                      ["AdvertisedLocationName",
+                                                       "LocationSignature"],
+                                                      [FieldFilter(FilterOperation.like,
+                                                                   "AdvertisedLocationName",
+                                                                   location_name)])
         if len(train_stations) == 0:
             raise ValueError("Could not find a station with the specified name")
 
@@ -159,32 +127,7 @@ class TrafikverketTrain(object):
 
         return result
 
-    #async def get_train_stop(self, from_station: StationInfo,
-    #                         to_station: StationInfo,
-    #                         time_at_location: datetime) -> TrainStop:
-    #    date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
-
-    #    filters = [FieldFilter(FilterOperation.equal, "ActivityType", "Avgang"),
-    #               FieldFilter(FilterOperation.equal, "LocationSignature",
-    #                           from_station.signature),
-    #               FieldFilter(FilterOperation.equal, "AdvertisedTimeAtLocation",
-    #                           date_as_text),
-    #               OrFilter([FieldFilter(FilterOperation.equal, "ViaToLocation.LocationName",
-    #                                     to_station.signature),
-    #                         FieldFilter(FilterOperation.equal, "ToLocation.LocationName",
-    #                                     to_station.signature)])]
-    #    train_announcements = await self._api.make_request("TrainAnnouncement",
-    #                                                       TrainStop.required_fields,
-    #                                                       filters)
-    #    if len(train_announcements) == 0:
-    #        raise ValueError("No TrainAnnouncement found")
-    #    if len(train_announcements) > 1:
-    #        raise ValueError("Multiple TrainAnnouncements found")
-    #    train_announcement = train_announcements[0]
-    #    return TrainStop.from_xml_node(train_announcement)
-
-    @asyncio.coroutine
-    def async_get_train_stop(self, from_station: StationInfo,
+    async def async_get_train_stop(self, from_station: StationInfo,
                              to_station: StationInfo,
                              time_at_location: datetime) -> TrainStop:
         date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
@@ -198,9 +141,9 @@ class TrafikverketTrain(object):
                                          to_station.signature),
                              FieldFilter(FilterOperation.equal, "ToLocation.LocationName",
                                          to_station.signature)])]
-        train_announcements = yield from self._api.async_make_request("TrainAnnouncement",
-                                                                      TrainStop.required_fields,
-                                                                      filters)
+        train_announcements = await self._api.async_make_request("TrainAnnouncement",
+                                                           TrainStop.required_fields,
+                                                           filters)
         if len(train_announcements) == 0:
             raise ValueError("No TrainAnnouncement found")
         if len(train_announcements) > 1:
@@ -208,33 +151,7 @@ class TrafikverketTrain(object):
         train_announcement = train_announcements[0]
         return TrainStop.from_xml_node(train_announcement)
 
-    #async def get_next_train_stop(self, from_station: StationInfo,
-    #                              to_station: StationInfo,
-    #                              after_time: datetime) -> TrainStop:
-    #    date_as_text = after_time.strftime(Trafikverket.date_time_format)
-
-    #    filters = [FieldFilter(FilterOperation.equal, "ActivityType", "Avgang"),
-    #               FieldFilter(FilterOperation.equal, "LocationSignature",
-    #                           from_station.signature),
-    #               FieldFilter(FilterOperation.greater_than_equal, "AdvertisedTimeAtLocation",
-    #                           date_as_text),
-    #               OrFilter([FieldFilter(FilterOperation.equal, "ViaToLocation.LocationName",
-    #                                     to_station.signature),
-    #                         FieldFilter(FilterOperation.equal, "ToLocation.LocationName",
-    #                                     to_station.signature)])]
-    #    sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ascending)]
-    #    train_announcements = await self._api.make_request("TrainAnnouncement",
-    #                                                       TrainStop.required_fields,
-    #                                                       filters, 1, sorting)
-    #    if len(train_announcements) == 0:
-    #        raise ValueError("No TrainAnnouncement found")
-    #    if len(train_announcements) > 1:
-    #        raise ValueError("Multiple TrainAnnouncements found")
-    #    train_announcement = train_announcements[0]
-    #    return TrainStop.from_xml_node(train_announcement)
-
-    @asyncio.coroutine
-    def async_get_next_train_stop(self, from_station: StationInfo,
+    async def async_get_next_train_stop(self, from_station: StationInfo,
                                   to_station: StationInfo,
                                   after_time: datetime) -> TrainStop:
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
@@ -249,9 +166,9 @@ class TrafikverketTrain(object):
                              FieldFilter(FilterOperation.equal, "ToLocation.LocationName",
                                          to_station.signature)])]
         sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ascending)]
-        train_announcements = yield from self._api.async_make_request("TrainAnnouncement",
-                                                                      TrainStop.required_fields,
-                                                                      filters, 1, sorting)
+        train_announcements = await self._api.async_make_request("TrainAnnouncement",
+                                                           TrainStop.required_fields,
+                                                           filters, 1, sorting)
         if len(train_announcements) == 0:
             raise ValueError("No TrainAnnouncement found")
         if len(train_announcements) > 1:
