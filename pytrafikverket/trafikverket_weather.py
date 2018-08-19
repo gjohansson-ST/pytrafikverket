@@ -35,7 +35,8 @@ class WeatherStationInfo(object):
         winddirection = node_helper.get_text("Measurement/Wind/Direction")
         winddirectiontext = node_helper.get_text("Measurement/Wind/DirectionText")
         windforce = node_helper.get_text("Measurement/Wind/Force")
-        return cls(station_name, station_id, road_temp, air_temp, humidity, precipitationtype, winddirection, winddirectiontext, windforce)
+        return cls(station_name, station_id, road_temp, air_temp, humidity, 
+                   precipitationtype, winddirection, winddirectiontext, windforce)
 
 
 class TrafikverketWeather(object):
