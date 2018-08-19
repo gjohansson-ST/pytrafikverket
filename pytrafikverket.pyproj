@@ -51,6 +51,9 @@
     <Compile Include="pytrafikverket\trafikverket_train.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="pytrafikverket\trafikverket_weather.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="pytrafikverket\__main__.py">
       <SubType>Code</SubType>
     </Compile>
