@@ -74,9 +74,10 @@ async def async_main(loop):
                       (weather.station_name, weather.station_id, weather.road_temp, weather.air_temp) + 
                       "humidity: %s, precipitation: %s, wind direction %s degrees / " %
                       (weather.humidity, weather.precipitationtype, weather.winddirection) +
-                      "%s, wind force: %s m/s (10 min avg)" %
-                      (weather.winddirectiontext, weather.windforce))
-
+                      "%s, wind force: %s m/s (10 min avg) " %
+                      (weather.winddirectiontext, weather.windforce) +
+                      "active: %s, Measure time: %s, Precipitation Amount: %s , Precipitation Name: %s" %
+                      (weather.active, weather.measure_time, weather.precipitation_amount, weather.precipitation_amountname))
 
 
 def main():
