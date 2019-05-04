@@ -358,3 +358,4 @@ target/
 .DS_Store
 .project
 .pydevproject
+.vscode/settings.json
