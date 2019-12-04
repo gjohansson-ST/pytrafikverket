@@ -81,7 +81,7 @@ class AndFilter(Filter):
 class Trafikverket(object):
     """Class used to communicate with trafikverket api"""
 
-    _api_url = "http://api.trafikinfo.trafikverket.se/v1.1/data.xml"
+    _api_url = "http://api.trafikinfo.trafikverket.se/v1.3/data.xml"
     date_time_format = "%Y-%m-%dT%H:%M:%S"
     date_time_format_for_modified = "%Y-%m-%dT%H:%M:%S.%fZ"
 
