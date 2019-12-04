@@ -359,3 +359,6 @@ target/
 .project
 .pydevproject
 .vscode/settings.json
+
+# Virtual environment
+venv/
