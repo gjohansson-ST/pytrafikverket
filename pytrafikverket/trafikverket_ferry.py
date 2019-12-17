@@ -245,7 +245,7 @@ class TrafikverketFerry(object):
 
         ferry_announcements = await self._api.async_make_request(
                                 "FerryAnnouncement",
-                                FerryStop._required_fields, 
+                                FerryStop._required_fields,
                                 filters,
                                 1, sorting)
 
@@ -258,7 +258,6 @@ class TrafikverketFerry(object):
         ferry_announcement = ferry_announcements[0]
 
         return FerryStop.from_xml_node(ferry_announcement)
-
 
     async def async_get_deviation(self, id: str) -> DeviationInfo:
         filters = [
@@ -274,7 +273,6 @@ class TrafikverketFerry(object):
         deviation = deviations[0]
 
         return DeviationInfo.from_xml_node(deviation)
-
 
     # async def async_get_deviation(self, id: str) -> DeviationInfo:
     #     """Retreive deviation info from Deviation.Id."""
