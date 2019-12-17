@@ -10,30 +10,29 @@ from pytrafikverket.trafikverket import (
     FieldSort,
     FilterOperation,
     NodeHelper,
-    OrFilter,
     SortOrder,
     Trafikverket,
+    mindebug
 )
 
 
-class DeviationInfo(object):
-    """Contains information about a deviation situation."""
-    _required_fields = ["Id", "CountryCode"]
+class RouteInfo(object):
+    """Contains information about a Ferryroute. """
 
-    def __init__(self, id: str, ccode: str):
-        """Initialize DeviationInfo class."""
+    _required_fields = ["Id", "Name"]
+
+    def __init__(self, id: str, name: str):
+        """Initialize RouteInfo class."""
         self.id = id
-        self.ccode = ccode
+        self.name = name
 
     @classmethod
     def from_xml_node(cls, node):
         """Map route information in XML data."""
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Id")
-        ccode = node_helper.get_text("CountryCode")
-
-        return cls(id, ccode)
-
+        name = node_helper.get_text("Name")
+        return cls(id, name)
 
 # class DeviationInfo(object):
 #     """Contains information about a deviation situation."""
@@ -56,23 +55,25 @@ class DeviationInfo(object):
 #         return cls(id, header, message)
 
 
-class RouteInfo(object):
-    """Contains information about a Ferryroute. """
+class DeviationInfo(object):
+    """Contains information about a deviation situation."""
+    _required_fields = ["Deviation.Id", "Deviation.Header", "Deviation.EndTime", "Deviation.StartTime",
+                        "Deviation.Message", "Deviation.IconId", "Deviation.LocationDescriptor"]
 
-    _required_fields = ["Id", "Name"]
-
-    def __init__(self, id: str, name: str):
-        """Initialize RouteInfo class."""
+    def __init__(self, id: str, header: str, message: str):
+        """Initialize DeviationInfo class."""
         self.id = id
-        self.name = name
+        self.header = header
+        self.message = message
 
     @classmethod
     def from_xml_node(cls, node):
         """Map route information in XML data."""
         node_helper = NodeHelper(node)
-        id = node_helper.get_text("Id")
-        name = node_helper.get_text("Name")
-        return cls(id, name)
+        id = node_helper.get_text("Deviation/Id")
+        header = node_helper.get_text("Deviation/Header")
+        message = node_helper.get_text("Deviation/Message")
+        return cls(id, header, message)
 
 
 class FerryStopStatus(Enum):
@@ -260,15 +261,17 @@ class TrafikverketFerry(object):
         return FerryStop.from_xml_node(ferry_announcement)
 
     async def async_get_deviation(self, id: str) -> DeviationInfo:
+        mindebug(f"Call get_deviation. {str}")
         filters = [
             FieldFilter(FilterOperation.equal,
-                        "Id", id)
+                        "Deviation.Id", id)
         ]
-        deviations = await self._api.async_make_request(
-            "Situation", FerryStop._required_fields, filters)
 
-        if len(deviations) == 0:
-            raise ValueError("No Deviation found")
+        deviations = await self._api.async_make_request(
+            "Situation", DeviationInfo._required_fields, filters)
+
+        # if len(deviations) == 0:
+        #     raise ValueError("No Deviation found")
 
         deviation = deviations[0]
 
