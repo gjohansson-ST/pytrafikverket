@@ -121,7 +121,7 @@ async def async_main(loop):
                     print(route.name + " " + route.id)
 
             elif args.method == GET_NEXT_FERRY_STOP:
-                if args.from_station is None:
+                if args.from_harbor is None:
                     raise ValueError(
                         '-from-harbor is required with name of Ferry harbor\
                          (ex. -from-harbor "Ekerö")'
