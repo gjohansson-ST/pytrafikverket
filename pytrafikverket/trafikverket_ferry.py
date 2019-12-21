@@ -34,6 +34,7 @@ class RouteInfo(object):
         name = node_helper.get_text("Name")
         return cls(id, name)
 
+
 class DeviationInfo(object):
     """Contains information about a deviation situation."""
     _required_fields = ["Deviation.Id", "Deviation.Header", "Deviation.EndTime", "Deviation.StartTime",
