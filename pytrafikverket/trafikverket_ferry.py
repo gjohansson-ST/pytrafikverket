@@ -34,27 +34,6 @@ class RouteInfo(object):
         name = node_helper.get_text("Name")
         return cls(id, name)
 
-# class DeviationInfo(object):
-#     """Contains information about a deviation situation."""
-#     _required_fields = ["Deviation.Id", "Deviation.Header", "Deviation.EndTime", "Deviation.StartTime",
-#                         "Deviation.Message", "Deviation.IconId", "Deviation.LocationDescriptor"]
-
-#     def __init__(self, id: str, header: str, message: str):
-#         """Initialize DeviationInfo class."""
-#         self.id = id
-#         self.header = header
-#         self.message = message
-
-#     @classmethod
-#     def from_xml_node(cls, node):
-#         """Map route information in XML data."""
-#         node_helper = NodeHelper(node)
-#         id = node_helper.get_text("Deviation/Id")
-#         header = node_helper.get_text("Deviation/Header")
-#         message = node_helper.get_text("Deviation/Message")
-#         return cls(id, header, message)
-
-
 class DeviationInfo(object):
     """Contains information about a deviation situation."""
     _required_fields = ["Deviation.Id", "Deviation.Header", "Deviation.EndTime", "Deviation.StartTime",

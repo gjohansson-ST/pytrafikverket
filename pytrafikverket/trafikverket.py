@@ -1,10 +1,15 @@
-from abc import ABCMeta, abstractmethod
 import typing
-from enum import Enum
+from abc import ABCMeta, abstractmethod
 from datetime import datetime
-import asyncio
+from enum import Enum
+
 import aiohttp
 from lxml import etree
+
+
+def mindebug(str):
+    print(f"** DEBUG: {str}")
+
 
 class FilterOperation(Enum):
     """Contains all field filter operations"""
@@ -17,14 +22,16 @@ class FilterOperation(Enum):
     not_equal = "NE"
     like = "LIKE"
     not_like = "NOTLIKE"
-#    in = "IN"
+    #    in = "IN"
     not_in = "NOTIN"
     with_in = "WITHIN"
+
 
 class SortOrder(Enum):
     """Specifies how rows of data are sorted."""
     ascending = "asc"
     decending = "desc"
+
 
 class FieldSort:
     """What field and how to sort on it"""
@@ -35,6 +42,7 @@ class FieldSort:
     def to_string(self):
         return self._field + " " + self._sort_order.value
 
+
 class Filter:
     """Base class for all filters"""
     __metaclass__ = ABCMeta
@@ -43,9 +51,10 @@ class Filter:
     def generate_node(self, parent_node):
         pass
 
+
 class FieldFilter(Filter):
     """Used to filter on one field"""
-    def __init__(self, operation:FilterOperation, name, value):
+    def __init__(self, operation: FilterOperation, name, value):
         self.operation = operation
         self.name = name
         self.value = value
@@ -55,6 +64,7 @@ class FieldFilter(Filter):
         filter_node.attrib["name"] = self.name
         filter_node.attrib["value"] = self.value
         return filter_node
+
 
 class OrFilter(Filter):
     """Used to create a Or filter"""
@@ -67,6 +77,7 @@ class OrFilter(Filter):
             sub_filter.generate_node(or_node)
         return or_node
 
+
 class AndFilter(Filter):
     """Used to create a And filter"""
     def __init__(self, filters: typing.List[Filter]):
@@ -78,6 +89,7 @@ class AndFilter(Filter):
             sub_filter.generate_node(or_node)
         return or_node
 
+
 class Trafikverket(object):
     """Class used to communicate with trafikverket api"""
 
@@ -85,16 +97,19 @@ class Trafikverket(object):
     date_time_format = "%Y-%m-%dT%H:%M:%S"
     date_time_format_for_modified = "%Y-%m-%dT%H:%M:%S.%fZ"
 
-    def __init__(self, client_session:aiohttp.ClientSession, api_key:str):
+    def __init__(self, client_session: aiohttp.ClientSession, api_key: str):
         """Initialize TrafikInfo object"""
         self._client_session = client_session
         self._api_key = api_key
 
-    def _generate_request_data(self, objecttype:str,
-                               includes: typing.List[str],
-                               filters: typing.List[Filter],
-                               limit:int = None,
-                               sorting: typing.List[FieldSort] = None):
+    def _generate_request_data(
+        self,
+        objecttype: str,
+        includes: typing.List[str],
+        filters: typing.List[Filter],
+        limit: int = None,
+        sorting: typing.List[FieldSort] = None,
+    ):
         root_node = etree.Element("REQUEST")
         login_node = etree.SubElement(root_node, "LOGIN")
         login_node.attrib["authenticationkey"] = self._api_key
@@ -110,19 +125,25 @@ class Trafikverket(object):
         filters_node = etree.SubElement(query_node, "FILTER")
         for filter in filters:
             filter.generate_node(filters_node)
+        mindebug(etree.tostring(root_node, pretty_print=True))
         return root_node
 
-    async def async_make_request(self, objecttype:str,
-                           includes: typing.List[str],
-                           filters: typing.List[Filter],
-                           limit:int = None,
-                           sorting: typing.List[FieldSort] = None):
-        request_data = self._generate_request_data(objecttype, includes, filters, limit, sorting)
+    async def async_make_request(
+        self,
+        objecttype: str,
+        includes: typing.List[str],
+        filters: typing.List[Filter],
+        limit: int = None,
+        sorting: typing.List[FieldSort] = None,
+    ):
+        request_data = self._generate_request_data(
+            objecttype, includes, filters, limit, sorting
+        )
         request_data_text = etree.tostring(request_data, pretty_print=False)
         headers = {"content-type": "text/xml"}
-        async with self._client_session.post(Trafikverket._api_url,
-                                             data=request_data_text,
-                                             headers=headers) as response:
+        async with self._client_session.post(
+            Trafikverket._api_url, data=request_data_text, headers=headers
+        ) as response:
             content = await response.text()
             error_nodes = etree.fromstring(content).xpath("/RESPONSE/RESULT/ERROR")
             if len(error_nodes) > 0:
@@ -131,7 +152,9 @@ class Trafikverket(object):
                 source = helper.get_text("SOURCE")
                 message = helper.get_text("MESSAGE")
                 raise ValueError("Source: " + source + ", message: " + message)
+            mindebug(content)
             return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
+
 
 class NodeHelper(object):
     """Helper class to get node content"""
@@ -165,7 +188,9 @@ class NodeHelper(object):
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
-        return datetime.strptime(nodes[0].text, Trafikverket.date_time_format_for_modified)
+        return datetime.strptime(
+            nodes[0].text, Trafikverket.date_time_format_for_modified
+        )
 
     def get_datetime(self, field):
         nodes = self._node.xpath(field)
