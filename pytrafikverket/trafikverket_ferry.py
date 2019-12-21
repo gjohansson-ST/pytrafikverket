@@ -60,7 +60,6 @@ class FerryStopStatus(Enum):
     """Contain the different ferry stop statuses."""
 
     on_time = "scheduled to arrive on schedule"
-    delayed = "delayed"
     canceled = "canceled"
 
 
