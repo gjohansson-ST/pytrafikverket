@@ -27,9 +27,9 @@ async def async_main(loop):
         parser = argparse.ArgumentParser(
             description="CLI used to get data from trafikverket"
         )
-        parser.add_argument("-key", type=str)
+        parser.add_argument("-key", type=str, required=True)
         parser.add_argument(
-            "-method",
+            "-method", required=True,
             choices=(
                 SEARCH_FOR_STATION,
                 GET_TRAIN_STOP,
