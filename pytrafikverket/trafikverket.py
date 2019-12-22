@@ -7,10 +7,6 @@ import aiohttp
 from lxml import etree
 
 
-def mindebug(str):
-    print(f"** DEBUG: {str}")
-
-
 class FilterOperation(Enum):
     """Contains all field filter operations"""
     equal = "EQ"
@@ -125,7 +121,7 @@ class Trafikverket(object):
         filters_node = etree.SubElement(query_node, "FILTER")
         for filter in filters:
             filter.generate_node(filters_node)
-        mindebug(etree.tostring(root_node, pretty_print=True))
+
         return root_node
 
     async def async_make_request(
@@ -152,7 +148,7 @@ class Trafikverket(object):
                 source = helper.get_text("SOURCE")
                 message = helper.get_text("MESSAGE")
                 raise ValueError("Source: " + source + ", message: " + message)
-            mindebug(content)
+
             return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
 
 
