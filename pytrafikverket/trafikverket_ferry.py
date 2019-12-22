@@ -12,7 +12,6 @@ from pytrafikverket.trafikverket import (
     NodeHelper,
     SortOrder,
     Trafikverket,
-    mindebug,
 )
 
 
@@ -197,8 +196,8 @@ class TrafikverketFerry(object):
         self,
         from_harbor_name: str,
         to_harnbor_name: str = "",
-        number_of_stops: int = 1,
         after_time: datetime = datetime.now(),
+        number_of_stops: int = 1,
     ) -> List[FerryStop]:
         """Enable retreival of next departures."""
         # ferry_announcements = self.async_get_next_ferry_stops(
@@ -224,7 +223,7 @@ class TrafikverketFerry(object):
             FerryStop._required_fields,
             filters,
             number_of_stops,
-            sorting,
+            sorting
         )
 
         if len(ferry_announcements) == 0:
@@ -242,39 +241,12 @@ class TrafikverketFerry(object):
         after_time: datetime = datetime.now(),
     ) -> FerryStop:
         """Enable retreival of next departure."""
-        date_as_text = after_time.strftime(Trafikverket.date_time_format)
-
-        filters = [
-            FieldFilter(FilterOperation.equal, "FromHarbor.Name", from_harbor_name),
-            FieldFilter(
-                FilterOperation.greater_than_equal, "DepartureTime", date_as_text
-            ),
-        ]
-        if to_harnbor_name:
-            filters.append(
-                FieldFilter(FilterOperation.equal, "ToHarbor.Name", to_harnbor_name)
-            )
-
-        sorting = [FieldSort("DepartureTime", SortOrder.ascending)]
-
-        ferry_announcements = await self._api.async_make_request(
-            "FerryAnnouncement", FerryStop._required_fields, filters, 1, sorting
-        )
-
-        if len(ferry_announcements) == 0:
-            raise ValueError("No FerryAnnouncement found")
-
-        if len(ferry_announcements) > 1:
-            raise ValueError("Multiple FerryAnnouncements found")
-
-        ferry_announcement = ferry_announcements[0]
-
-        return FerryStop.from_xml_node(ferry_announcement)
+        stops = await self.async_get_next_ferry_stops(from_harbor_name, to_harnbor_name, after_time, 1)
+        return stops[0]
 
     async def async_get_deviation(self, id: str) -> DeviationInfo:
         """Retreive deviation info from Deviation Id."""
 
-        mindebug(f"Call get_deviation. {str}")
         filters = [FieldFilter(FilterOperation.equal, "Deviation.Id", id)]
 
         deviations = await self._api.async_make_request(
