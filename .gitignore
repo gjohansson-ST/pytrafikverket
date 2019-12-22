@@ -362,3 +362,7 @@ target/
 
 # Virtual environment
 venv/
+# Test purpose only
+ferry_test.py
+Exempel_svar
+.vscode/launch.json

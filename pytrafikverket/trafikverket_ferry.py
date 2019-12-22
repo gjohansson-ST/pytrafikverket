@@ -12,7 +12,7 @@ from pytrafikverket.trafikverket import (
     NodeHelper,
     SortOrder,
     Trafikverket,
-    mindebug
+    mindebug,
 )
 
 
@@ -37,14 +37,35 @@ class RouteInfo(object):
 
 class DeviationInfo(object):
     """Contains information about a deviation situation."""
-    _required_fields = ["Deviation.Id", "Deviation.Header", "Deviation.EndTime", "Deviation.StartTime",
-                        "Deviation.Message", "Deviation.IconId", "Deviation.LocationDescriptor"]
 
-    def __init__(self, id: str, header: str, message: str):
+    _required_fields = [
+        "Deviation.Id",
+        "Deviation.Header",
+        "Deviation.EndTime",
+        "Deviation.StartTime",
+        "Deviation.Message",
+        "Deviation.IconId",
+        "Deviation.LocationDescriptor",
+    ]
+
+    def __init__(
+        self,
+        id: str,
+        header: str,
+        message: str,
+        start_time: datetime,
+        end_time: datetime,
+        icon_id: str,
+        location_desc: str,
+    ):
         """Initialize DeviationInfo class."""
         self.id = id
         self.header = header
         self.message = message
+        self.start_time = start_time
+        self.end_time = end_time
+        self.icon_id = icon_id
+        self.location_desc = location_desc
 
     @classmethod
     def from_xml_node(cls, node):
@@ -53,7 +74,11 @@ class DeviationInfo(object):
         id = node_helper.get_text("Deviation/Id")
         header = node_helper.get_text("Deviation/Header")
         message = node_helper.get_text("Deviation/Message")
-        return cls(id, header, message)
+        start_time = node_helper.get_text("Deviation/StartTime")
+        end_time = node_helper.get_text("Deviation/EndTime")
+        icon_id = node_helper.get_text("Deviation/IconId")
+        location_desc = node_helper.get_text("Deviation/LocationDescriptor")
+        return cls(id, header, message, start_time, end_time, icon_id, location_desc)
 
 
 class FerryStopStatus(Enum):
@@ -84,7 +109,7 @@ class FerryStop(object):
         deleted: bool,
         departure_time: datetime,
         other_information: typing.List[str],
-        deviation_id: int,
+        deviation_id: str,
         modified_time: datetime,
         from_harbor_name: str,
         to_harbor_name: str
@@ -119,8 +144,9 @@ class FerryStop(object):
         to_harbor_name = node_helper.get_text("ToHarbor/Name")
 
         return cls(
-            id, deleted, departure_time, other_information, deviation_id,
-            modified_time, from_harbor_name, to_harbor_name)
+            id, deleted, departure_time, other_information,
+            deviation_id, modified_time,
+            from_harbor_name, to_harbor_name)
 
     def print(self):
         """Prints some class variables"""
@@ -182,18 +208,24 @@ class TrafikverketFerry(object):
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
         filters = [
-            FieldFilter(FilterOperation.equal,
-                        "FromHarbor.Name", from_harbor_name),
-            FieldFilter(FilterOperation.greater_than_equal,
-                        "DepartureTime", date_as_text),
+            FieldFilter(FilterOperation.equal, "FromHarbor.Name", from_harbor_name),
+            FieldFilter(
+                FilterOperation.greater_than_equal, "DepartureTime", date_as_text
+            ),
         ]
         if to_harnbor_name:
-            filters.append(FieldFilter(FilterOperation.equal,
-                           "ToHarbor.Name", to_harnbor_name))
+            filters.append(
+                FieldFilter(FilterOperation.equal, "ToHarbor.Name", to_harnbor_name)
+            )
 
         sorting = [FieldSort("DepartureTime", SortOrder.ascending)]
         ferry_announcements = await self._api.async_make_request(
-            "FerryAnnouncement", FerryStop._required_fields, filters, number_of_stops, sorting)
+            "FerryAnnouncement",
+            FerryStop._required_fields,
+            filters,
+            number_of_stops,
+            sorting,
+        )
 
         if len(ferry_announcements) == 0:
             raise ValueError("No FerryAnnouncement found")
@@ -204,30 +236,30 @@ class TrafikverketFerry(object):
         return stops
 
     async def async_get_next_ferry_stop(
-            self,
-            from_harbor_name: str,
-            to_harnbor_name: str = "",
-            after_time: datetime = datetime.now()) -> FerryStop:
+        self,
+        from_harbor_name: str,
+        to_harnbor_name: str = "",
+        after_time: datetime = datetime.now(),
+    ) -> FerryStop:
         """Enable retreival of next departure."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
         filters = [
-            FieldFilter(FilterOperation.equal,
-                        "FromHarbor.Name", from_harbor_name),
-            FieldFilter(FilterOperation.greater_than_equal,
-                        "DepartureTime", date_as_text),
+            FieldFilter(FilterOperation.equal, "FromHarbor.Name", from_harbor_name),
+            FieldFilter(
+                FilterOperation.greater_than_equal, "DepartureTime", date_as_text
+            ),
         ]
         if to_harnbor_name:
-            filters.append(FieldFilter(FilterOperation.equal,
-                           "ToHarbor.Name", to_harnbor_name))
+            filters.append(
+                FieldFilter(FilterOperation.equal, "ToHarbor.Name", to_harnbor_name)
+            )
 
         sorting = [FieldSort("DepartureTime", SortOrder.ascending)]
 
         ferry_announcements = await self._api.async_make_request(
-                                "FerryAnnouncement",
-                                FerryStop._required_fields,
-                                filters,
-                                1, sorting)
+            "FerryAnnouncement", FerryStop._required_fields, filters, 1, sorting
+        )
 
         if len(ferry_announcements) == 0:
             raise ValueError("No FerryAnnouncement found")
@@ -240,17 +272,17 @@ class TrafikverketFerry(object):
         return FerryStop.from_xml_node(ferry_announcement)
 
     async def async_get_deviation(self, id: str) -> DeviationInfo:
+        """Retreive deviation info from Deviation Id."""
+
         mindebug(f"Call get_deviation. {str}")
-        filters = [
-            FieldFilter(FilterOperation.equal,
-                        "Deviation.Id", id)
-        ]
+        filters = [FieldFilter(FilterOperation.equal, "Deviation.Id", id)]
 
         deviations = await self._api.async_make_request(
-            "Situation", DeviationInfo._required_fields, filters)
+            "Situation", DeviationInfo._required_fields, filters
+        )
 
-        # if len(deviations) == 0:
-        #     raise ValueError("No Deviation found")
+        if len(deviations) == 0:
+            raise ValueError("No Deviation found")
 
         deviation = deviations[0]
 
@@ -264,6 +296,6 @@ class TrafikverketFerry(object):
     #         [FieldFilter(FilterOperation.equal, "Deviation.Id", id)]
     #     )
     #     if len(deviation) == 0:
-    #         raise ValueError("Could not find a route with the specified name")
+    #         raise ValueError("No Deviation found")
 
     #     return DeviationInfo.from_xml_node(deviation[0])
