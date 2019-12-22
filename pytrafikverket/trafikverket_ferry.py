@@ -125,7 +125,7 @@ class FerryStop(object):
 
     def get_state(self) -> FerryStopStatus:
         """Retrieve the state of the departure."""
-        if self.deleted:  # Ferrys got no canceled-key, but a deleted
+        if self.deleted:
             return FerryStopStatus.deleted
         return FerryStopStatus.on_time
 
@@ -200,9 +200,6 @@ class TrafikverketFerry(object):
         number_of_stops: int = 1,
     ) -> List[FerryStop]:
         """Enable retreival of next departures."""
-        # ferry_announcements = self.async_get_next_ferry_stops(
-        #     1, from_harbor_name, to_harnbor_name,
-        #     after_time)
 
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
@@ -260,14 +257,3 @@ class TrafikverketFerry(object):
 
         return DeviationInfo.from_xml_node(deviation)
 
-    # async def async_get_deviation(self, id: str) -> DeviationInfo:
-    #     """Retreive deviation info from Deviation.Id."""
-    #     deviation = await self._api.async_make_request(
-    #         "Situation",
-    #         DeviationInfo._required_fields,
-    #         [FieldFilter(FilterOperation.equal, "Deviation.Id", id)]
-    #     )
-    #     if len(deviation) == 0:
-    #         raise ValueError("No Deviation found")
-
-    #     return DeviationInfo.from_xml_node(deviation[0])
