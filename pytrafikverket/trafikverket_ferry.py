@@ -1,4 +1,5 @@
 """Enables retreival of ferry departure information from Trafikverket API."""
+
 import typing
 from datetime import datetime
 from enum import Enum
@@ -16,7 +17,7 @@ from pytrafikverket.trafikverket import (
 
 
 class RouteInfo(object):
-    """Contains information about a Ferryroute. """
+    """Contains information about a FerryRoute."""
 
     _required_fields = ["Id", "Name"]
 
@@ -35,7 +36,7 @@ class RouteInfo(object):
 
 
 class DeviationInfo(object):
-    """Contains information about a deviation situation."""
+    """Contains information about a Situation/Deviation."""
 
     _required_fields = [
         "Deviation.Id",
@@ -152,12 +153,6 @@ class FerryStop(object):
             from_harbor_name,
             to_harbor_name,
         )
-
-    def print(self):
-        """Prints some class variables"""
-        print(f"time: {self.departure_time}")
-        print(f"from: {self.from_harbor_name}")
-        print(f"to: {self.to_harbor_name}")
 
 
 class TrafikverketFerry(object):
