@@ -111,7 +111,7 @@ class FerryStop(object):
         deviation_id: str,
         modified_time: datetime,
         from_harbor_name: str,
-        to_harbor_name: str
+        to_harbor_name: str,
     ):
         """Initialize FerryStop."""
         self.id = id
@@ -143,9 +143,15 @@ class FerryStop(object):
         to_harbor_name = node_helper.get_text("ToHarbor/Name")
 
         return cls(
-            id, deleted, departure_time, other_information,
-            deviation_id, modified_time,
-            from_harbor_name, to_harbor_name)
+            id,
+            deleted,
+            departure_time,
+            other_information,
+            deviation_id,
+            modified_time,
+            from_harbor_name,
+            to_harbor_name,
+        )
 
     def print(self):
         """Prints some class variables"""
@@ -220,7 +226,7 @@ class TrafikverketFerry(object):
             FerryStop._required_fields,
             filters,
             number_of_stops,
-            sorting
+            sorting,
         )
 
         if len(ferry_announcements) == 0:
@@ -238,7 +244,9 @@ class TrafikverketFerry(object):
         after_time: datetime = datetime.now(),
     ) -> FerryStop:
         """Enable retreival of next departure."""
-        stops = await self.async_get_next_ferry_stops(from_harbor_name, to_harnbor_name, after_time, 1)
+        stops = await self.async_get_next_ferry_stops(
+            from_harbor_name, to_harnbor_name, after_time, 1
+        )
         return stops[0]
 
     async def async_get_deviation(self, id: str) -> DeviationInfo:
@@ -252,8 +260,8 @@ class TrafikverketFerry(object):
 
         if len(deviations) == 0:
             raise ValueError("No Deviation found")
+        if len(deviations) > 1:
+            raise ValueError("Multiple Deviations found")
 
         deviation = deviations[0]
-
         return DeviationInfo.from_xml_node(deviation)
-
