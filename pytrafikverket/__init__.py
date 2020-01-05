@@ -1,4 +1,5 @@
 """Pytrafikverket module."""
+# flake8: noqa
 from pytrafikverket.trafikverket import (AndFilter, FieldFilter, FieldSort,
                                          Filter, FilterOperation, NodeHelper,
                                          OrFilter, SortOrder, Trafikverket)
