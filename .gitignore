@@ -364,5 +364,3 @@ target/
 venv/
 # Test purpose only
 ferry_test.py
-
-
