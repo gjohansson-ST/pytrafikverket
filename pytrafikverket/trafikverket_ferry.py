@@ -19,12 +19,14 @@ from pytrafikverket.trafikverket import (
 class RouteInfo(object):
     """Contains information about a FerryRoute."""
 
-    _required_fields = ["Id", "Name"]
+    _required_fields = ["Id", "Name", "Shortname", "Type.Name"]
 
-    def __init__(self, id: str, name: str):
+    def __init__(self, id: int, name: str, short_name: str, route_type: str):
         """Initialize RouteInfo class."""
         self.id = id
         self.name = name
+        self.short_name = short_name
+        self.route_type = route_type
 
     @classmethod
     def from_xml_node(cls, node):
@@ -32,7 +34,10 @@ class RouteInfo(object):
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Id")
         name = node_helper.get_text("Name")
-        return cls(id, name)
+        short_name = node_helper.get_text("Shortname")
+        route_type = node_helper.get_text("Type/Name")
+
+        return cls(id, name, short_name, route_type)
 
 
 class DeviationInfo(object):
@@ -69,7 +74,7 @@ class DeviationInfo(object):
 
     @classmethod
     def from_xml_node(cls, node):
-        """Map route information in XML data."""
+        """Map deviation information in XML data."""
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Deviation/Id")
         header = node_helper.get_text("Deviation/Header")
@@ -168,6 +173,20 @@ class TrafikverketFerry(object):
             "FerryRoute",
             RouteInfo._required_fields,
             [FieldFilter(FilterOperation.equal, "Name", route_name)],
+        )
+        if len(routes) == 0:
+            raise ValueError("Could not find a route with the specified name")
+        if len(routes) > 1:
+            raise ValueError("Found multiple routes with the specified name")
+
+        return RouteInfo.from_xml_node(routes[0])
+
+    async def async_get_route_id(self, route_id: int) -> RouteInfo:
+        """Retreive ferry route id based on routeId."""
+        routes = await self._api.async_make_request(
+            "FerryRoute",
+            RouteInfo._required_fields,
+            [FieldFilter(FilterOperation.equal, "Id", str(route_id))],
         )
         if len(routes) == 0:
             raise ValueError("Could not find a route with the specified name")
