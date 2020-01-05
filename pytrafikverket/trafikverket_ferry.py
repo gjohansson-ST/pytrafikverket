@@ -21,7 +21,7 @@ class RouteInfo(object):
 
     _required_fields = ["Id", "Name", "Shortname", "Type.Name"]
 
-    def __init__(self, id: int, name: str, short_name: str, route_type: str):
+    def __init__(self, id: str, name: str, short_name: str, route_type: str):
         """Initialize RouteInfo class."""
         self.id = id
         self.name = name
