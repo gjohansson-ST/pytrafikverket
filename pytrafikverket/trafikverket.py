@@ -1,3 +1,4 @@
+"""Module for communication with Trafikverket official API."""
 import typing
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
@@ -8,7 +9,8 @@ from lxml import etree
 
 
 class FilterOperation(Enum):
-    """Contains all field filter operations"""
+    """Contains all field filter operations."""
+
     equal = "EQ"
     exists = "EXISTS"
     greater_than = "GT"
@@ -25,12 +27,14 @@ class FilterOperation(Enum):
 
 class SortOrder(Enum):
     """Specifies how rows of data are sorted."""
+
     ascending = "asc"
     decending = "desc"
 
 
 class FieldSort:
-    """What field and how to sort on it"""
+    """What field and how to sort on it."""
+
     def __init__(self, field: str, sort_order: SortOrder):
         self._field = field
         self._sort_order = sort_order
@@ -40,7 +44,8 @@ class FieldSort:
 
 
 class Filter:
-    """Base class for all filters"""
+    """Base class for all filters."""
+
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -49,7 +54,8 @@ class Filter:
 
 
 class FieldFilter(Filter):
-    """Used to filter on one field"""
+    """Used to filter on one field."""
+
     def __init__(self, operation: FilterOperation, name, value):
         self.operation = operation
         self.name = name
@@ -63,7 +69,8 @@ class FieldFilter(Filter):
 
 
 class OrFilter(Filter):
-    """Used to create a Or filter"""
+    """Used to create a Or filter."""
+
     def __init__(self, filters: typing.List[Filter]):
         self.filters = filters
 
@@ -75,7 +82,8 @@ class OrFilter(Filter):
 
 
 class AndFilter(Filter):
-    """Used to create a And filter"""
+    """Used to create a And filter."""
+
     def __init__(self, filters: typing.List[Filter]):
         self.filters = filters
 
@@ -87,14 +95,14 @@ class AndFilter(Filter):
 
 
 class Trafikverket(object):
-    """Class used to communicate with trafikverket api"""
+    """Class used to communicate with trafikverket api."""
 
     _api_url = "http://api.trafikinfo.trafikverket.se/v1.2/data.xml"
     date_time_format = "%Y-%m-%dT%H:%M:%S"
     date_time_format_for_modified = "%Y-%m-%dT%H:%M:%S.%fZ"
 
     def __init__(self, client_session: aiohttp.ClientSession, api_key: str):
-        """Initialize TrafikInfo object"""
+        """Initialize TrafikInfo object."""
         self._client_session = client_session
         self._api_key = api_key
 
@@ -153,7 +161,8 @@ class Trafikverket(object):
 
 
 class NodeHelper(object):
-    """Helper class to get node content"""
+    """Helper class to get node content."""
+
     def __init__(self, node):
         self._node = node
 

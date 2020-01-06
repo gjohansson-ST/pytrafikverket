@@ -41,8 +41,8 @@ class TrainStop(object):
     """Contain information about a train stop."""
 
     _required_fields = ["ActivityId", "Canceled", "AdvertisedTimeAtLocation",
-                       "EstimatedTimeAtLocation", "TimeAtLocation",
-                       "OtherInformation", "Deviation", "ModifiedTime"]
+                        "EstimatedTimeAtLocation", "TimeAtLocation",
+                        "OtherInformation", "Deviation", "ModifiedTime"]
 
     def __init__(self, id, canceled: bool,
                  advertised_time_at_location: datetime,

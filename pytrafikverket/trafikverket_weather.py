@@ -9,18 +9,18 @@ class WeatherStationInfo(object):
     """Fetch Weather data from specified weather station."""
 
     _required_fields = ["Name",
-                       "Id",
-                       "Measurement.Road.Temp",
-                       "Measurement.Air.Temp",
-                       "Measurement.Air.RelativeHumidity",
-                       "Measurement.Precipitation.Type",
-                       "Measurement.Wind.Direction",
-                       "Measurement.Wind.DirectionText",
-                       "Measurement.Wind.Force",
-                       "Active",
-                       "Measurement.MeasureTime",
-                       "Measurement.Precipitation.Amount",
-                       "Measurement.Precipitation.AmountName"]
+                        "Id",
+                        "Measurement.Road.Temp",
+                        "Measurement.Air.Temp",
+                        "Measurement.Air.RelativeHumidity",
+                        "Measurement.Precipitation.Type",
+                        "Measurement.Wind.Direction",
+                        "Measurement.Wind.DirectionText",
+                        "Measurement.Wind.Force",
+                        "Active",
+                        "Measurement.MeasureTime",
+                        "Measurement.Precipitation.Amount",
+                        "Measurement.Precipitation.AmountName"]
 
     def __init__(self, station_name: str, station_id: str, road_temp: float,
                  air_temp: float, humidity: float, precipitationtype: str,

@@ -83,7 +83,8 @@ class DeviationInfo(object):
         end_time = node_helper.get_text("Deviation/EndTime")
         icon_id = node_helper.get_text("Deviation/IconId")
         location_desc = node_helper.get_text("Deviation/LocationDescriptor")
-        return cls(id, header, message, start_time, end_time, icon_id, location_desc)
+        return cls(id, header, message, start_time, end_time,
+                   icon_id, location_desc)
 
 
 class FerryStopStatus(Enum):
@@ -220,7 +221,6 @@ class TrafikverketFerry(object):
         number_of_stops: int = 1,
     ) -> List[FerryStop]:
         """Enable retreival of next departures."""
-
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
         filters = [
@@ -265,9 +265,7 @@ class TrafikverketFerry(object):
 
     async def async_get_deviation(self, id: str) -> DeviationInfo:
         """Retreive deviation info from Deviation Id."""
-
         filters = [FieldFilter(FilterOperation.equal, "Deviation.Id", id)]
-
         deviations = await self._api.async_make_request(
             "Situation", DeviationInfo._required_fields, filters
         )

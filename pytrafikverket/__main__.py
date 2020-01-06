@@ -140,6 +140,7 @@ async def async_main(loop):
 
 
 def print_values(object):
+    """Print out values for all object members."""
     for i in inspect.getmembers(object):
         if not i[0].startswith("_"):
             if not inspect.ismethod(i[1]):
