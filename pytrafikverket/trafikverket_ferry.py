@@ -168,7 +168,7 @@ class TrafikverketFerry(object):
         """Initialize FerryInfo object."""
         self._api = Trafikverket(client_session, api_key)
 
-    async def async_get_route(self, route_name: str) -> RouteInfo:
+    async def async_get_ferry_route(self, route_name: str) -> RouteInfo:
         """Retreive ferry route id based on name."""
         routes = await self._api.async_make_request(
             "FerryRoute",
@@ -182,7 +182,7 @@ class TrafikverketFerry(object):
 
         return RouteInfo.from_xml_node(routes[0])
 
-    async def async_get_route_id(self, route_id: int) -> RouteInfo:
+    async def async_get_ferry_route_id(self, route_id: int) -> RouteInfo:
         """Retreive ferry route id based on routeId."""
         routes = await self._api.async_make_request(
             "FerryRoute",
@@ -196,11 +196,11 @@ class TrafikverketFerry(object):
 
         return RouteInfo.from_xml_node(routes[0])
 
-    async def async_search_routes(self, name: str) -> typing.List[RouteInfo]:
-        """Search for ferry routes."""
+    async def async_search_ferry_routes(self, name: str) -> typing.List[RouteInfo]:
+        """Search for ferry routes based on the route name."""
         routes = await self._api.async_make_request(
             "FerryRoute",
-            ["Name", "Id"],
+            RouteInfo._required_fields,
             [FieldFilter(FilterOperation.like, "Name", name)],
         )
         if len(routes) == 0:

@@ -16,8 +16,8 @@ SEARCH_FOR_STATION = "search-for-station"
 GET_TRAIN_STOP = "get-train-stop"
 GET_NEXT_TRAIN_STOP = "get-next-train-stop"
 GET_WEATHER = "get-weather"
-GET_ROUTE = "get-route"
-SEARCH_FOR_ROUTE = "search-for-route"
+GET_FERRY_ROUTE = "get-ferry-route"
+SEARCH_FOR_FERRY_ROUTE = "search-for-ferry-route"
 GET_NEXT_FERRY_STOP = "get-next-ferry-stop"
 
 
@@ -35,8 +35,8 @@ async def async_main(loop):
                 GET_TRAIN_STOP,
                 GET_NEXT_TRAIN_STOP,
                 GET_WEATHER,
-                GET_ROUTE,
-                SEARCH_FOR_ROUTE,
+                GET_FERRY_ROUTE,
+                SEARCH_FOR_FERRY_ROUTE,
                 GET_NEXT_FERRY_STOP,
             ),
         )
@@ -103,19 +103,19 @@ async def async_main(loop):
                 weather = await weather_api.async_get_weather(args.station)
                 print_values(weather)
 
-            elif args.method == GET_ROUTE:
+            elif args.method == GET_FERRY_ROUTE:
                 if args.route is None:
                     raise ValueError(
                         '-route is required with name of Ferry route\
                          (ex. -route "Ekeröleden")'
                     )
-                route = await ferry_api.async_get_route(args.route)
+                route = await ferry_api.async_get_ferry_route(args.route)
                 print_values(route)
 
-            elif args.method == SEARCH_FOR_ROUTE:
+            elif args.method == SEARCH_FOR_FERRY_ROUTE:
                 if args.route is None:
                     raise ValueError("-route is required")
-                routes = await ferry_api.async_search_routes(args.route)
+                routes = await ferry_api.async_search_ferry_routes(args.route)
                 for route in routes:
                     print_values(route)
                     print(route.name + " " + route.id)
