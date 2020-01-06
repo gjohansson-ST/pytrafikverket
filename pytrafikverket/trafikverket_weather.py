@@ -80,10 +80,9 @@ class TrafikverketWeather(object):
             self, location_name: str) -> WeatherStationInfo:
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
-                            "WeatherStation",
-                            WeatherStationInfo._required_fields,
-                            [FieldFilter(FilterOperation.equal,
-                                         "Name", location_name)])
+            "WeatherStation",
+            WeatherStationInfo._required_fields,
+            [FieldFilter(FilterOperation.equal, "Name", location_name)])
         if len(weather_stations) == 0:
             raise ValueError(
                 "Could not find a weather station with the specified name")
