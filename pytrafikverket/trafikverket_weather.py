@@ -9,18 +9,18 @@ class WeatherStationInfo(object):
     """Fetch Weather data from specified weather station."""
 
     _required_fields = ["Name",
-                       "Id",
-                       "Measurement.Road.Temp",
-                       "Measurement.Air.Temp",
-                       "Measurement.Air.RelativeHumidity",
-                       "Measurement.Precipitation.Type",
-                       "Measurement.Wind.Direction",
-                       "Measurement.Wind.DirectionText",
-                       "Measurement.Wind.Force",
-                       "Active",
-                       "Measurement.MeasureTime",
-                       "Measurement.Precipitation.Amount",
-                       "Measurement.Precipitation.AmountName"]
+                        "Id",
+                        "Measurement.Road.Temp",
+                        "Measurement.Air.Temp",
+                        "Measurement.Air.RelativeHumidity",
+                        "Measurement.Precipitation.Type",
+                        "Measurement.Wind.Direction",
+                        "Measurement.Wind.DirectionText",
+                        "Measurement.Wind.Force",
+                        "Active",
+                        "Measurement.MeasureTime",
+                        "Measurement.Precipitation.Amount",
+                        "Measurement.Precipitation.AmountName"]
 
     def __init__(self, station_name: str, station_id: str, road_temp: float,
                  air_temp: float, humidity: float, precipitationtype: str,
@@ -80,10 +80,9 @@ class TrafikverketWeather(object):
             self, location_name: str) -> WeatherStationInfo:
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
-                            "WeatherStation",
-                            WeatherStationInfo._required_fields,
-                            [FieldFilter(FilterOperation.equal,
-                                         "Name", location_name)])
+            "WeatherStation",
+            WeatherStationInfo._required_fields,
+            [FieldFilter(FilterOperation.equal, "Name", location_name)])
         if len(weather_stations) == 0:
             raise ValueError(
                 "Could not find a weather station with the specified name")

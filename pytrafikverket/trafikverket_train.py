@@ -41,8 +41,8 @@ class TrainStop(object):
     """Contain information about a train stop."""
 
     _required_fields = ["ActivityId", "Canceled", "AdvertisedTimeAtLocation",
-                       "EstimatedTimeAtLocation", "TimeAtLocation",
-                       "OtherInformation", "Deviation", "ModifiedTime"]
+                        "EstimatedTimeAtLocation", "TimeAtLocation",
+                        "OtherInformation", "Deviation", "ModifiedTime"]
 
     def __init__(self, id, canceled: bool,
                  advertised_time_at_location: datetime,
@@ -121,11 +121,10 @@ class TrafikverketTrain(object):
     async def async_get_train_station(self, location_name: str) -> StationInfo:
         """Retreive train station id based on name."""
         train_stations = await self._api.async_make_request(
-                                    "TrainStation",
-                                    StationInfo._required_fields,
-                                    [FieldFilter(FilterOperation.equal,
-                                                 "AdvertisedLocationName",
-                                                 location_name)])
+            "TrainStation",
+            StationInfo._required_fields,
+            [FieldFilter(FilterOperation.equal,
+                         "AdvertisedLocationName", location_name)])
         if len(train_stations) == 0:
             raise ValueError(
                 "Could not find a station with the specified name")
@@ -139,12 +138,10 @@ class TrafikverketTrain(object):
             self, location_name: str) -> typing.List[StationInfo]:
         """Search for train stations."""
         train_stations = await self._api.async_make_request(
-                                    "TrainStation",
-                                    ["AdvertisedLocationName",
-                                     "LocationSignature"],
-                                    [FieldFilter(FilterOperation.like,
-                                                 "AdvertisedLocationName",
-                                                 location_name)])
+            "TrainStation",
+            ["AdvertisedLocationName", "LocationSignature"],
+            [FieldFilter(FilterOperation.like,
+                         "AdvertisedLocationName", location_name)])
         if len(train_stations) == 0:
             raise ValueError(
                 "Could not find a station with the specified name")
@@ -157,9 +154,8 @@ class TrafikverketTrain(object):
         return result
 
     async def async_get_train_stop(
-                self, from_station: StationInfo,
-                to_station: StationInfo,
-                time_at_location: datetime) -> TrainStop:
+            self, from_station: StationInfo,
+            to_station: StationInfo, time_at_location: datetime) -> TrainStop:
         """Retrieve the train stop."""
         date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
 
@@ -181,9 +177,7 @@ class TrafikverketTrain(object):
                                          to_station.signature)])]
 
         train_announcements = await self._api.async_make_request(
-                                        "TrainAnnouncement",
-                                        TrainStop._required_fields,
-                                        filters)
+            "TrainAnnouncement", TrainStop._required_fields, filters)
 
         if len(train_announcements) == 0:
             raise ValueError("No TrainAnnouncement found")
@@ -222,9 +216,7 @@ class TrafikverketTrain(object):
 
         sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ascending)]
         train_announcements = await self._api.async_make_request(
-                                "TrainAnnouncement",
-                                TrainStop._required_fields,
-                                filters, 1, sorting)
+            "TrainAnnouncement", TrainStop._required_fields, filters, 1, sorting)
 
         if len(train_announcements) == 0:
             raise ValueError("No TrainAnnouncement found")

@@ -358,4 +358,9 @@ target/
 .DS_Store
 .project
 .pydevproject
-.vscode/settings.json
+.vscode
+
+# Virtual environment
+venv/
+# Test purpose only
+ferry_test.py
