@@ -36,10 +36,12 @@ class FieldSort:
     """What field and how to sort on it."""
 
     def __init__(self, field: str, sort_order: SortOrder):
+        """Initialize the class."""
         self._field = field
         self._sort_order = sort_order
 
     def to_string(self):
+        """Sort_order as string."""
         return self._field + " " + self._sort_order.value
 
 
@@ -50,6 +52,7 @@ class Filter:
 
     @abstractmethod
     def generate_node(self, parent_node):
+        """Generate node."""
         pass
 
 
@@ -57,11 +60,13 @@ class FieldFilter(Filter):
     """Used to filter on one field."""
 
     def __init__(self, operation: FilterOperation, name, value):
+        """Initialize the class."""
         self.operation = operation
         self.name = name
         self.value = value
 
     def generate_node(self, parent_node):
+        """Return element node for field filter."""
         filter_node = etree.SubElement(parent_node, self.operation.value)
         filter_node.attrib["name"] = self.name
         filter_node.attrib["value"] = self.value
@@ -72,9 +77,11 @@ class OrFilter(Filter):
     """Used to create a Or filter."""
 
     def __init__(self, filters: typing.List[Filter]):
+        """Initialize the class."""
         self.filters = filters
 
     def generate_node(self, parent_node):
+        """Return element node for filter."""
         or_node = etree.SubElement(parent_node, "OR")
         for sub_filter in self.filters:
             sub_filter.generate_node(or_node)
@@ -85,9 +92,11 @@ class AndFilter(Filter):
     """Used to create a And filter."""
 
     def __init__(self, filters: typing.List[Filter]):
+        """Initialize the class."""
         self.filters = filters
 
     def generate_node(self, parent_node):
+        """Return element node for filter."""
         or_node = etree.SubElement(parent_node, "AND")
         for sub_filter in self.filters:
             sub_filter.generate_node(or_node)
@@ -140,6 +149,7 @@ class Trafikverket(object):
         limit: int = None,
         sorting: typing.List[FieldSort] = None,
     ):
+        """Send request to trafikverket api and return a element node."""
         request_data = self._generate_request_data(
             objecttype, includes, filters, limit, sorting
         )
@@ -164,9 +174,11 @@ class NodeHelper(object):
     """Helper class to get node content."""
 
     def __init__(self, node):
+        """Initialize the class."""
         self._node = node
 
     def get_text(self, field):
+        """Return the text in 'field' from the node or None if not found."""
         nodes = self._node.xpath(field)
         if nodes is None:
             return None
@@ -177,6 +189,7 @@ class NodeHelper(object):
         return nodes[0].text
 
     def get_texts(self, field):
+        """Return a list of texts from the node selected by 'field' or None."""
         nodes = self._node.xpath(field)
         if nodes is None:
             return None
@@ -186,6 +199,10 @@ class NodeHelper(object):
         return result
 
     def get_datetime_for_modified(self, field):
+        """Return datetime object from node, selected by 'field'.
+
+        Format of the text is expected to be modifiedTime-format.
+        """
         nodes = self._node.xpath(field)
         if nodes is None:
             return None
@@ -198,6 +215,7 @@ class NodeHelper(object):
         )
 
     def get_datetime(self, field):
+        """Return a datetime object from node, selected by 'field'."""
         nodes = self._node.xpath(field)
         if nodes is None:
             return None
@@ -208,6 +226,7 @@ class NodeHelper(object):
         return datetime.strptime(nodes[0].text, Trafikverket.date_time_format)
 
     def get_bool(self, field):
+        """Return True if value selected by field is 'true' else returns False."""
         nodes = self._node.xpath(field)
         if nodes is None:
             return False
