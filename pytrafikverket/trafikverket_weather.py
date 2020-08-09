@@ -17,6 +17,7 @@ class WeatherStationInfo(object):
                         "Measurement.Wind.Direction",
                         "Measurement.Wind.DirectionText",
                         "Measurement.Wind.Force",
+                        "Measurement.Wind.ForceMax",
                         "Active",
                         "Measurement.MeasureTime",
                         "Measurement.Precipitation.Amount",
@@ -25,7 +26,7 @@ class WeatherStationInfo(object):
     def __init__(self, station_name: str, station_id: str, road_temp: float,
                  air_temp: float, humidity: float, precipitationtype: str,
                  winddirection: float, winddirectiontext: str,
-                 windforce: float, active: bool, measure_time: str,
+                 windforce: float, windforcemax: float, active: bool, measure_time: str,
                  precipitation_amount: float, precipitation_amountname: str, ):
         """Initialize the class."""
         self.station_name = station_name
@@ -37,6 +38,7 @@ class WeatherStationInfo(object):
         self.winddirection = winddirection
         self.winddirectiontext = winddirectiontext
         self.windforce = windforce
+        self.windforcemax = windforcemax
         self.active = active
         self.measure_time = measure_time
         self.precipitation_amount = precipitation_amount
@@ -57,6 +59,7 @@ class WeatherStationInfo(object):
         winddirectiontext = node_helper.get_text(
             "Measurement/Wind/DirectionText")
         windforce = node_helper.get_text("Measurement/Wind/Force")
+        windforcemax = node_helper.get_text("Measurement/Wind/ForceMax")
         active = node_helper.get_text("Active")
         measure_time = node_helper.get_text("Measurement/MeasureTime")
         precipitation_amount = node_helper.get_text(
@@ -65,7 +68,7 @@ class WeatherStationInfo(object):
             "Measurement/Precipitation/AmountName")
         return cls(station_name, station_id, road_temp, air_temp, humidity,
                    precipitationtype, winddirection, winddirectiontext,
-                   windforce, active, measure_time, precipitation_amount,
+                   windforce, windforcemax, active, measure_time, precipitation_amount,
                    precipitation_amountname)
 
 
