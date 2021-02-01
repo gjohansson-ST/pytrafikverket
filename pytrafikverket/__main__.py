@@ -59,7 +59,9 @@ async def async_main(loop):
                     raise ValueError("-station is required")
                 stations = await train_api.async_search_train_stations(args.station)
                 for station in stations:
-                    print(station.name + " " + station.signature)
+                    print("Name: " + station.name + ", Signature: "
+                          + station.signature
+                          + ", Advertised: " + station.advertised)
             elif args.method == GET_TRAIN_STOP:
                 from_station = await train_api.async_get_train_station(
                     args.from_station

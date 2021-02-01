@@ -14,10 +14,11 @@ class StationInfo(object):
 
     _required_fields = ["LocationSignature", "AdvertisedLocationName"]
 
-    def __init__(self, signature: str, name: str):
+    def __init__(self, signature: str, name: str, advertised: str):
         """Initialize StationInfo class."""
         self.signature = signature
         self.name = name
+        self.advertised = advertised
 
     @classmethod
     def from_xml_node(cls, node):
@@ -26,7 +27,10 @@ class StationInfo(object):
         location_signature = node_helper.get_text("LocationSignature")
         advertised_location_name = \
             node_helper.get_text("AdvertisedLocationName")
-        return cls(location_signature, advertised_location_name)
+        location_advertised = node_helper.get_text("Advertised")
+        return cls(location_signature,
+                   advertised_location_name,
+                   location_advertised)
 
 
 class TrainStopStatus(Enum):
@@ -124,7 +128,8 @@ class TrafikverketTrain(object):
             "TrainStation",
             StationInfo._required_fields,
             [FieldFilter(FilterOperation.equal,
-                         "AdvertisedLocationName", location_name)])
+                         "AdvertisedLocationName", location_name),
+             FieldFilter(FilterOperation.equal, "Advertised", "true")])
         if len(train_stations) == 0:
             raise ValueError(
                 "Could not find a station with the specified name")
@@ -139,9 +144,11 @@ class TrafikverketTrain(object):
         """Search for train stations."""
         train_stations = await self._api.async_make_request(
             "TrainStation",
-            ["AdvertisedLocationName", "LocationSignature"],
+            ["AdvertisedLocationName", "LocationSignature",
+             "Advertised", "Deleted"],
             [FieldFilter(FilterOperation.like,
-                         "AdvertisedLocationName", location_name)])
+                         "AdvertisedLocationName", location_name),
+             FieldFilter(FilterOperation.equal, "Advertised", "true")])
         if len(train_stations) == 0:
             raise ValueError(
                 "Could not find a station with the specified name")
@@ -216,7 +223,11 @@ class TrafikverketTrain(object):
 
         sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ascending)]
         train_announcements = await self._api.async_make_request(
-            "TrainAnnouncement", TrainStop._required_fields, filters, 1, sorting)
+            "TrainAnnouncement",
+            TrainStop._required_fields,
+            filters,
+            1,
+            sorting)
 
         if len(train_announcements) == 0:
             raise ValueError("No TrainAnnouncement found")
