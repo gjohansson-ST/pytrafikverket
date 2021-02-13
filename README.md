@@ -3,7 +3,7 @@ python module for communicating with the swedish trafikverket api
 
 ## Code example
 ```python
-from trafikverket_train import TrafikverketTrain, StationInfo
+from pytrafikverket import TrafikverketTrain, StationInfo
 import aiohttp
 import asyncio
 import async_timeout
