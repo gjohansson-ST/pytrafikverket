@@ -84,6 +84,7 @@ class TrafikverketWeather(object):
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
             "WeatherStation",
+            "1.0",
             WeatherStationInfo._required_fields,
             [FieldFilter(FilterOperation.equal, "Name", location_name)])
         if len(weather_stations) == 0:

@@ -19,7 +19,7 @@ GET_WEATHER = "get-weather"
 GET_FERRY_ROUTE = "get-ferry-route"
 SEARCH_FOR_FERRY_ROUTE = "search-for-ferry-route"
 GET_NEXT_FERRY_STOP = "get-next-ferry-stop"
-
+DATE_TIME_INPUT = "%Y-%m-%dT%H:%M:%S"
 
 async def async_main(loop):
     """Set up function to handle input and get data to present."""
@@ -70,7 +70,7 @@ async def async_main(loop):
                 print("from_station_signature: " + from_station.signature)
                 print("to_station_signature:   " + to_station.signature)
 
-                time = datetime.strptime(args.date_time, Trafikverket.date_time_format)
+                time = datetime.strptime(args.date_time, DATE_TIME_INPUT)
 
                 train_stop = await train_api.async_get_train_stop(
                     from_station, to_station, time
@@ -87,7 +87,7 @@ async def async_main(loop):
 
                 if args.date_time is not None:
                     time = datetime.strptime(
-                        args.date_time, Trafikverket.date_time_format
+                        args.date_time, DATE_TIME_INPUT
                     )
                 else:
                     time = datetime.now()
@@ -130,7 +130,7 @@ async def async_main(loop):
                     )
                 if args.date_time is not None:
                     time = datetime.strptime(
-                        args.date_time, Trafikverket.date_time_format
+                        args.date_time, DATE_TIME_INPUT
                     )
                 else:
                     time = datetime.now()
