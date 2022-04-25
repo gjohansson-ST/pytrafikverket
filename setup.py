@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="pytrafikverket",
-    version="0.1.6.2",
+    version="0.2",
     description="Retreive values from public API at trafikverket in sweden.",
     url="https://github.com/endor-force/pytrafikverket",
     author="Peter Andersson, Jonas Karlsson",
