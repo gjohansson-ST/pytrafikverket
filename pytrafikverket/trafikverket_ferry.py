@@ -172,6 +172,7 @@ class TrafikverketFerry(object):
         """Retreive ferry route id based on name."""
         routes = await self._api.async_make_request(
             "FerryRoute",
+            "1.2",
             RouteInfo._required_fields,
             [FieldFilter(FilterOperation.equal, "Name", route_name)],
         )
@@ -186,6 +187,7 @@ class TrafikverketFerry(object):
         """Retreive ferry route id based on routeId."""
         routes = await self._api.async_make_request(
             "FerryRoute",
+            "1.2",
             RouteInfo._required_fields,
             [FieldFilter(FilterOperation.equal, "Id", str(route_id))],
         )
@@ -200,6 +202,7 @@ class TrafikverketFerry(object):
         """Search for ferry routes based on the route name."""
         routes = await self._api.async_make_request(
             "FerryRoute",
+            "1.2",
             RouteInfo._required_fields,
             [FieldFilter(FilterOperation.like, "Name", name)],
         )
@@ -237,6 +240,7 @@ class TrafikverketFerry(object):
         sorting = [FieldSort("DepartureTime", SortOrder.ascending)]
         ferry_announcements = await self._api.async_make_request(
             "FerryAnnouncement",
+            "1.2",
             FerryStop._required_fields,
             filters,
             number_of_stops,
@@ -267,7 +271,7 @@ class TrafikverketFerry(object):
         """Retreive deviation info from Deviation Id."""
         filters = [FieldFilter(FilterOperation.equal, "Deviation.Id", id)]
         deviations = await self._api.async_make_request(
-            "Situation", DeviationInfo._required_fields, filters
+            "Situation", "1.5", DeviationInfo._required_fields, filters
         )
 
         if len(deviations) == 0:
