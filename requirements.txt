@@ -1,11 +1,11 @@
 aiohttp==3.7.4
-async-timeout==2.0.1
+async-timeout>3.0.0
 attrs==17.4.0
 chardet==3.0.4
 idna>=2.6
 idna-ssl>=1.0.1
 lxml>=4.2.1
-multidict==4.1.0
+multidict==4.5.0
 pip==21.1
 setuptools==39.0.1
 yarl==1.1.1

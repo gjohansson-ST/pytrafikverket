@@ -126,6 +126,7 @@ class TrafikverketTrain(object):
         """Retreive train station id based on name."""
         train_stations = await self._api.async_make_request(
             "TrainStation",
+            "1.4",
             StationInfo._required_fields,
             [FieldFilter(FilterOperation.equal,
                          "AdvertisedLocationName", location_name),
@@ -144,6 +145,7 @@ class TrafikverketTrain(object):
         """Search for train stations."""
         train_stations = await self._api.async_make_request(
             "TrainStation",
+            "1.4",
             ["AdvertisedLocationName", "LocationSignature",
              "Advertised", "Deleted"],
             [FieldFilter(FilterOperation.like,
@@ -184,7 +186,7 @@ class TrafikverketTrain(object):
                                          to_station.signature)])]
 
         train_announcements = await self._api.async_make_request(
-            "TrainAnnouncement", TrainStop._required_fields, filters)
+            "TrainAnnouncement", "1.6", TrainStop._required_fields, filters)
 
         if len(train_announcements) == 0:
             raise ValueError("No TrainAnnouncement found")
@@ -224,6 +226,7 @@ class TrafikverketTrain(object):
         sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ascending)]
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
+            "1.6",
             TrainStop._required_fields,
             filters,
             1,

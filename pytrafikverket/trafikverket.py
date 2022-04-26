@@ -106,8 +106,8 @@ class AndFilter(Filter):
 class Trafikverket(object):
     """Class used to communicate with trafikverket api."""
 
-    _api_url = "http://api.trafikinfo.trafikverket.se/v1.2/data.xml"
-    date_time_format = "%Y-%m-%dT%H:%M:%S"
+    _api_url = "https://api.trafikinfo.trafikverket.se/v2/data.xml"
+    date_time_format = "%Y-%m-%dT%H:%M:%S.%f%z"
     date_time_format_for_modified = "%Y-%m-%dT%H:%M:%S.%fZ"
 
     def __init__(self, client_session: aiohttp.ClientSession, api_key: str):
@@ -118,6 +118,7 @@ class Trafikverket(object):
     def _generate_request_data(
         self,
         objecttype: str,
+        schemaversion: str,
         includes: typing.List[str],
         filters: typing.List[Filter],
         limit: int = None,
@@ -128,6 +129,7 @@ class Trafikverket(object):
         login_node.attrib["authenticationkey"] = self._api_key
         query_node = etree.SubElement(root_node, "QUERY")
         query_node.attrib["objecttype"] = objecttype
+        query_node.attrib["schemaversion"] = schemaversion
         if limit is not None:
             query_node.attrib["limit"] = str(limit)
         if sorting is not None and len(sorting) > 0:
@@ -144,6 +146,7 @@ class Trafikverket(object):
     async def async_make_request(
         self,
         objecttype: str,
+        schemaversion: str,
         includes: typing.List[str],
         filters: typing.List[Filter],
         limit: int = None,
@@ -151,7 +154,7 @@ class Trafikverket(object):
     ):
         """Send request to trafikverket api and return a element node."""
         request_data = self._generate_request_data(
-            objecttype, includes, filters, limit, sorting
+            objecttype, schemaversion, includes, filters, limit, sorting
         )
         request_data_text = etree.tostring(request_data, pretty_print=False)
         headers = {"content-type": "text/xml"}
