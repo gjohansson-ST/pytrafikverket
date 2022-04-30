@@ -127,7 +127,7 @@ class TrainStop(object):
         estimated_time_at_location = node_helper.get_datetime("EstimatedTimeAtLocation")
         time_at_location = node_helper.get_datetime("TimeAtLocation")
         other_information = node_helper.get_texts("OtherInformation/Description")
-        deviations = node_helper.get_texts("Deviation")
+        deviations = node_helper.get_texts("Deviation/Description")
         modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
         return cls(
             activity_id,
