@@ -36,6 +36,7 @@ class CameraInfo:
         active: bool,
         deleted: bool,
         description: str,
+        direction: str,
         fullsizephoto: bool,
         location: str,
         modified: datetime,
@@ -50,6 +51,7 @@ class CameraInfo:
         self.active = active
         self.deleted = deleted
         self.description = description
+        self.direction = direction
         self.fullsizephoto = fullsizephoto
         self.location = location
         self.modified = modified
@@ -67,6 +69,7 @@ class CameraInfo:
         active = node_helper.get_bool("Active")
         deleted = node_helper.get_bool("Deleted")
         description = node_helper.get_text("Description")
+        direction = node_helper.get_text("Direction")
         fullsizephoto = node_helper.get_bool("HasFullSizePhoto")
         location = node_helper.get_text("Location")
         modified = node_helper.get_datetime_for_modified("ModifiedTime")
@@ -80,6 +83,7 @@ class CameraInfo:
             active,
             deleted,
             description,
+            direction,
             fullsizephoto,
             location,
             modified,
