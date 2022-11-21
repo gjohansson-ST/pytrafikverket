@@ -203,7 +203,7 @@ class TrafikverketTrain(object):
         from_station: StationInfo,
         to_station: StationInfo,
         time_at_location: datetime,
-        product_description: str | None = None,
+        product_description: typing.Optional[str] = None,
     ) -> TrainStop:
         """Retrieve the train stop."""
         date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
@@ -259,7 +259,7 @@ class TrafikverketTrain(object):
         from_station: StationInfo,
         to_station: StationInfo,
         after_time: datetime,
-        product_description: str | None = None,
+        product_description: typing.Optional[str] = None,
     ) -> TrainStop:
         """Enable retreival of next departure."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
