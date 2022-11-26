@@ -48,8 +48,7 @@ async def async_main(loop):
         parser.add_argument("-from-harbor", type=str)
         parser.add_argument("-to-harbor", type=str)
         parser.add_argument("-train-product", type=str)
-        parser.add_argument("--train-canceled", action=argparse.BooleanOptionalAction)
-        parser.add_argument("--train-not-canceled", action=argparse.BooleanOptionalAction)
+        parser.add_argument("--exclude-canceled-trains", action=argparse.BooleanOptionalAction, default=False)
 
         args = parser.parse_args()
 
@@ -57,12 +56,6 @@ async def async_main(loop):
         weather_api = TrafikverketWeather(session, args.key)
         ferry_api = TrafikverketFerry(session, args.key)
 
-        if args.train_canceled:
-            canceled = True
-        elif args.train_not_canceled:
-            canceled = False
-        else:
-            canceled = None
 
         with async_timeout.timeout(10):
             if args.method == SEARCH_FOR_STATION:
@@ -88,7 +81,7 @@ async def async_main(loop):
                     to_station,
                     time,
                     product_description=args.train_product,
-                    canceled=canceled,
+                    exclude_canceled=args.exclude_canceled_trains,
                 )
                 print_values(train_stop)
 
@@ -111,7 +104,7 @@ async def async_main(loop):
                     to_station,
                     time,
                     product_description=args.train_product,
-                    canceled=canceled,
+                    exclude_canceled=args.exclude_canceled_trains,
                 )
                 print_values(train_stop)
 

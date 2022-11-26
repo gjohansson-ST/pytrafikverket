@@ -204,7 +204,7 @@ class TrafikverketTrain(object):
         to_station: StationInfo,
         time_at_location: datetime,
         product_description: typing.Optional[str] = None,
-        canceled: typing.Optional[bool] = None,
+        exclude_canceled: typing.Optional[bool] = False,
     ) -> TrainStop:
         """Retrieve the train stop."""
         date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
@@ -242,12 +242,12 @@ class TrafikverketTrain(object):
                 )
             )
 
-        if canceled is not None:
+        if exclude_canceled:
             filters.append(
                 FieldFilter(
                     FilterOperation.equal,
                     "Canceled",
-                    str(canceled).lower()
+                    "false"
                 )
             )
 
@@ -270,7 +270,7 @@ class TrafikverketTrain(object):
         to_station: StationInfo,
         after_time: datetime,
         product_description: typing.Optional[str] = None,
-        canceled: typing.Optional[bool] = None,
+        exclude_canceled: typing.Optional[bool] = False,
     ) -> TrainStop:
         """Enable retreival of next departure."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
@@ -310,12 +310,12 @@ class TrafikverketTrain(object):
                 )
             )
 
-        if canceled is not None:
+        if exclude_canceled:
             filters.append(
                 FieldFilter(
                     FilterOperation.equal,
                     "Canceled",
-                    str(canceled).lower()
+                    "false"
                 )
             )
 
