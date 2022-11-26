@@ -56,6 +56,7 @@ class TrainStop(object):
         "OtherInformation",
         "Deviation",
         "ModifiedTime",
+        "ProductInformation",
     ]
 
     def __init__(
@@ -68,6 +69,7 @@ class TrainStop(object):
         other_information: typing.List[str],
         deviations: typing.List[str],
         modified_time: datetime,
+        product_description: str,
     ):
         """Initialize TrainStop."""
         self.id = id
@@ -78,6 +80,7 @@ class TrainStop(object):
         self.other_information = other_information
         self.deviations = deviations
         self.modified_time = modified_time
+        self.product_description = product_description
 
     def get_state(self) -> TrainStopStatus:
         """Retrieve the state of the departure."""
@@ -129,6 +132,7 @@ class TrainStop(object):
         other_information = node_helper.get_texts("OtherInformation/Description")
         deviations = node_helper.get_texts("Deviation/Description")
         modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
+        product_description = node_helper.get_texts("ProductInformation/Description")
         return cls(
             activity_id,
             canceled,
@@ -138,6 +142,7 @@ class TrainStop(object):
             other_information,
             deviations,
             modified_time,
+            product_description,
         )
 
 
@@ -198,6 +203,7 @@ class TrafikverketTrain(object):
         from_station: StationInfo,
         to_station: StationInfo,
         time_at_location: datetime,
+        product_description: typing.Optional[str] = None,
     ) -> TrainStop:
         """Retrieve the train stop."""
         date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
@@ -226,6 +232,15 @@ class TrafikverketTrain(object):
             ),
         ]
 
+        if product_description:
+            filters.append(
+                FieldFilter(
+                    FilterOperation.equal,
+                    "ProductInformation.Description",
+                    product_description,
+                )
+            )
+
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement", "1.6", TrainStop._required_fields, filters
         )
@@ -240,7 +255,11 @@ class TrafikverketTrain(object):
         return TrainStop.from_xml_node(train_announcement)
 
     async def async_get_next_train_stop(
-        self, from_station: StationInfo, to_station: StationInfo, after_time: datetime
+        self,
+        from_station: StationInfo,
+        to_station: StationInfo,
+        after_time: datetime,
+        product_description: typing.Optional[str] = None,
     ) -> TrainStop:
         """Enable retreival of next departure."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
@@ -270,6 +289,15 @@ class TrafikverketTrain(object):
                 ]
             ),
         ]
+
+        if product_description:
+            filters.append(
+                FieldFilter(
+                    FilterOperation.equal,
+                    "ProductInformation.Description",
+                    product_description,
+                )
+            )
 
         sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ascending)]
         train_announcements = await self._api.async_make_request(
