@@ -48,12 +48,22 @@ async def async_main(loop):
         parser.add_argument("-from-harbor", type=str)
         parser.add_argument("-to-harbor", type=str)
         parser.add_argument("-train-product", type=str)
+        parser.add_argument("--train-canceled", action=argparse.BooleanOptionalAction)
+        parser.add_argument("--train-not-canceled", action=argparse.BooleanOptionalAction)
 
         args = parser.parse_args()
 
         train_api = TrafikverketTrain(session, args.key)
         weather_api = TrafikverketWeather(session, args.key)
         ferry_api = TrafikverketFerry(session, args.key)
+
+        if args.train_canceled:
+            canceled = True
+        elif args.train_not_canceled:
+            canceled = False
+        else:
+            canceled = None
+
         with async_timeout.timeout(10):
             if args.method == SEARCH_FOR_STATION:
                 if args.station is None:
@@ -74,7 +84,11 @@ async def async_main(loop):
                 time = datetime.strptime(args.date_time, DATE_TIME_INPUT)
 
                 train_stop = await train_api.async_get_train_stop(
-                    from_station, to_station, time, product_description=args.train_product
+                    from_station,
+                    to_station,
+                    time,
+                    product_description=args.train_product,
+                    canceled=canceled,
                 )
                 print_values(train_stop)
 
@@ -93,7 +107,11 @@ async def async_main(loop):
                 else:
                     time = datetime.now()
                 train_stop = await train_api.async_get_next_train_stop(
-                    from_station, to_station, time, product_description=args.train_product
+                    from_station,
+                    to_station,
+                    time,
+                    product_description=args.train_product,
+                    canceled=canceled,
                 )
                 print_values(train_stop)
 
