@@ -48,7 +48,7 @@ async def async_main(loop):
         parser.add_argument("-from-harbor", type=str)
         parser.add_argument("-to-harbor", type=str)
         parser.add_argument("-train-product", type=str)
-        parser.add_argument("--exclude-canceled-trains", action=argparse.BooleanOptionalAction, default=False)
+        parser.add_argument("-exclude-canceled-trains", action=argparse.BooleanOptionalAction, default=False)
 
         args = parser.parse_args()
 
