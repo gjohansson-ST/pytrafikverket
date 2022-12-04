@@ -204,6 +204,7 @@ class TrafikverketTrain(object):
         to_station: StationInfo,
         time_at_location: datetime,
         product_description: typing.Optional[str] = None,
+        exclude_canceled: bool = False,
     ) -> TrainStop:
         """Retrieve the train stop."""
         date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
@@ -241,6 +242,15 @@ class TrafikverketTrain(object):
                 )
             )
 
+        if exclude_canceled:
+            filters.append(
+                FieldFilter(
+                    FilterOperation.equal,
+                    "Canceled",
+                    "false"
+                )
+            )
+
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement", "1.6", TrainStop._required_fields, filters
         )
@@ -260,6 +270,7 @@ class TrafikverketTrain(object):
         to_station: StationInfo,
         after_time: datetime,
         product_description: typing.Optional[str] = None,
+        exclude_canceled: bool = False,
     ) -> TrainStop:
         """Enable retreival of next departure."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
@@ -296,6 +307,15 @@ class TrafikverketTrain(object):
                     FilterOperation.equal,
                     "ProductInformation.Description",
                     product_description,
+                )
+            )
+
+        if exclude_canceled:
+            filters.append(
+                FieldFilter(
+                    FilterOperation.equal,
+                    "Canceled",
+                    "false"
                 )
             )
 
