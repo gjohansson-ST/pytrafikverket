@@ -3,13 +3,13 @@ import argparse
 import asyncio
 from datetime import datetime
 
+import json
 import aiohttp
 import async_timeout
 
 from pytrafikverket.trafikverket_train import TrafikverketTrain
 from pytrafikverket.trafikverket_weather import TrafikverketWeather
 from pytrafikverket.trafikverket_ferry import TrafikverketFerry
-import json
 
 SEARCH_FOR_STATION = "search-for-station"
 GET_TRAIN_STOP = "get-train-stop"
@@ -151,9 +151,9 @@ async def async_main(loop):
                 print_values(ferry_stop)
 
 
-def print_values(object):
+def print_values(result):
     """Print out values for all object members."""
-    print(json.dumps(object.__dict__, indent=4, ensure_ascii=False))
+    print(json.dumps(result.__dict__, indent=4, ensure_ascii=False))
 
 
 def main():

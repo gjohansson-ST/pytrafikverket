@@ -9,6 +9,8 @@ from pytrafikverket.trafikverket import (
     Trafikverket,
 )
 
+from .exceptions import NoCameraFound, MultipleCamerasFound
+
 
 class CameraInfo:
     """Fetch Camera data."""
@@ -110,8 +112,8 @@ class TrafikverketCamera:
             [FieldFilter(FilterOperation.equal, "Name", location_name)],
         )
         if len(cameras) == 0:
-            raise ValueError("Could not find a camera with the specified name")
+            raise NoCameraFound("Could not find a camera with the specified name")
         if len(cameras) > 1:
-            raise ValueError("Found multiple camera with the specified name")
+            raise MultipleCamerasFound("Found multiple camera with the specified name")
 
         return CameraInfo.from_xml_node(cameras[0])
