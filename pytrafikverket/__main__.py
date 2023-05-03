@@ -1,7 +1,10 @@
 """CLI enabler for pytrafikverket."""
+from __future__ import annotations
+
 import argparse
 import asyncio
 from datetime import datetime
+from typing import Any
 
 import json
 import aiohttp
@@ -21,7 +24,7 @@ GET_NEXT_FERRY_STOP = "get-next-ferry-stop"
 DATE_TIME_INPUT = "%Y-%m-%dT%H:%M:%S"
 
 
-async def async_main(loop):
+async def async_main(loop: Any) -> None:
     """Set up function to handle input and get data to present."""
     async with aiohttp.ClientSession(loop=loop) as session:
         parser = argparse.ArgumentParser(
@@ -73,8 +76,8 @@ async def async_main(loop):
                     args.from_station
                 )
                 to_station = await train_api.async_get_train_station(args.to_station)
-                print("from_station_signature: " + from_station.signature)
-                print("to_station_signature:   " + to_station.signature)
+                print(f"from_station_signature: {from_station.signature}")
+                print(f"to_station_signature:   {to_station.signature}")
 
                 time = datetime.strptime(args.date_time, DATE_TIME_INPUT)
 
@@ -92,8 +95,8 @@ async def async_main(loop):
                     args.from_station
                 )
                 to_station = await train_api.async_get_train_station(args.to_station)
-                print("from_station_signature: " + from_station.signature)
-                print("to_station_signature:   " + to_station.signature)
+                print(f"from_station_signature: {from_station.signature}")
+                print(f"to_station_signature:   {to_station.signature}")
 
                 if args.date_time is not None:
                     time = datetime.strptime(args.date_time, DATE_TIME_INPUT)
@@ -132,7 +135,7 @@ async def async_main(loop):
                 routes = await ferry_api.async_search_ferry_routes(args.route)
                 for route in routes:
                     print_values(route)
-                    print(route.name + " " + route.id)
+                    print(f"{route.name} {route.id}")
 
             elif args.method == GET_NEXT_FERRY_STOP:
                 if args.from_harbor is None:
@@ -151,12 +154,12 @@ async def async_main(loop):
                 print_values(ferry_stop)
 
 
-def print_values(result):
+def print_values(result: Any) -> None:
     """Print out values for all object members."""
     print(json.dumps(result.__dict__, indent=4, ensure_ascii=False))
 
 
-def main():
+def main() -> None:
     """Initialize the loop."""
     loop = asyncio.get_event_loop()
     loop.run_until_complete(async_main(loop))

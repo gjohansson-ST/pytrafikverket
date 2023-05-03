@@ -1,4 +1,7 @@
 """Retrieve camera data from Trafikverket API."""
+from __future__ import annotations
+
+from typing import Any
 
 from datetime import datetime
 import aiohttp
@@ -33,19 +36,19 @@ class CameraInfo:
 
     def __init__(
         self,
-        camera_name: str,
-        camera_id: str,
+        camera_name: str|None,
+        camera_id: str|None,
         active: bool,
         deleted: bool,
-        description: str,
-        direction: str,
+        description: str|None,
+        direction: str|None,
         fullsizephoto: bool,
-        location: str,
-        modified: datetime,
-        phototime: datetime,
-        photourl: str,
-        status: str,
-        camera_type: str,
+        location: str|None,
+        modified: datetime|None,
+        phototime: datetime|None,
+        photourl: str|None,
+        status: str|None,
+        camera_type: str|None,
     ) -> None:
         """Initialize the class."""
         self.camera_name = camera_name
@@ -63,7 +66,7 @@ class CameraInfo:
         self.camera_type = camera_type
 
     @classmethod
-    def from_xml_node(cls, node):
+    def from_xml_node(cls, node: Any) -> CameraInfo:
         """Map XML path for values."""
         node_helper = NodeHelper(node)
         camera_name = node_helper.get_text("Name")
@@ -109,7 +112,7 @@ class TrafikverketCamera:
             "Camera",
             "1.0",
             CameraInfo._required_fields,  # pylint: disable=protected-access
-            [FieldFilter(FilterOperation.equal, "Name", location_name)],
+            [FieldFilter(FilterOperation.EQUAL, "Name", location_name)],
         )
         if len(cameras) == 0:
             raise NoCameraFound("Could not find a camera with the specified name")

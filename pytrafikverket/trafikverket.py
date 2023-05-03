@@ -1,5 +1,7 @@
 """Module for communication with Trafikverket official API."""
-import typing
+from __future__ import annotations
+
+from typing import Any, cast
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from enum import Enum
@@ -11,25 +13,25 @@ from lxml import etree
 class FilterOperation(Enum):
     """Contains all field filter operations."""
 
-    equal = "EQ"
-    exists = "EXISTS"
-    greater_than = "GT"
-    greater_than_equal = "GTE"
-    less_than = "LT"
-    less_than_equal = "LTE"
-    not_equal = "NE"
-    like = "LIKE"
-    not_like = "NOTLIKE"
-    #    in = "IN"
-    not_in = "NOTIN"
-    with_in = "WITHIN"
+    EQUAL = "EQ"
+    EXISTS = "EXISTS"
+    GREATER_THAN = "GT"
+    GREATER_THAN_EQUAL = "GTE"
+    LESS_THAN = "LT"
+    LESS_THAN_EQUAL = "LTE"
+    NOT_EQUAL = "NE"
+    LIKE = "LIKE"
+    NOT_LIKE = "NOTLIKE"
+    #    IN = "IN"
+    NOT_IN = "NOTIN"
+    WITH_IN = "WITHIN"
 
 
 class SortOrder(Enum):
     """Specifies how rows of data are sorted."""
 
-    ascending = "asc"
-    decending = "desc"
+    ASCENDING = "asc"
+    DECENDING = "desc"
 
 
 class FieldSort:
@@ -40,7 +42,7 @@ class FieldSort:
         self._field = field
         self._sort_order = sort_order
 
-    def to_string(self):
+    def to_string(self)->str:
         """Sort_order as string."""
         return self._field + " " + self._sort_order.value
 
@@ -51,21 +53,20 @@ class Filter:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def generate_node(self, parent_node):
+    def generate_node(self, parent_node:Any)->Any:
         """Generate node."""
-        pass
 
 
 class FieldFilter(Filter):
     """Used to filter on one field."""
 
-    def __init__(self, operation: FilterOperation, name, value):
+    def __init__(self, operation: FilterOperation, name: str, value: Any) -> None:
         """Initialize the class."""
         self.operation = operation
         self.name = name
         self.value = value
 
-    def generate_node(self, parent_node):
+    def generate_node(self, parent_node:Any)->Any:
         """Return element node for field filter."""
         filter_node = etree.SubElement(parent_node, self.operation.value)
         filter_node.attrib["name"] = self.name
@@ -76,11 +77,11 @@ class FieldFilter(Filter):
 class OrFilter(Filter):
     """Used to create a Or filter."""
 
-    def __init__(self, filters: typing.List[Filter]):
+    def __init__(self, filters: list[Filter]):
         """Initialize the class."""
         self.filters = filters
 
-    def generate_node(self, parent_node):
+    def generate_node(self, parent_node:Any)->Any:
         """Return element node for filter."""
         or_node = etree.SubElement(parent_node, "OR")
         for sub_filter in self.filters:
@@ -91,11 +92,11 @@ class OrFilter(Filter):
 class AndFilter(Filter):
     """Used to create a And filter."""
 
-    def __init__(self, filters: typing.List[Filter]):
+    def __init__(self, filters: list[Filter]):
         """Initialize the class."""
         self.filters = filters
 
-    def generate_node(self, parent_node):
+    def generate_node(self, parent_node:Any)->Any:
         """Return element node for filter."""
         or_node = etree.SubElement(parent_node, "AND")
         for sub_filter in self.filters:
@@ -103,7 +104,7 @@ class AndFilter(Filter):
         return or_node
 
 
-class Trafikverket(object):
+class Trafikverket():
     """Class used to communicate with trafikverket api."""
 
     _api_url = "https://api.trafikinfo.trafikverket.se/v2/data.xml"
@@ -119,11 +120,11 @@ class Trafikverket(object):
         self,
         objecttype: str,
         schemaversion: str,
-        includes: typing.List[str],
-        filters: typing.List[Filter],
-        limit: int = None,
-        sorting: typing.List[FieldSort] = None,
-    ):
+        includes: list[str],
+        filters: list[Filter],
+        limit: int|None = None,
+        sorting: list[FieldSort]|None = None,
+    )->Any:
         root_node = etree.Element("REQUEST")
         login_node = etree.SubElement(root_node, "LOGIN")
         login_node.attrib["authenticationkey"] = self._api_key
@@ -138,8 +139,8 @@ class Trafikverket(object):
             include_node = etree.SubElement(query_node, "INCLUDE")
             include_node.text = include
         filters_node = etree.SubElement(query_node, "FILTER")
-        for filter in filters:
-            filter.generate_node(filters_node)
+        for _filter in filters:
+            _filter.generate_node(filters_node)
 
         return root_node
 
@@ -147,11 +148,11 @@ class Trafikverket(object):
         self,
         objecttype: str,
         schemaversion: str,
-        includes: typing.List[str],
-        filters: typing.List[Filter],
-        limit: int = None,
-        sorting: typing.List[FieldSort] = None,
-    ):
+        includes: list[str],
+        filters: list[Filter | FieldFilter],
+        limit: int|None = None,
+        sorting: list[FieldSort]|None = None,
+    ) -> Any:
         """Send request to trafikverket api and return a element node."""
         request_data = self._generate_request_data(
             objecttype, schemaversion, includes, filters, limit, sorting
@@ -168,19 +169,19 @@ class Trafikverket(object):
                 helper = NodeHelper(error_node)
                 source = helper.get_text("SOURCE")
                 message = helper.get_text("MESSAGE")
-                raise ValueError("Source: " + source + ", message: " + message)
+                raise ValueError(f"Source: {source}, message: {message}")
 
             return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
 
 
-class NodeHelper(object):
+class NodeHelper:
     """Helper class to get node content."""
 
-    def __init__(self, node):
+    def __init__(self, node:Any) -> None:
         """Initialize the class."""
         self._node = node
 
-    def get_text(self, field):
+    def get_text(self, field: str) -> str | None:
         """Return the text in 'field' from the node or None if not found."""
         nodes = self._node.xpath(field)
         if nodes is None:
@@ -189,19 +190,20 @@ class NodeHelper(object):
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
-        return nodes[0].text
+        value= nodes[0].text
+        return cast(str,value)
 
-    def get_texts(self, field):
+    def get_texts(self, field: str) -> list[str] | None:
         """Return a list of texts from the node selected by 'field' or None."""
         nodes = self._node.xpath(field)
         if nodes is None:
             return None
-        result = [str] * 0
+        result = []
         for line in nodes:
             result.append(line.text)
         return result
 
-    def get_datetime_for_modified(self, field):
+    def get_datetime_for_modified(self, field: str) -> datetime | None:
         """Return datetime object from node, selected by 'field'.
 
         Format of the text is expected to be modifiedTime-format.
@@ -217,7 +219,7 @@ class NodeHelper(object):
             nodes[0].text, Trafikverket.date_time_format_for_modified
         )
 
-    def get_datetime(self, field):
+    def get_datetime(self, field: str) -> datetime | None:
         """Return a datetime object from node, selected by 'field'."""
         nodes = self._node.xpath(field)
         if nodes is None:
@@ -228,13 +230,14 @@ class NodeHelper(object):
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         return datetime.strptime(nodes[0].text, Trafikverket.date_time_format)
 
-    def get_bool(self, field):
+    def get_bool(self, field: str) -> bool:
         """Return True if value selected by field is 'true' else returns False."""
-        nodes = self._node.xpath(field)
+        nodes: etree.XPath = self._node.xpath(field)
         if nodes is None:
             return False
         if len(nodes) == 0:
             return False
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
-        return nodes[0].text.lower() == "true"
+        value = nodes[0].text.lower() == "true"
+        return cast(bool, value)

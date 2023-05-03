@@ -1,12 +1,14 @@
 """Enables retreival of ferry departure information from Trafikverket API."""
+from __future__ import annotations
 
-import typing
+from typing import Any
+
 from datetime import datetime
 from enum import Enum
-from typing import List
 
 import aiohttp
 from pytrafikverket.trafikverket import (
+    Filter,
     FieldFilter,
     FieldSort,
     FilterOperation,
@@ -15,7 +17,13 @@ from pytrafikverket.trafikverket import (
     Trafikverket,
 )
 
-from .exceptions import NoRouteFound, MultipleRoutesFound, NoFerryFound, NoDeviationFound, MultipleDeviationsFound
+from .exceptions import (
+    NoRouteFound,
+    MultipleRoutesFound,
+    NoFerryFound,
+    NoDeviationFound,
+    MultipleDeviationsFound,
+)
 
 # pylint: disable=W0622, C0103
 
@@ -25,7 +33,13 @@ class RouteInfo:
 
     _required_fields = ["Id", "Name", "Shortname", "Type.Name"]
 
-    def __init__(self, id: str, name: str, short_name: str, route_type: str) -> None:
+    def __init__(
+        self,
+        id: str | None,
+        name: str | None,
+        short_name: str | None,
+        route_type: str | None,
+    ) -> None:
         """Initialize RouteInfo class."""
         self.id = id
         self.name = name
@@ -33,7 +47,7 @@ class RouteInfo:
         self.route_type = route_type
 
     @classmethod
-    def from_xml_node(cls, node):
+    def from_xml_node(cls, node: Any) -> RouteInfo:
         """Map route information in XML data."""
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Id")
@@ -59,13 +73,13 @@ class DeviationInfo:
 
     def __init__(
         self,
-        id: str,
-        header: str,
-        message: str,
-        start_time: datetime,
-        end_time: datetime,
-        icon_id: str,
-        location_desc: str,
+        id: str | None,
+        header: str | None,
+        message: str | None,
+        start_time: datetime | None,
+        end_time: datetime | None,
+        icon_id: str | None,
+        location_desc: str | None,
     ) -> None:
         """Initialize DeviationInfo class."""
         self.id = id
@@ -77,14 +91,14 @@ class DeviationInfo:
         self.location_desc = location_desc
 
     @classmethod
-    def from_xml_node(cls, node):
+    def from_xml_node(cls, node: Any) -> DeviationInfo:
         """Map deviation information in XML data."""
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Deviation/Id")
         header = node_helper.get_text("Deviation/Header")
         message = node_helper.get_text("Deviation/Message")
-        start_time = node_helper.get_text("Deviation/StartTime")
-        end_time = node_helper.get_text("Deviation/EndTime")
+        start_time = node_helper.get_datetime("Deviation/StartTime")
+        end_time = node_helper.get_datetime("Deviation/EndTime")
         icon_id = node_helper.get_text("Deviation/IconId")
         location_desc = node_helper.get_text("Deviation/LocationDescriptor")
         return cls(id, header, message, start_time, end_time, icon_id, location_desc)
@@ -98,7 +112,7 @@ class FerryStopStatus(Enum):
     DELETED = "deleted"
 
 
-class FerryStop():
+class FerryStop:
     """Contain information about a ferry departure."""
 
     _required_fields = [
@@ -115,15 +129,15 @@ class FerryStop():
 
     def __init__(
         self,
-        id,
+        id: str | None,
         deleted: bool,
-        departure_time: datetime,
-        other_information: typing.List[str],
-        deviation_id: str,
-        modified_time: datetime,
-        from_harbor_name: str,
-        to_harbor_name: str,
-    )->None:
+        departure_time: datetime | None,
+        other_information: list[str] | None,
+        deviation_id: list[str] | None,
+        modified_time: datetime | None,
+        from_harbor_name: str | None,
+        to_harbor_name: str | None,
+    ) -> None:
         """Initialize FerryStop."""
         self.id = id
         self.deleted = deleted
@@ -141,7 +155,7 @@ class FerryStop():
         return FerryStopStatus.ON_TIME
 
     @classmethod
-    def from_xml_node(cls, node):
+    def from_xml_node(cls, node: Any) -> FerryStop:
         """Map the path in the return XML data."""
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Id")
@@ -165,10 +179,10 @@ class FerryStop():
         )
 
 
-class TrafikverketFerry():
+class TrafikverketFerry:
     """Class used to communicate with trafikverket's ferry route api."""
 
-    def __init__(self, client_session: aiohttp.ClientSession, api_key: str)->None:
+    def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
         """Initialize FerryInfo object."""
         self._api = Trafikverket(client_session, api_key)
 
@@ -177,8 +191,8 @@ class TrafikverketFerry():
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
-            RouteInfo._required_fields, # pylint: disable=protected-access
-            [FieldFilter(FilterOperation.equal, "Name", route_name)],
+            RouteInfo._required_fields,  # pylint: disable=protected-access
+            [FieldFilter(FilterOperation.EQUAL, "Name", route_name)],
         )
         if len(routes) == 0:
             raise NoRouteFound("Could not find a route with the specified name")
@@ -192,8 +206,8 @@ class TrafikverketFerry():
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
-            RouteInfo._required_fields, # pylint: disable=protected-access
-            [FieldFilter(FilterOperation.equal, "Id", str(route_id))],
+            RouteInfo._required_fields,  # pylint: disable=protected-access
+            [FieldFilter(FilterOperation.EQUAL, "Id", str(route_id))],
         )
         if len(routes) == 0:
             raise NoRouteFound("Could not find a route with the specified name")
@@ -202,18 +216,18 @@ class TrafikverketFerry():
 
         return RouteInfo.from_xml_node(routes[0])
 
-    async def async_search_ferry_routes(self, name: str) -> typing.List[RouteInfo]:
+    async def async_search_ferry_routes(self, name: str) -> list[RouteInfo]:
         """Search for ferry routes based on the route name."""
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
-            RouteInfo._required_fields, # pylint: disable=protected-access
-            [FieldFilter(FilterOperation.like, "Name", name)],
+            RouteInfo._required_fields,  # pylint: disable=protected-access
+            [FieldFilter(FilterOperation.LIKE, "Name", name)],
         )
         if len(routes) == 0:
             raise NoRouteFound("Could not find a ferry route with the specified name")
 
-        result = [RouteInfo] * 0
+        result = []
 
         for route in routes:
             result.append(RouteInfo.from_xml_node(route))
@@ -226,26 +240,26 @@ class TrafikverketFerry():
         to_harnbor_name: str = "",
         after_time: datetime = datetime.now(),
         number_of_stops: int = 1,
-    ) -> List[FerryStop]:
+    ) -> list[FerryStop]:
         """Enable retreival of next departures."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
-        filters = [
-            FieldFilter(FilterOperation.equal, "FromHarbor.Name", from_harbor_name),
+        filters: list[FieldFilter | Filter] = [
+            FieldFilter(FilterOperation.EQUAL, "FromHarbor.Name", from_harbor_name),
             FieldFilter(
-                FilterOperation.greater_than_equal, "DepartureTime", date_as_text
+                FilterOperation.GREATER_THAN_EQUAL, "DepartureTime", date_as_text
             ),
         ]
         if to_harnbor_name:
             filters.append(
-                FieldFilter(FilterOperation.equal, "ToHarbor.Name", to_harnbor_name)
+                FieldFilter(FilterOperation.EQUAL, "ToHarbor.Name", to_harnbor_name)
             )
 
-        sorting = [FieldSort("DepartureTime", SortOrder.ascending)]
+        sorting = [FieldSort("DepartureTime", SortOrder.ASCENDING)]
         ferry_announcements = await self._api.async_make_request(
             "FerryAnnouncement",
             "1.2",
-            FerryStop._required_fields, # pylint: disable=protected-access
+            FerryStop._required_fields,  # pylint: disable=protected-access
             filters,
             number_of_stops,
             sorting,
@@ -273,9 +287,14 @@ class TrafikverketFerry():
 
     async def async_get_deviation(self, id: str) -> DeviationInfo:
         """Retreive deviation info from Deviation Id."""
-        filters = [FieldFilter(FilterOperation.equal, "Deviation.Id", id)]
+        filters: list[FieldFilter | Filter] = [
+            FieldFilter(FilterOperation.EQUAL, "Deviation.Id", id)
+        ]
         deviations = await self._api.async_make_request(
-            "Situation", "1.5", DeviationInfo._required_fields, filters # pylint: disable=protected-access
+            "Situation",
+            "1.5",
+            DeviationInfo._required_fields,  # pylint: disable=protected-access
+            filters,
         )
 
         if len(deviations) == 0:
