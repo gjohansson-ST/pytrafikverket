@@ -192,7 +192,7 @@ class NodeHelper:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         value = nodes[0].text
         return cast(str, value)
-    
+
     def get_number(self, field: str) -> float | None:
         """Return the number in 'field' from the node or None if not found."""
         nodes = self._node.xpath(field)
