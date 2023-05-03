@@ -365,3 +365,6 @@ target/
 venv/
 # Test purpose only
 ferry_test.py
+
+# Mypy cache
+.mypy_cache
