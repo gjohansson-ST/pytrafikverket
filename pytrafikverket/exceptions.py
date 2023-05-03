@@ -52,3 +52,11 @@ class NoTrainAnnouncementFound(Exception):
 
 class MultipleTrainAnnouncementFound(Exception):
     """Error found multiple train announcements."""
+
+
+class InvalidAuthentication(Exception):
+    """Error found multiple train announcements."""
+
+
+class UnknownError(Exception):
+    """Error found multiple train announcements."""

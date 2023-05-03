@@ -9,6 +9,7 @@ from enum import Enum
 import aiohttp
 from lxml import etree
 
+from .exceptions import InvalidAuthentication, UnknownError
 
 class FilterOperation(Enum):
     """Contains all field filter operations."""
@@ -169,7 +170,9 @@ class Trafikverket:
                 helper = NodeHelper(error_node)
                 source = helper.get_text("SOURCE")
                 message = helper.get_text("MESSAGE")
-                raise ValueError(f"Source: {source}, message: {message}")
+                if response.status == 401:
+                    raise InvalidAuthentication(f"Source: {source}, message: {message}, status: {response.status}")
+                raise UnknownError(f"Source: {source}, message: {message}, status: {response.status}")
 
             return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
 
