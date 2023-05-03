@@ -1,6 +1,8 @@
 # pytrafikverket
 python module for communicating with the swedish trafikverket api
 
+Development and testing done with 3.10
+
 ## Code example
 ```python
 from pytrafikverket import TrafikverketTrain, StationInfo
