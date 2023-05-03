@@ -37,7 +37,7 @@ class SortOrder(Enum):
 class FieldSort:
     """What field and how to sort on it."""
 
-    def __init__(self, field: str, sort_order: SortOrder):
+    def __init__(self, field: str, sort_order: SortOrder) -> None:
         """Initialize the class."""
         self._field = field
         self._sort_order = sort_order
@@ -77,7 +77,7 @@ class FieldFilter(Filter):
 class OrFilter(Filter):
     """Used to create a Or filter."""
 
-    def __init__(self, filters: list[Filter]):
+    def __init__(self, filters: list[Filter]) -> None:
         """Initialize the class."""
         self.filters = filters
 
@@ -92,7 +92,7 @@ class OrFilter(Filter):
 class AndFilter(Filter):
     """Used to create a And filter."""
 
-    def __init__(self, filters: list[Filter]):
+    def __init__(self, filters: list[Filter]) -> None:
         """Initialize the class."""
         self.filters = filters
 
@@ -111,7 +111,7 @@ class Trafikverket:
     date_time_format = "%Y-%m-%dT%H:%M:%S.%f%z"
     date_time_format_for_modified = "%Y-%m-%dT%H:%M:%S.%fZ"
 
-    def __init__(self, client_session: aiohttp.ClientSession, api_key: str):
+    def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
         """Initialize TrafikInfo object."""
         self._client_session = client_session
         self._api_key = api_key

@@ -1,59 +1,54 @@
 """Exceptions for Trafikverket."""
-
-from typing import Any
+from __future__ import annotations
 
 
 class NoCameraFound(Exception):
-    """Error from Sensibo api."""
-
-    def __init__(self, *args: Any) -> None:
-        """Initialize the exception."""
-        Exception.__init__(self, *args)
+    """Error found no camera."""
 
 
 class MultipleCamerasFound(Exception):
-    """Authentication issue from Sensibo api."""
-
-    def __init__(self, *args: Any) -> None:
-        """Initialize the exception."""
-        Exception.__init__(self, *args)
+    """Error found multiple cameras."""
 
 
 class NoRouteFound(Exception):
-    """Error from Sensibo api."""
-
-    def __init__(self, *args: Any) -> None:
-        """Initialize the exception."""
-        Exception.__init__(self, *args)
+    """Error found no ferry route."""
 
 
 class MultipleRoutesFound(Exception):
-    """Authentication issue from Sensibo api."""
-
-    def __init__(self, *args: Any) -> None:
-        """Initialize the exception."""
-        Exception.__init__(self, *args)
+    """Error found multiple ferry routes."""
 
 
 class NoFerryFound(Exception):
-    """Error from Sensibo api."""
-
-    def __init__(self, *args: Any) -> None:
-        """Initialize the exception."""
-        Exception.__init__(self, *args)
+    """Error found no ferry."""
 
 
 class NoDeviationFound(Exception):
-    """Error from Sensibo api."""
-
-    def __init__(self, *args: Any) -> None:
-        """Initialize the exception."""
-        Exception.__init__(self, *args)
+    """Error found no deviation."""
 
 
 class MultipleDeviationsFound(Exception):
-    """Authentication issue from Sensibo api."""
+    """Error found multiple deviations."""
 
-    def __init__(self, *args: Any) -> None:
-        """Initialize the exception."""
-        Exception.__init__(self, *args)
+
+class NoWeatherStationFound(Exception):
+    """Error found no weather station."""
+
+
+class MultipleWeatherStationsFound(Exception):
+    """Error found multiple weather stations."""
+
+
+class NoTrainStationFound(Exception):
+    """Error found no train station."""
+
+
+class MultipleTrainStationsFound(Exception):
+    """Error found multiple train stations."""
+
+
+class NoTrainAnnouncementFound(Exception):
+    """Error found no train announcement."""
+
+
+class MultipleTrainAnnouncementFound(Exception):
+    """Error found multiple train announcements."""
