@@ -15,4 +15,5 @@ setup(
     entry_point={
         "console_scripts": ["pytrafikverket=pytrafikverket.pytrafikverket:main"]
     },
+    package_data={"pytrafikverket": ["py.typed"]},
 )
