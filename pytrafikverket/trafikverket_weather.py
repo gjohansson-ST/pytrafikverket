@@ -12,6 +12,45 @@ from pytrafikverket.trafikverket import (
     Trafikverket,
 )
 
+WIND_DIRECTION_TRANSLATION = {
+    "Öst": "east",
+    "Nordöst": "north_east",
+    "Östsydöst": "east_south_east",
+    "Norr": "north",
+    "Nordnordöst": "north_north_east",
+    "Nordnordväst": "north_north_west",
+    "Nordväst": "north_west",
+    "Söder": "south",
+    "Sydöst": "south_east",
+    "Sydsydväst": "south_south_west",
+    "Sydväst": "south_west",
+    "Väst": "west",
+}
+PRECIPITATION_AMOUNTNAME_TRANSLATION = {
+    "Givare saknas/Fel på givare": "error",
+    "Lätt regn": "mild_rain",
+    "Måttligt regn": "moderate_rain",
+    "Kraftigt regn": "heavy_rain",
+    "Lätt snöblandat regn": "mild_snow_rain",
+    "Måttligt snöblandat regn": "moderate_snow_rain",
+    "Kraftigt snöblandat regn": "heavy_snow_rain",
+    "Lätt snöfall": "mild_snow",
+    "Måttligt snöfall": "moderate_snow",
+    "Kraftigt snöfall": "heavy_snow",
+    "Annan nederbördstyp": "other",
+    "Ingen nederbörd": "none",
+    "Okänd nederbördstyp": "error",
+}
+PRECIPITATION_TYPE_TRANSLATION = {
+    "Duggregn": "drizzle",
+    "Hagel": "hail",
+    "Ingen nederbörd": "none",
+    "Regn": "rain",
+    "Snö": "snow",
+    "Snöblandat regn": "rain_snow_mixed",
+    "Underkylt regn": "freezing_rain",
+}
+
 
 class WeatherStationInfo:
     """Fetch Weather data from specified weather station."""
@@ -41,14 +80,17 @@ class WeatherStationInfo:
         air_temp: float | None,
         humidity: float | None,
         precipitationtype: str | None,
+        precipitationtype_translated: str | None,
         winddirection: str | None,
         winddirectiontext: str | None,
+        winddirectiontext_translated: str | None,
         windforce: float | None,
         windforcemax: float | None,
         active: str | None,
         measure_time: datetime | None,
         precipitation_amount: float | None,
         precipitation_amountname: str | None,
+        precipitation_amountname_translated: str | None,
         modified_time: datetime | None,
     ) -> None:
         """Initialize the class."""
@@ -58,14 +100,17 @@ class WeatherStationInfo:
         self.air_temp = air_temp
         self.humidity = humidity
         self.precipitationtype = precipitationtype
+        self.precipitationtype_translated = precipitationtype_translated
         self.winddirection = winddirection
         self.winddirectiontext = winddirectiontext
+        self.winddirectiontext_translated = winddirectiontext_translated
         self.windforce = windforce
         self.windforcemax = windforcemax
         self.active = active
         self.measure_time = measure_time
         self.precipitation_amount = precipitation_amount
         self.precipitation_amountname = precipitation_amountname
+        self.precipitation_amountname_translated = precipitation_amountname_translated
         self.modified_time = modified_time
 
     @classmethod
@@ -77,9 +122,17 @@ class WeatherStationInfo:
         air_temp = node_helper.get_number("Measurement/Air/Temp")
         road_temp = node_helper.get_number("Measurement/Road/Temp")
         humidity = node_helper.get_number("Measurement/Air/RelativeHumidity")
-        precipitationtype = node_helper.get_text("Measurement/Precipitation/Type")
+        precipitationtype_translated = None
+        if precipitationtype := node_helper.get_text("Measurement/Precipitation/Type"):
+            precipitationtype_translated = PRECIPITATION_TYPE_TRANSLATION.get(
+                precipitationtype
+            )
         winddirection = node_helper.get_text("Measurement/Wind/Direction")
-        winddirectiontext = node_helper.get_text("Measurement/Wind/DirectionText")
+        winddirectiontext_translated = None
+        if winddirectiontext := node_helper.get_text("Measurement/Wind/DirectionText"):
+            winddirectiontext_translated = WIND_DIRECTION_TRANSLATION.get(
+                winddirectiontext
+            )
         windforce = node_helper.get_number("Measurement/Wind/Force")
         windforcemax = node_helper.get_number("Measurement/Wind/ForceMax")
         active = node_helper.get_text("Active")
@@ -87,9 +140,13 @@ class WeatherStationInfo:
         precipitation_amount = node_helper.get_number(
             "Measurement/Precipitation/Amount"
         )
-        precipitation_amountname = node_helper.get_text(
+        precipitation_amountname_translated = None
+        if precipitation_amountname := node_helper.get_text(
             "Measurement/Precipitation/AmountName"
-        )
+        ):
+            precipitation_amountname_translated = (
+                PRECIPITATION_AMOUNTNAME_TRANSLATION.get(precipitation_amountname)
+            )
         modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
         return cls(
             station_name,
@@ -98,15 +155,18 @@ class WeatherStationInfo:
             air_temp,
             humidity,
             precipitationtype,
+            precipitationtype_translated,
             winddirection,
             winddirectiontext,
+            winddirectiontext_translated,
             windforce,
             windforcemax,
             active,
             measure_time,
             precipitation_amount,
             precipitation_amountname,
-            modified_time
+            precipitation_amountname_translated,
+            modified_time,
         )
 
 
