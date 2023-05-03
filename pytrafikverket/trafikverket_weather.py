@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from typing import Any
+from datetime import datetime
 
 import aiohttp
 from pytrafikverket.trafikverket import (
@@ -36,18 +37,19 @@ class WeatherStationInfo:
         self,
         station_name: str | None,
         station_id: str | None,
-        road_temp: str | None,
-        air_temp: str | None,
-        humidity: str | None,
+        road_temp: float | None,
+        air_temp: float | None,
+        humidity: float | None,
         precipitationtype: str | None,
         winddirection: str | None,
         winddirectiontext: str | None,
-        windforce: str | None,
-        windforcemax: str | None,
+        windforce: float | None,
+        windforcemax: float | None,
         active: str | None,
-        measure_time: str | None,
-        precipitation_amount: str | None,
+        measure_time: datetime | None,
+        precipitation_amount: float | None,
         precipitation_amountname: str | None,
+        modified_time: datetime | None,
     ) -> None:
         """Initialize the class."""
         self.station_name = station_name
@@ -64,6 +66,7 @@ class WeatherStationInfo:
         self.measure_time = measure_time
         self.precipitation_amount = precipitation_amount
         self.precipitation_amountname = precipitation_amountname
+        self.modified_time = modified_time
 
     @classmethod
     def from_xml_node(cls, node: Any) -> WeatherStationInfo:
@@ -71,20 +74,23 @@ class WeatherStationInfo:
         node_helper = NodeHelper(node)
         station_name = node_helper.get_text("Name")
         station_id = node_helper.get_text("Id")
-        air_temp = node_helper.get_text("Measurement/Air/Temp")
-        road_temp = node_helper.get_text("Measurement/Road/Temp")
-        humidity = node_helper.get_text("Measurement/Air/RelativeHumidity")
+        air_temp = node_helper.get_number("Measurement/Air/Temp")
+        road_temp = node_helper.get_number("Measurement/Road/Temp")
+        humidity = node_helper.get_number("Measurement/Air/RelativeHumidity")
         precipitationtype = node_helper.get_text("Measurement/Precipitation/Type")
         winddirection = node_helper.get_text("Measurement/Wind/Direction")
         winddirectiontext = node_helper.get_text("Measurement/Wind/DirectionText")
-        windforce = node_helper.get_text("Measurement/Wind/Force")
-        windforcemax = node_helper.get_text("Measurement/Wind/ForceMax")
+        windforce = node_helper.get_number("Measurement/Wind/Force")
+        windforcemax = node_helper.get_number("Measurement/Wind/ForceMax")
         active = node_helper.get_text("Active")
-        measure_time = node_helper.get_text("Measurement/MeasureTime")
-        precipitation_amount = node_helper.get_text("Measurement/Precipitation/Amount")
+        measure_time = node_helper.get_datetime("Measurement/MeasureTime")
+        precipitation_amount = node_helper.get_number(
+            "Measurement/Precipitation/Amount"
+        )
         precipitation_amountname = node_helper.get_text(
             "Measurement/Precipitation/AmountName"
         )
+        modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
         return cls(
             station_name,
             station_id,
@@ -100,6 +106,7 @@ class WeatherStationInfo:
             measure_time,
             precipitation_amount,
             precipitation_amountname,
+            modified_time
         )
 
 
