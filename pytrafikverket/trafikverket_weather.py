@@ -12,6 +12,8 @@ from pytrafikverket.trafikverket import (
     Trafikverket,
 )
 
+from .exceptions import NoWeatherStationFound, MultipleWeatherStationsFound
+
 WIND_DIRECTION_TRANSLATION = {
     "Öst": "east",
     "Nordöst": "north_east",
@@ -186,8 +188,12 @@ class TrafikverketWeather:
             [FieldFilter(FilterOperation.EQUAL, "Name", location_name)],
         )
         if len(weather_stations) == 0:
-            raise ValueError("Could not find a weather station with the specified name")
+            raise NoWeatherStationFound(
+                "Could not find a weather station with the specified name"
+            )
         if len(weather_stations) > 1:
-            raise ValueError("Found multiple weather stations with the specified name")
+            raise MultipleWeatherStationsFound(
+                "Found multiple weather stations with the specified name"
+            )
 
         return WeatherStationInfo.from_xml_node(weather_stations[0])

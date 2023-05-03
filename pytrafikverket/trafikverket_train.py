@@ -17,6 +17,13 @@ from pytrafikverket.trafikverket import (
     Trafikverket,
 )
 
+from .exceptions import (
+    NoTrainStationFound,
+    MultipleTrainStationsFound,
+    NoTrainAnnouncementFound,
+    MultipleTrainAnnouncementFound,
+)
+
 # pylint: disable=W0622, C0103
 
 
@@ -25,7 +32,9 @@ class StationInfo:
 
     _required_fields = ["LocationSignature", "AdvertisedLocationName"]
 
-    def __init__(self, signature: str | None, name: str | None, advertised: str | None):
+    def __init__(
+        self, signature: str | None, name: str | None, advertised: str | None
+    ) -> None:
         """Initialize StationInfo class."""
         self.signature = signature
         self.name = name
@@ -44,12 +53,12 @@ class StationInfo:
 class TrainStopStatus(Enum):
     """Contain the different train stop statuses."""
 
-    on_time = "scheduled to arrive on schedule"
-    delayed = "delayed"
-    canceled = "canceled"
+    ON_TIME = "scheduled to arrive on schedule"
+    DELAYED = "delayed"
+    CANCELED = "canceled"
 
 
-class TrainStop(object):
+class TrainStop:
     """Contain information about a train stop."""
 
     _required_fields = [
@@ -90,20 +99,20 @@ class TrainStop(object):
     def get_state(self) -> TrainStopStatus:
         """Retrieve the state of the departure."""
         if self.canceled:
-            return TrainStopStatus.canceled
+            return TrainStopStatus.CANCELED
         if (
             self.advertised_time_at_location is not None
             and self.time_at_location is not None
             and self.advertised_time_at_location != self.time_at_location
         ):
-            return TrainStopStatus.delayed
+            return TrainStopStatus.DELAYED
         if (
             self.advertised_time_at_location is not None
             and self.estimated_time_at_location is not None
             and self.advertised_time_at_location != self.estimated_time_at_location
         ):
-            return TrainStopStatus.delayed
-        return TrainStopStatus.on_time
+            return TrainStopStatus.DELAYED
+        return TrainStopStatus.ON_TIME
 
     def get_delay_time(self) -> timedelta | None:
         """Calculate the delay of a departure."""
@@ -154,7 +163,7 @@ class TrainStop(object):
 class TrafikverketTrain:
     """Class used to communicate with trafikverket's train api."""
 
-    def __init__(self, client_session: aiohttp.ClientSession, api_key: str):
+    def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
         """Initialize TrainInfo object."""
         self._api = Trafikverket(client_session, api_key)
 
@@ -172,9 +181,13 @@ class TrafikverketTrain:
             ],
         )
         if len(train_stations) == 0:
-            raise ValueError("Could not find a station with the specified name")
+            raise NoTrainStationFound(
+                "Could not find a station with the specified name"
+            )
         if len(train_stations) > 1:
-            raise ValueError("Found multiple stations with the specified name")
+            raise MultipleTrainStationsFound(
+                "Found multiple stations with the specified name"
+            )
 
         return StationInfo.from_xml_node(train_stations[0])
 
@@ -194,7 +207,9 @@ class TrafikverketTrain:
             ],
         )
         if len(train_stations) == 0:
-            raise ValueError("Could not find a station with the specified name")
+            raise NoTrainStationFound(
+                "Could not find a station with the specified name"
+            )
 
         result = []
 
@@ -258,10 +273,10 @@ class TrafikverketTrain:
         )
 
         if len(train_announcements) == 0:
-            raise ValueError("No TrainAnnouncement found")
+            raise NoTrainAnnouncementFound("No TrainAnnouncement found")
 
         if len(train_announcements) > 1:
-            raise ValueError("Multiple TrainAnnouncements found")
+            raise MultipleTrainAnnouncementFound("Multiple TrainAnnouncements found")
 
         train_announcement = train_announcements[0]
         return TrainStop.from_xml_node(train_announcement)
@@ -326,10 +341,10 @@ class TrafikverketTrain:
         )
 
         if len(train_announcements) == 0:
-            raise ValueError("No TrainAnnouncement found")
+            raise NoTrainAnnouncementFound("No TrainAnnouncement found")
 
         if len(train_announcements) > 1:
-            raise ValueError("Multiple TrainAnnouncements found")
+            raise MultipleTrainAnnouncementFound("Multiple TrainAnnouncements found")
 
         train_announcement = train_announcements[0]
 
