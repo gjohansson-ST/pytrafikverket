@@ -42,7 +42,7 @@ class FieldSort:
         self._field = field
         self._sort_order = sort_order
 
-    def to_string(self)->str:
+    def to_string(self) -> str:
         """Sort_order as string."""
         return self._field + " " + self._sort_order.value
 
@@ -53,7 +53,7 @@ class Filter:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def generate_node(self, parent_node:Any)->Any:
+    def generate_node(self, parent_node: Any) -> Any:
         """Generate node."""
 
 
@@ -66,7 +66,7 @@ class FieldFilter(Filter):
         self.name = name
         self.value = value
 
-    def generate_node(self, parent_node:Any)->Any:
+    def generate_node(self, parent_node: Any) -> Any:
         """Return element node for field filter."""
         filter_node = etree.SubElement(parent_node, self.operation.value)
         filter_node.attrib["name"] = self.name
@@ -81,7 +81,7 @@ class OrFilter(Filter):
         """Initialize the class."""
         self.filters = filters
 
-    def generate_node(self, parent_node:Any)->Any:
+    def generate_node(self, parent_node: Any) -> Any:
         """Return element node for filter."""
         or_node = etree.SubElement(parent_node, "OR")
         for sub_filter in self.filters:
@@ -96,7 +96,7 @@ class AndFilter(Filter):
         """Initialize the class."""
         self.filters = filters
 
-    def generate_node(self, parent_node:Any)->Any:
+    def generate_node(self, parent_node: Any) -> Any:
         """Return element node for filter."""
         or_node = etree.SubElement(parent_node, "AND")
         for sub_filter in self.filters:
@@ -104,7 +104,7 @@ class AndFilter(Filter):
         return or_node
 
 
-class Trafikverket():
+class Trafikverket:
     """Class used to communicate with trafikverket api."""
 
     _api_url = "https://api.trafikinfo.trafikverket.se/v2/data.xml"
@@ -122,9 +122,9 @@ class Trafikverket():
         schemaversion: str,
         includes: list[str],
         filters: list[Filter],
-        limit: int|None = None,
-        sorting: list[FieldSort]|None = None,
-    )->Any:
+        limit: int | None = None,
+        sorting: list[FieldSort] | None = None,
+    ) -> Any:
         root_node = etree.Element("REQUEST")
         login_node = etree.SubElement(root_node, "LOGIN")
         login_node.attrib["authenticationkey"] = self._api_key
@@ -150,8 +150,8 @@ class Trafikverket():
         schemaversion: str,
         includes: list[str],
         filters: list[Filter | FieldFilter],
-        limit: int|None = None,
-        sorting: list[FieldSort]|None = None,
+        limit: int | None = None,
+        sorting: list[FieldSort] | None = None,
     ) -> Any:
         """Send request to trafikverket api and return a element node."""
         request_data = self._generate_request_data(
@@ -177,7 +177,7 @@ class Trafikverket():
 class NodeHelper:
     """Helper class to get node content."""
 
-    def __init__(self, node:Any) -> None:
+    def __init__(self, node: Any) -> None:
         """Initialize the class."""
         self._node = node
 
@@ -190,8 +190,8 @@ class NodeHelper:
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
-        value= nodes[0].text
-        return cast(str,value)
+        value = nodes[0].text
+        return cast(str, value)
 
     def get_texts(self, field: str) -> list[str] | None:
         """Return a list of texts from the node selected by 'field' or None."""

@@ -36,19 +36,19 @@ class CameraInfo:
 
     def __init__(
         self,
-        camera_name: str|None,
-        camera_id: str|None,
+        camera_name: str | None,
+        camera_id: str | None,
         active: bool,
         deleted: bool,
-        description: str|None,
-        direction: str|None,
+        description: str | None,
+        direction: str | None,
         fullsizephoto: bool,
-        location: str|None,
-        modified: datetime|None,
-        phototime: datetime|None,
-        photourl: str|None,
-        status: str|None,
-        camera_type: str|None,
+        location: str | None,
+        modified: datetime | None,
+        phototime: datetime | None,
+        photourl: str | None,
+        status: str | None,
+        camera_type: str | None,
     ) -> None:
         """Initialize the class."""
         self.camera_name = camera_name

@@ -18,6 +18,7 @@ class MultipleCamerasFound(Exception):
         """Initialize the exception."""
         Exception.__init__(self, *args)
 
+
 class NoRouteFound(Exception):
     """Error from Sensibo api."""
 
@@ -33,12 +34,14 @@ class MultipleRoutesFound(Exception):
         """Initialize the exception."""
         Exception.__init__(self, *args)
 
+
 class NoFerryFound(Exception):
     """Error from Sensibo api."""
 
     def __init__(self, *args: Any) -> None:
         """Initialize the exception."""
         Exception.__init__(self, *args)
+
 
 class NoDeviationFound(Exception):
     """Error from Sensibo api."""

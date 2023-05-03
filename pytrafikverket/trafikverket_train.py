@@ -25,7 +25,7 @@ class StationInfo:
 
     _required_fields = ["LocationSignature", "AdvertisedLocationName"]
 
-    def __init__(self, signature: str|None, name: str|None, advertised: str|None):
+    def __init__(self, signature: str | None, name: str | None, advertised: str | None):
         """Initialize StationInfo class."""
         self.signature = signature
         self.name = name
@@ -66,7 +66,7 @@ class TrainStop(object):
 
     def __init__(
         self,
-        id: str|None,
+        id: str | None,
         canceled: bool,
         advertised_time_at_location: datetime | None,
         estimated_time_at_location: datetime | None,
@@ -74,7 +74,7 @@ class TrainStop(object):
         other_information: list[str] | None,
         deviations: list[str] | None,
         modified_time: datetime | None,
-        product_description: list[str]|None,
+        product_description: list[str] | None,
     ) -> None:
         """Initialize TrainStop."""
         self.id = id

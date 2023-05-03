@@ -34,20 +34,20 @@ class WeatherStationInfo:
 
     def __init__(
         self,
-        station_name: str|None,
-        station_id: str|None,
-        road_temp: str|None,
-        air_temp: str|None,
-        humidity: str|None,
-        precipitationtype: str|None,
-        winddirection: str|None,
-        winddirectiontext: str|None,
-        windforce: str|None,
-        windforcemax: str|None,
-        active: str|None,
-        measure_time: str|None,
-        precipitation_amount: str|None,
-        precipitation_amountname: str|None,
+        station_name: str | None,
+        station_id: str | None,
+        road_temp: str | None,
+        air_temp: str | None,
+        humidity: str | None,
+        precipitationtype: str | None,
+        winddirection: str | None,
+        winddirectiontext: str | None,
+        windforce: str | None,
+        windforcemax: str | None,
+        active: str | None,
+        measure_time: str | None,
+        precipitation_amount: str | None,
+        precipitation_amountname: str | None,
     ) -> None:
         """Initialize the class."""
         self.station_name = station_name
@@ -66,7 +66,7 @@ class WeatherStationInfo:
         self.precipitation_amountname = precipitation_amountname
 
     @classmethod
-    def from_xml_node(cls, node:Any)->WeatherStationInfo:
+    def from_xml_node(cls, node: Any) -> WeatherStationInfo:
         """Map XML path for values."""
         node_helper = NodeHelper(node)
         station_name = node_helper.get_text("Name")
