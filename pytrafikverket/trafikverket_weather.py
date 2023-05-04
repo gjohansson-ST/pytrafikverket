@@ -88,7 +88,7 @@ class WeatherStationInfo:
         winddirectiontext_translated: str | None,
         windforce: float | None,
         windforcemax: float | None,
-        active: str | None,
+        active: bool,
         measure_time: datetime | None,
         precipitation_amount: float | None,
         precipitation_amountname: str | None,
@@ -137,7 +137,7 @@ class WeatherStationInfo:
             )
         windforce = node_helper.get_number("Measurement/Wind/Force")
         windforcemax = node_helper.get_number("Measurement/Wind/ForceMax")
-        active = node_helper.get_text("Active")
+        active = node_helper.get_bool("Active")
         measure_time = node_helper.get_datetime("Measurement/MeasureTime")
         precipitation_amount = node_helper.get_number(
             "Measurement/Precipitation/Amount"
