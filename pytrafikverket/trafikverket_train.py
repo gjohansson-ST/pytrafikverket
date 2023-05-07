@@ -99,20 +99,20 @@ class TrainStop:
     def get_state(self) -> TrainStopStatus:
         """Retrieve the state of the departure."""
         if self.canceled:
-            return TrainStopStatus.CANCELED.value
+            return TrainStopStatus.CANCELED
         if (
             self.advertised_time_at_location is not None
             and self.time_at_location is not None
             and self.advertised_time_at_location != self.time_at_location
         ):
-            return TrainStopStatus.DELAYED.value
+            return TrainStopStatus.DELAYED
         if (
             self.advertised_time_at_location is not None
             and self.estimated_time_at_location is not None
             and self.advertised_time_at_location != self.estimated_time_at_location
         ):
-            return TrainStopStatus.DELAYED.value
-        return TrainStopStatus.ON_TIME.value
+            return TrainStopStatus.DELAYED
+        return TrainStopStatus.ON_TIME
 
     def get_delay_time(self) -> timedelta | None:
         """Calculate the delay of a departure."""
