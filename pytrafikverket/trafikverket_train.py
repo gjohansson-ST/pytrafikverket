@@ -53,7 +53,7 @@ class StationInfo:
 class TrainStopStatus(Enum):
     """Contain the different train stop statuses."""
 
-    ON_TIME = "scheduled to arrive on schedule"
+    ON_TIME = "on_time"
     DELAYED = "delayed"
     CANCELED = "canceled"
 
@@ -99,20 +99,20 @@ class TrainStop:
     def get_state(self) -> TrainStopStatus:
         """Retrieve the state of the departure."""
         if self.canceled:
-            return TrainStopStatus.CANCELED
+            return TrainStopStatus.CANCELED.value
         if (
             self.advertised_time_at_location is not None
             and self.time_at_location is not None
             and self.advertised_time_at_location != self.time_at_location
         ):
-            return TrainStopStatus.DELAYED
+            return TrainStopStatus.DELAYED.value
         if (
             self.advertised_time_at_location is not None
             and self.estimated_time_at_location is not None
             and self.advertised_time_at_location != self.estimated_time_at_location
         ):
-            return TrainStopStatus.DELAYED
-        return TrainStopStatus.ON_TIME
+            return TrainStopStatus.DELAYED.value
+        return TrainStopStatus.ON_TIME.value
 
     def get_delay_time(self) -> timedelta | None:
         """Calculate the delay of a departure."""
