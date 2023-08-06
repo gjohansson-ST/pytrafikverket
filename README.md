@@ -1,7 +1,7 @@
 # pytrafikverket
 python module for communicating with the swedish trafikverket api
 
-Development and testing done with 3.10
+Development and testing done with 3.11
 
 ## Code example
 ```python
