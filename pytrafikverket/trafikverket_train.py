@@ -256,7 +256,7 @@ class TrafikverketTrain:
         if product_description:
             filters.append(
                 FieldFilter(
-                    FilterOperation.EQUAL,
+                    FilterOperation.LIKE,
                     "ProductInformation.Description",
                     product_description,
                 )
@@ -321,7 +321,7 @@ class TrafikverketTrain:
         if product_description:
             filters.append(
                 FieldFilter(
-                    FilterOperation.EQUAL,
+                    FilterOperation.LIKE,
                     "ProductInformation.Description",
                     product_description,
                 )
