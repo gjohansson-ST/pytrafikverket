@@ -14,6 +14,23 @@ from pytrafikverket.trafikverket import (
 
 from .exceptions import NoWeatherStationFound, MultipleWeatherStationsFound
 
+WEATHER_REQUIRED_FIELDS = [
+    "Name",
+    "Id",
+    "Measurement.Road.Temp",
+    "Measurement.Air.Temp",
+    "Measurement.Air.RelativeHumidity",
+    "Measurement.Precipitation.Type",
+    "Measurement.Wind.Direction",
+    "Measurement.Wind.DirectionText",
+    "Measurement.Wind.Force",
+    "Measurement.Wind.ForceMax",
+    "Active",
+    "Measurement.MeasureTime",
+    "Measurement.Precipitation.Amount",
+    "Measurement.Precipitation.AmountName",
+]
+
 WIND_DIRECTION_TRANSLATION = {
     "Öst": "east",
     "Nordöst": "north_east",
@@ -56,23 +73,6 @@ PRECIPITATION_TYPE_TRANSLATION = {
 
 class WeatherStationInfo:
     """Fetch Weather data from specified weather station."""
-
-    _required_fields = [
-        "Name",
-        "Id",
-        "Measurement.Road.Temp",
-        "Measurement.Air.Temp",
-        "Measurement.Air.RelativeHumidity",
-        "Measurement.Precipitation.Type",
-        "Measurement.Wind.Direction",
-        "Measurement.Wind.DirectionText",
-        "Measurement.Wind.Force",
-        "Measurement.Wind.ForceMax",
-        "Active",
-        "Measurement.MeasureTime",
-        "Measurement.Precipitation.Amount",
-        "Measurement.Precipitation.AmountName",
-    ]
 
     def __init__(
         self,
@@ -184,7 +184,7 @@ class TrafikverketWeather:
         weather_stations = await self._api.async_make_request(
             "WeatherStation",
             "1.0",
-            WeatherStationInfo._required_fields,  # pylint: disable=protected-access
+            WEATHER_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Name", location_name)],
         )
         if len(weather_stations) == 0:

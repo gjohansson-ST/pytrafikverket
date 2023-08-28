@@ -14,25 +14,25 @@ from pytrafikverket.trafikverket import (
 
 from .exceptions import NoCameraFound, MultipleCamerasFound
 
+CAMERA_INFO_REQUIRED_FIELDS = [
+    "Name",
+    "Id",
+    "Active",
+    "Deleted",
+    "Description",
+    "Direction",
+    "HasFullSizePhoto",
+    "Location",
+    "ModifiedTime",
+    "PhotoTime",
+    "PhotoUrl",
+    "Status",
+    "Type",
+]
+
 
 class CameraInfo:
     """Fetch Camera data."""
-
-    _required_fields = [
-        "Name",
-        "Id",
-        "Active",
-        "Deleted",
-        "Description",
-        "Direction",
-        "HasFullSizePhoto",
-        "Location",
-        "ModifiedTime",
-        "PhotoTime",
-        "PhotoUrl",
-        "Status",
-        "Type",
-    ]
 
     def __init__(
         self,
@@ -111,7 +111,7 @@ class TrafikverketCamera:
         cameras = await self._api.async_make_request(
             "Camera",
             "1.0",
-            CameraInfo._required_fields,  # pylint: disable=protected-access
+            CAMERA_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Name", location_name)],
         )
         if len(cameras) == 0:
