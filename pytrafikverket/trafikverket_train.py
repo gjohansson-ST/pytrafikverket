@@ -26,11 +26,22 @@ from .exceptions import (
 
 # pylint: disable=W0622, C0103
 
+STATION_INFO_REQUIRED_FIELDS = ["LocationSignature", "AdvertisedLocationName"]
+TRAIN_STOP_REQUIRED_FIELDS = [
+    "ActivityId",
+    "Canceled",
+    "AdvertisedTimeAtLocation",
+    "EstimatedTimeAtLocation",
+    "TimeAtLocation",
+    "OtherInformation",
+    "Deviation",
+    "ModifiedTime",
+    "ProductInformation",
+]
+
 
 class StationInfo:
     """Contains information about a train station."""
-
-    _required_fields = ["LocationSignature", "AdvertisedLocationName"]
 
     def __init__(
         self, signature: str | None, name: str | None, advertised: str | None
@@ -60,18 +71,6 @@ class TrainStopStatus(Enum):
 
 class TrainStop:
     """Contain information about a train stop."""
-
-    _required_fields = [
-        "ActivityId",
-        "Canceled",
-        "AdvertisedTimeAtLocation",
-        "EstimatedTimeAtLocation",
-        "TimeAtLocation",
-        "OtherInformation",
-        "Deviation",
-        "ModifiedTime",
-        "ProductInformation",
-    ]
 
     def __init__(
         self,
@@ -172,7 +171,7 @@ class TrafikverketTrain:
         train_stations = await self._api.async_make_request(
             "TrainStation",
             "1.4",
-            StationInfo._required_fields,  # pylint: disable=protected-access
+            STATION_INFO_REQUIRED_FIELDS,
             [
                 FieldFilter(
                     FilterOperation.EQUAL, "AdvertisedLocationName", location_name
@@ -268,7 +267,7 @@ class TrafikverketTrain:
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
             "1.6",
-            TrainStop._required_fields,  # pylint: disable=protected-access
+            TRAIN_STOP_REQUIRED_FIELDS,
             filters,
         )
 
@@ -334,7 +333,7 @@ class TrafikverketTrain:
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
             "1.6",
-            TrainStop._required_fields,  # pylint: disable=protected-access
+            TRAIN_STOP_REQUIRED_FIELDS,
             filters,
             1,
             sorting,

@@ -27,11 +27,31 @@ from .exceptions import (
 
 # pylint: disable=W0622, C0103
 
+ROUTE_INFO_REQUIRED_FIELDS = ["Id", "Name", "Shortname", "Type.Name"]
+DEVIATION_INFO_REQUIRED_FIELDS = [
+    "Deviation.Id",
+    "Deviation.Header",
+    "Deviation.EndTime",
+    "Deviation.StartTime",
+    "Deviation.Message",
+    "Deviation.IconId",
+    "Deviation.LocationDescriptor",
+]
+FERRY_STOP_REQUIRED_FIELDS = [
+    "Id",
+    "Deleted",
+    "DepartureTime",
+    "Route.Name",
+    "DeviationId",
+    "ModifiedTime",
+    "FromHarbor",
+    "ToHarbor",
+    "Info",
+]
+
 
 class RouteInfo:
     """Contains information about a FerryRoute."""
-
-    _required_fields = ["Id", "Name", "Shortname", "Type.Name"]
 
     def __init__(
         self,
@@ -60,16 +80,6 @@ class RouteInfo:
 
 class DeviationInfo:
     """Contains information about a Situation/Deviation."""
-
-    _required_fields = [
-        "Deviation.Id",
-        "Deviation.Header",
-        "Deviation.EndTime",
-        "Deviation.StartTime",
-        "Deviation.Message",
-        "Deviation.IconId",
-        "Deviation.LocationDescriptor",
-    ]
 
     def __init__(
         self,
@@ -114,18 +124,6 @@ class FerryStopStatus(Enum):
 
 class FerryStop:
     """Contain information about a ferry departure."""
-
-    _required_fields = [
-        "Id",
-        "Deleted",
-        "DepartureTime",
-        "Route.Name",
-        "DeviationId",
-        "ModifiedTime",
-        "FromHarbor",
-        "ToHarbor",
-        "Info",
-    ]
 
     def __init__(
         self,
@@ -191,7 +189,7 @@ class TrafikverketFerry:
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
-            RouteInfo._required_fields,  # pylint: disable=protected-access
+            ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Name", route_name)],
         )
         if len(routes) == 0:
@@ -206,7 +204,7 @@ class TrafikverketFerry:
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
-            RouteInfo._required_fields,  # pylint: disable=protected-access
+            ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Id", str(route_id))],
         )
         if len(routes) == 0:
@@ -221,7 +219,7 @@ class TrafikverketFerry:
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
-            RouteInfo._required_fields,  # pylint: disable=protected-access
+            ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.LIKE, "Name", name)],
         )
         if len(routes) == 0:
@@ -259,7 +257,7 @@ class TrafikverketFerry:
         ferry_announcements = await self._api.async_make_request(
             "FerryAnnouncement",
             "1.2",
-            FerryStop._required_fields,  # pylint: disable=protected-access
+            FERRY_STOP_REQUIRED_FIELDS,
             filters,
             number_of_stops,
             sorting,
@@ -293,7 +291,7 @@ class TrafikverketFerry:
         deviations = await self._api.async_make_request(
             "Situation",
             "1.5",
-            DeviationInfo._required_fields,  # pylint: disable=protected-access
+            DEVIATION_INFO_REQUIRED_FIELDS,
             filters,
         )
 
