@@ -9,6 +9,7 @@ from pytrafikverket.trafikverket import (
     FieldFilter,
     FilterOperation,
     NodeHelper,
+    OrFilter,
     Trafikverket,
 )
 
@@ -112,7 +113,14 @@ class TrafikverketCamera:
             "Camera",
             "1.0",
             CAMERA_INFO_REQUIRED_FIELDS,
-            [FieldFilter(FilterOperation.EQUAL, "Name", location_name)],
+            [
+                OrFilter(
+                    [
+                        FieldFilter(FilterOperation.LIKE, "Name", location_name),
+                        FieldFilter(FilterOperation.LIKE, "Location", location_name),
+                    ]
+                )
+            ],
         )
         if len(cameras) == 0:
             raise NoCameraFound("Could not find a camera with the specified name")
