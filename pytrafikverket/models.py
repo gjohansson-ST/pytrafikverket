@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 @dataclass
-class CameraInfoModel:
+class CameraInfoModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Camera."""
 
     camera_name: str | None
@@ -25,7 +25,7 @@ class CameraInfoModel:
 
 
 @dataclass
-class FerryRouteInfoModel:
+class FerryRouteInfoModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Ferry route info."""
 
     ferry_route_id: str | None
@@ -35,7 +35,7 @@ class FerryRouteInfoModel:
 
 
 @dataclass
-class DeviationInfoModel:
+class DeviationInfoModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Ferry deviations."""
 
     deviation_id: str | None
@@ -48,7 +48,7 @@ class DeviationInfoModel:
 
 
 @dataclass
-class FerryStopModel:
+class FerryStopModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Ferry stop."""
 
     ferry_stop_id: str | None
@@ -62,7 +62,7 @@ class FerryStopModel:
 
 
 @dataclass
-class StationInfoModel:
+class StationInfoModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Train Station info."""
 
     signature: str | None
@@ -71,7 +71,7 @@ class StationInfoModel:
 
 
 @dataclass
-class TrainStopModel:
+class TrainStopModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Train stop."""
 
     train_stop_id: str | None
@@ -86,7 +86,7 @@ class TrainStopModel:
 
 
 @dataclass
-class WeatherStationInfoModel:
+class WeatherStationInfoModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Weather info."""
 
     weather_station_id: str

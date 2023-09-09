@@ -122,7 +122,7 @@ class FerryStopStatus(Enum):
     DELETED = "deleted"
 
 
-class FerryStop:
+class FerryStop:  # pylint: disable=R0902
     """Contain information about a ferry departure."""
 
     def __init__(
