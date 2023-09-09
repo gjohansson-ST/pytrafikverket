@@ -71,10 +71,10 @@ PRECIPITATION_TYPE_TRANSLATION = {
 }
 
 
-class WeatherStationInfo:
+class WeatherStationInfo:  # pylint: disable=R0902
     """Fetch Weather data from specified weather station."""
 
-    def __init__(
+    def __init__(  # pylint: disable=R0914, R0913
         self,
         station_name: str | None,
         station_id: str | None,
@@ -116,7 +116,7 @@ class WeatherStationInfo:
         self.modified_time = modified_time
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> WeatherStationInfo:
+    def from_xml_node(cls, node: Any) -> WeatherStationInfo:  # pylint: disable=R0914
         """Map XML path for values."""
         node_helper = NodeHelper(node)
         station_name = node_helper.get_text("Name")

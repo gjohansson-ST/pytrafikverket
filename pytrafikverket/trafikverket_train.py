@@ -69,7 +69,7 @@ class TrainStopStatus(Enum):
     CANCELED = "canceled"
 
 
-class TrainStop:
+class TrainStop:  # pylint: disable=too-many-instance-attributes
     """Contain information about a train stop."""
 
     def __init__(

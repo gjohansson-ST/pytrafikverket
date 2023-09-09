@@ -11,6 +11,7 @@ from lxml import etree
 
 from .exceptions import InvalidAuthentication, UnknownError
 
+
 class FilterOperation(Enum):
     """Contains all field filter operations."""
 
@@ -145,7 +146,7 @@ class Trafikverket:
 
         return root_node
 
-    async def async_make_request(
+    async def async_make_request(  # pylint: disable=too-many-locals
         self,
         objecttype: str,
         schemaversion: str,
@@ -171,8 +172,14 @@ class Trafikverket:
                 source = helper.get_text("SOURCE")
                 message = helper.get_text("MESSAGE")
                 if response.status == 401:
-                    raise InvalidAuthentication(f"Source: {source}, message: {message}, status: {response.status}")
-                raise UnknownError(f"Source: {source}, message: {message}, status: {response.status}")
+                    raise InvalidAuthentication(
+                        f"Source: {source}, message: {message}"
+                        ", status: {response.status}"
+                    )
+                raise UnknownError(
+                    f"Source: {source}, message: {message}"
+                    ", status: {response.status}"
+                )
 
             return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
 

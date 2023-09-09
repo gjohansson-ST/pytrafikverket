@@ -32,10 +32,10 @@ CAMERA_INFO_REQUIRED_FIELDS = [
 ]
 
 
-class CameraInfo:
+class CameraInfo:  # pylint: disable=R0902
     """Fetch Camera data."""
 
-    def __init__(
+    def __init__(  # pylint: disable=R0913
         self,
         camera_name: str | None,
         camera_id: str | None,
@@ -67,7 +67,7 @@ class CameraInfo:
         self.camera_type = camera_type
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> CameraInfo:
+    def from_xml_node(cls, node: Any) -> CameraInfo:  # pylint: disable=too-many-locals
         """Map XML path for values."""
         node_helper = NodeHelper(node)
         camera_name = node_helper.get_text("Name")

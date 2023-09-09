@@ -24,7 +24,7 @@ GET_NEXT_FERRY_STOP = "get-next-ferry-stop"
 DATE_TIME_INPUT = "%Y-%m-%dT%H:%M:%S"
 
 
-async def async_main(loop: Any) -> None:
+async def async_main(loop: Any) -> None:  # pylint: disable=R0912, R0914, R0915
     """Set up function to handle input and get data to present."""
     async with aiohttp.ClientSession(loop=loop) as session:
         parser = argparse.ArgumentParser(
