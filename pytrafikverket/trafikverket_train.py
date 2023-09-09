@@ -1,28 +1,17 @@
 """Enables retreival of train departure information from Trafikverket API."""
 from __future__ import annotations
 
-from typing import Any
-
 from datetime import datetime, timedelta
 from enum import Enum
 
 import aiohttp
-from pytrafikverket.trafikverket import (
-    FieldFilter,
-    FieldSort,
-    FilterOperation,
-    NodeHelper,
-    OrFilter,
-    SortOrder,
-    Trafikverket,
-)
+from lxml import etree
 
-from .exceptions import (
-    NoTrainStationFound,
-    MultipleTrainStationsFound,
-    NoTrainAnnouncementFound,
-    MultipleTrainAnnouncementFound,
-)
+from .exceptions import (MultipleTrainAnnouncementFound,
+                         MultipleTrainStationsFound, NoTrainAnnouncementFound,
+                         NoTrainStationFound)
+from .trafikverket import (FieldFilter, FieldSort, FilterOperation, NodeHelper,
+                           OrFilter, SortOrder, Trafikverket)
 
 # pylint: disable=W0622, C0103
 
@@ -52,7 +41,7 @@ class StationInfo:
         self.advertised = advertised
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> StationInfo:
+    def from_xml_node(cls, node: etree._ElementTree) -> StationInfo:
         """Map station information in XML data."""
         node_helper = NodeHelper(node)
         location_signature = node_helper.get_text("LocationSignature")
@@ -132,7 +121,7 @@ class TrainStop:  # pylint: disable=too-many-instance-attributes
         return None
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> TrainStop:
+    def from_xml_node(cls, node: etree._ElementTree) -> TrainStop:
         """Map the path in the return XML data."""
         node_helper = NodeHelper(node)
         activity_id = node_helper.get_text("ActivityId")

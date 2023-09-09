@@ -1,29 +1,18 @@
 """Enables retreival of ferry departure information from Trafikverket API."""
 from __future__ import annotations
 
-from typing import Any
-
 from datetime import datetime
 from enum import Enum
 
 import aiohttp
-from pytrafikverket.trafikverket import (
-    Filter,
-    FieldFilter,
-    FieldSort,
-    FilterOperation,
-    NodeHelper,
-    SortOrder,
-    Trafikverket,
-)
+from lxml import etree
 
-from .exceptions import (
-    NoRouteFound,
-    MultipleRoutesFound,
-    NoFerryFound,
-    NoDeviationFound,
-    MultipleDeviationsFound,
-)
+from pytrafikverket.trafikverket import (FieldFilter, FieldSort, Filter,
+                                         FilterOperation, NodeHelper,
+                                         SortOrder, Trafikverket)
+
+from .exceptions import (MultipleDeviationsFound, MultipleRoutesFound,
+                         NoDeviationFound, NoFerryFound, NoRouteFound)
 
 # pylint: disable=W0622, C0103
 
@@ -67,7 +56,7 @@ class RouteInfo:
         self.route_type = route_type
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> RouteInfo:
+    def from_xml_node(cls, node: etree._ElementTree) -> RouteInfo:
         """Map route information in XML data."""
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Id")
@@ -101,7 +90,7 @@ class DeviationInfo:
         self.location_desc = location_desc
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> DeviationInfo:
+    def from_xml_node(cls, node: etree._ElementTree) -> DeviationInfo:
         """Map deviation information in XML data."""
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Deviation/Id")
@@ -153,7 +142,7 @@ class FerryStop:  # pylint: disable=R0902
         return FerryStopStatus.ON_TIME
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> FerryStop:
+    def from_xml_node(cls, node: etree._ElementTree) -> FerryStop:
         """Map the path in the return XML data."""
         node_helper = NodeHelper(node)
         id = node_helper.get_text("Id")

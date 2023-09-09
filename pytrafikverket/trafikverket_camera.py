@@ -1,19 +1,14 @@
 """Retrieve camera data from Trafikverket API."""
 from __future__ import annotations
 
-from typing import Any
-
 from datetime import datetime
-import aiohttp
-from pytrafikverket.trafikverket import (
-    FieldFilter,
-    FilterOperation,
-    NodeHelper,
-    OrFilter,
-    Trafikverket,
-)
 
-from .exceptions import NoCameraFound, MultipleCamerasFound
+import aiohttp
+from lxml import etree
+
+from .exceptions import MultipleCamerasFound, NoCameraFound
+from .trafikverket import (FieldFilter, FilterOperation, NodeHelper, OrFilter,
+                           Trafikverket)
 
 CAMERA_INFO_REQUIRED_FIELDS = [
     "Name",
@@ -67,7 +62,9 @@ class CameraInfo:  # pylint: disable=R0902
         self.camera_type = camera_type
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> CameraInfo:  # pylint: disable=too-many-locals
+    def from_xml_node(
+        cls, node: etree._ElementTree
+    ) -> CameraInfo:  # pylint: disable=too-many-locals
         """Map XML path for values."""
         node_helper = NodeHelper(node)
         camera_name = node_helper.get_text("Name")
