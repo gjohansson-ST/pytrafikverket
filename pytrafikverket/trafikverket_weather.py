@@ -1,18 +1,14 @@
 """Retrieve weather station data from Trafikverket API."""
 from __future__ import annotations
 
-from typing import Any
 from datetime import datetime
 
 import aiohttp
-from pytrafikverket.trafikverket import (
-    FieldFilter,
-    FilterOperation,
-    NodeHelper,
-    Trafikverket,
-)
+from lxml import etree
 
-from .exceptions import NoWeatherStationFound, MultipleWeatherStationsFound
+from .exceptions import MultipleWeatherStationsFound, NoWeatherStationFound
+from .trafikverket import (FieldFilter, FilterOperation, NodeHelper,
+                           Trafikverket)
 
 WEATHER_REQUIRED_FIELDS = [
     "Name",
@@ -116,7 +112,9 @@ class WeatherStationInfo:  # pylint: disable=R0902
         self.modified_time = modified_time
 
     @classmethod
-    def from_xml_node(cls, node: Any) -> WeatherStationInfo:  # pylint: disable=R0914
+    def from_xml_node(
+        cls, node: etree._ElementTree
+    ) -> WeatherStationInfo:  # pylint: disable=R0914
         """Map XML path for values."""
         node_helper = NodeHelper(node)
         station_name = node_helper.get_text("Name")

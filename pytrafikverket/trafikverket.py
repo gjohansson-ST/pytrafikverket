@@ -1,10 +1,10 @@
 """Module for communication with Trafikverket official API."""
 from __future__ import annotations
 
-from typing import Any, cast
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from enum import Enum
+from typing import Any, cast
 
 import aiohttp
 from lxml import etree
@@ -55,7 +55,7 @@ class Filter:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def generate_node(self, parent_node: Any) -> Any:
+    def generate_node(self, parent_node: etree._Element) -> Any:
         """Generate node."""
 
 
@@ -68,9 +68,11 @@ class FieldFilter(Filter):
         self.name = name
         self.value = value
 
-    def generate_node(self, parent_node: Any) -> Any:
+    def generate_node(self, parent_node: etree._Element) -> Any:
         """Return element node for field filter."""
-        filter_node = etree.SubElement(parent_node, self.operation.value)
+        filter_node: etree._Element = etree.SubElement(
+            parent_node, self.operation.value
+        )
         filter_node.attrib["name"] = self.name
         filter_node.attrib["value"] = self.value
         return filter_node
@@ -85,7 +87,7 @@ class OrFilter(Filter):
 
     def generate_node(self, parent_node: Any) -> Any:
         """Return element node for filter."""
-        or_node = etree.SubElement(parent_node, "OR")
+        or_node: etree._Element = etree.SubElement(parent_node, "OR")
         for sub_filter in self.filters:
             sub_filter.generate_node(or_node)
         return or_node
@@ -98,9 +100,9 @@ class AndFilter(Filter):
         """Initialize the class."""
         self.filters = filters
 
-    def generate_node(self, parent_node: Any) -> Any:
+    def generate_node(self, parent_node: Any) -> etree._Element:
         """Return element node for filter."""
-        or_node = etree.SubElement(parent_node, "AND")
+        or_node: etree._Element = etree.SubElement(parent_node, "AND")
         for sub_filter in self.filters:
             sub_filter.generate_node(or_node)
         return or_node
@@ -126,7 +128,7 @@ class Trafikverket:
         filters: list[Filter],
         limit: int | None = None,
         sorting: list[FieldSort] | None = None,
-    ) -> Any:
+    ) -> etree._Element:
         root_node = etree.Element("REQUEST")
         login_node = etree.SubElement(root_node, "LOGIN")
         login_node.attrib["authenticationkey"] = self._api_key
@@ -154,7 +156,7 @@ class Trafikverket:
         filters: list[Filter | FieldFilter],
         limit: int | None = None,
         sorting: list[FieldSort] | None = None,
-    ) -> Any:
+    ) -> list[etree._ElementTree]:
         """Send request to trafikverket api and return a element node."""
         request_data = self._generate_request_data(
             objecttype, schemaversion, includes, filters, limit, sorting
@@ -181,19 +183,20 @@ class Trafikverket:
                     ", status: {response.status}"
                 )
 
-            return etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
+            result: list[etree._ElementTree] = etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
+            return result
 
 
 class NodeHelper:
     """Helper class to get node content."""
 
-    def __init__(self, node: Any) -> None:
+    def __init__(self, node: etree._ElementTree) -> None:
         """Initialize the class."""
         self._node = node
 
     def get_text(self, field: str) -> str | None:
         """Return the text in 'field' from the node or None if not found."""
-        nodes = self._node.xpath(field)
+        nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
             return None
         if len(nodes) == 0:
@@ -205,7 +208,7 @@ class NodeHelper:
 
     def get_number(self, field: str) -> float | None:
         """Return the number in 'field' from the node or None if not found."""
-        nodes = self._node.xpath(field)
+        nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
             return None
         if len(nodes) == 0:
@@ -217,7 +220,7 @@ class NodeHelper:
 
     def get_texts(self, field: str) -> list[str] | None:
         """Return a list of texts from the node selected by 'field' or None."""
-        nodes = self._node.xpath(field)
+        nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
             return None
         result = []
@@ -230,7 +233,7 @@ class NodeHelper:
 
         Format of the text is expected to be modifiedTime-format.
         """
-        nodes = self._node.xpath(field)
+        nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
             return None
         if len(nodes) == 0:
@@ -243,7 +246,7 @@ class NodeHelper:
 
     def get_datetime(self, field: str) -> datetime | None:
         """Return a datetime object from node, selected by 'field'."""
-        nodes = self._node.xpath(field)
+        nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
             return None
         if len(nodes) == 0:
@@ -254,7 +257,7 @@ class NodeHelper:
 
     def get_bool(self, field: str) -> bool:
         """Return True if value selected by field is 'true' else returns False."""
-        nodes: etree.XPath = self._node.xpath(field)
+        nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
             return False
         if len(nodes) == 0:

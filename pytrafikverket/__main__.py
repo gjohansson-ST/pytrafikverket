@@ -3,16 +3,16 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 from datetime import datetime
 from typing import Any
 
-import json
 import aiohttp
 import async_timeout
 
-from pytrafikverket.trafikverket_train import TrafikverketTrain
-from pytrafikverket.trafikverket_weather import TrafikverketWeather
-from pytrafikverket.trafikverket_ferry import TrafikverketFerry
+from .trafikverket_ferry import TrafikverketFerry
+from .trafikverket_train import TrafikverketTrain
+from .trafikverket_weather import TrafikverketWeather
 
 SEARCH_FOR_STATION = "search-for-station"
 GET_TRAIN_STOP = "get-train-stop"
