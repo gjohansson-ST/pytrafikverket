@@ -368,3 +368,5 @@ ferry_test.py
 
 # Mypy cache
 .mypy_cache
+
+test.py
