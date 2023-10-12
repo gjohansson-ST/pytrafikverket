@@ -8,7 +8,6 @@ from datetime import datetime
 from typing import Any
 
 import aiohttp
-import async_timeout
 
 from .trafikverket_ferry import TrafikverketFerry
 from .trafikverket_train import TrafikverketTrain
@@ -58,13 +57,12 @@ async def async_main(loop: Any) -> None:  # pylint: disable=R0912, R0914, R0915
             default=False,
         )
 
-        args = parser.parse_args()
+        async with asyncio.timeout(10):
+            args = parser.parse_args()
+            train_api = TrafikverketTrain(session, args.key)
+            weather_api = TrafikverketWeather(session, args.key)
+            ferry_api = TrafikverketFerry(session, args.key)
 
-        train_api = TrafikverketTrain(session, args.key)
-        weather_api = TrafikverketWeather(session, args.key)
-        ferry_api = TrafikverketFerry(session, args.key)
-
-        with async_timeout.timeout(10):
             if args.method == SEARCH_FOR_STATION:
                 if args.station is None:
                     raise ValueError("-station is required")
