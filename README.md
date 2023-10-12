@@ -8,7 +8,6 @@ Development and testing done with 3.11
 from pytrafikverket import TrafikverketTrain, StationInfo
 import aiohttp
 import asyncio
-import async_timeout
 from datetime import datetime
 
 async def main(loop):
