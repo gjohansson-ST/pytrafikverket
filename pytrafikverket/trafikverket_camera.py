@@ -115,6 +115,7 @@ class TrafikverketCamera:
                     [
                         FieldFilter(FilterOperation.LIKE, "Name", location_name),
                         FieldFilter(FilterOperation.LIKE, "Location", location_name),
+                        FieldFilter(FilterOperation.LIKE, "Id", location_name),
                     ]
                 )
             ],
