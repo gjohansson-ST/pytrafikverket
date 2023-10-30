@@ -8,7 +8,6 @@ import aiohttp
 from lxml import etree
 
 from .exceptions import (
-    MultipleTrainAnnouncementFound,
     MultipleTrainStationsFound,
     NoTrainAnnouncementFound,
     NoTrainStationFound,
@@ -265,16 +264,14 @@ class TrafikverketTrain:
 
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
-            "1.6",
+            "1.8",
             TRAIN_STOP_REQUIRED_FIELDS,
             filters,
+            1,
         )
 
         if len(train_announcements) == 0:
             raise NoTrainAnnouncementFound("No TrainAnnouncement found")
-
-        if len(train_announcements) > 1:
-            raise MultipleTrainAnnouncementFound("Multiple TrainAnnouncements found")
 
         train_announcement = train_announcements[0]
         return TrainStop.from_xml_node(train_announcement)
@@ -335,15 +332,12 @@ class TrafikverketTrain:
             "1.8",
             TRAIN_STOP_REQUIRED_FIELDS,
             filters,
-            1,
+            number_of_stops,
             sorting,
         )
 
         if len(train_announcements) == 0:
             raise NoTrainAnnouncementFound("No TrainAnnouncement found")
-
-        if len(train_announcements) > number_of_stops:
-            raise MultipleTrainAnnouncementFound("Multiple TrainAnnouncements found")
 
         stops = []
         for announcement in train_announcements:
@@ -359,62 +353,13 @@ class TrafikverketTrain:
         exclude_canceled: bool = False,
     ) -> TrainStop:
         """Enable retreival of next departure."""
-        date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
-        filters = [
-            FieldFilter(FilterOperation.EQUAL, "ActivityType", "Avgang"),
-            FieldFilter(
-                FilterOperation.EQUAL, "LocationSignature", from_station.signature
-            ),
-            FieldFilter(
-                FilterOperation.GREATER_THAN_EQUAL,
-                "AdvertisedTimeAtLocation",
-                date_as_text,
-            ),
-            OrFilter(
-                [
-                    FieldFilter(
-                        FilterOperation.EQUAL,
-                        "ViaToLocation.LocationName",
-                        to_station.signature,
-                    ),
-                    FieldFilter(
-                        FilterOperation.EQUAL,
-                        "ToLocation.LocationName",
-                        to_station.signature,
-                    ),
-                ]
-            ),
-        ]
-
-        if product_description:
-            filters.append(
-                FieldFilter(
-                    FilterOperation.LIKE,
-                    "ProductInformation.Description",
-                    product_description,
-                )
-            )
-
-        if exclude_canceled:
-            filters.append(FieldFilter(FilterOperation.EQUAL, "Canceled", "false"))
-
-        sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ASCENDING)]
-        train_announcements = await self._api.async_make_request(
-            "TrainAnnouncement",
-            "1.6",
-            TRAIN_STOP_REQUIRED_FIELDS,
-            filters,
+        stops = await self.async_get_next_train_stops(
+            from_station,
+            to_station,
+            after_time,
+            product_description,
+            exclude_canceled,
             1,
-            sorting,
         )
-
-        if len(train_announcements) == 0:
-            raise NoTrainAnnouncementFound("No TrainAnnouncement found")
-
-        if len(train_announcements) > 1:
-            raise MultipleTrainAnnouncementFound("Multiple TrainAnnouncements found")
-
-        train_announcement = train_announcements[0]
-
-        return TrainStop.from_xml_node(train_announcement)
+        return stops[0]
