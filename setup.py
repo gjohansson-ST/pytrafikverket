@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="UTF-8") as fh:
 
 setup(
     name="pytrafikverket",
-    version="0.3.7",
+    version="0.3.8",
     description="Retreive values from public API at the Swedish Transport Administration (Trafikverket).",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -17,7 +17,6 @@ setup(
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
     install_requires=["aiohttp", "async-timeout", "lxml"],
