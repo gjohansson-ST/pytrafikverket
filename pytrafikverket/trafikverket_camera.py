@@ -7,8 +7,13 @@ import aiohttp
 from lxml import etree
 
 from .exceptions import MultipleCamerasFound, NoCameraFound
-from .trafikverket import (FieldFilter, FilterOperation, NodeHelper, OrFilter,
-                           Trafikverket)
+from .trafikverket import (
+    FieldFilter,
+    FilterOperation,
+    NodeHelper,
+    OrFilter,
+    Trafikverket,
+)
 
 CAMERA_INFO_REQUIRED_FIELDS = [
     "Name",
@@ -115,7 +120,7 @@ class TrafikverketCamera:
                     [
                         FieldFilter(FilterOperation.LIKE, "Name", location_name),
                         FieldFilter(FilterOperation.LIKE, "Location", location_name),
-                        FieldFilter(FilterOperation.LIKE, "Id", location_name),
+                        FieldFilter(FilterOperation.EQUAL, "Id", location_name),
                     ]
                 )
             ],
@@ -126,3 +131,27 @@ class TrafikverketCamera:
             raise MultipleCamerasFound("Found multiple camera with the specified name")
 
         return CameraInfo.from_xml_node(cameras[0])
+
+    async def async_get_cameras(self, location_name: str) -> CameraInfo:
+        """Retrieve camera from API."""
+        cameras = await self._api.async_make_request(
+            "Camera",
+            "1.0",
+            CAMERA_INFO_REQUIRED_FIELDS,
+            [
+                OrFilter(
+                    [
+                        FieldFilter(FilterOperation.LIKE, "Name", location_name),
+                        FieldFilter(FilterOperation.LIKE, "Location", location_name),
+                        FieldFilter(FilterOperation.EQUAL, "Id", location_name),
+                    ]
+                )
+            ],
+        )
+        if len(cameras) == 0:
+            raise NoCameraFound("Could not find a camera with the specified name")
+
+        camera_list = []
+        for camera in cameras:
+            camera_list.append(CameraInfo.from_xml_node(camera))
+        return camera_list

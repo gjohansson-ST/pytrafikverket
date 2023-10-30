@@ -183,7 +183,9 @@ class Trafikverket:
                     ", status: {response.status}"
                 )
 
-            result: list[etree._ElementTree] = etree.fromstring(content).xpath("/RESPONSE/RESULT/" + objecttype)
+            result: list[etree._ElementTree] = etree.fromstring(content).xpath(
+                "/RESPONSE/RESULT/" + objecttype
+            )
             return result
 
 
