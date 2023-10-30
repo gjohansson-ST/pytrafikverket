@@ -7,12 +7,23 @@ from enum import Enum
 import aiohttp
 from lxml import etree
 
-from pytrafikverket.trafikverket import (FieldFilter, FieldSort, Filter,
-                                         FilterOperation, NodeHelper,
-                                         SortOrder, Trafikverket)
+from pytrafikverket.trafikverket import (
+    FieldFilter,
+    FieldSort,
+    Filter,
+    FilterOperation,
+    NodeHelper,
+    SortOrder,
+    Trafikverket,
+)
 
-from .exceptions import (MultipleDeviationsFound, MultipleRoutesFound,
-                         NoDeviationFound, NoFerryFound, NoRouteFound)
+from .exceptions import (
+    MultipleDeviationsFound,
+    MultipleRoutesFound,
+    NoDeviationFound,
+    NoFerryFound,
+    NoRouteFound,
+)
 
 # pylint: disable=W0622, C0103
 
