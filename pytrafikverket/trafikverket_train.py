@@ -7,11 +7,21 @@ from enum import Enum
 import aiohttp
 from lxml import etree
 
-from .exceptions import (MultipleTrainAnnouncementFound,
-                         MultipleTrainStationsFound, NoTrainAnnouncementFound,
-                         NoTrainStationFound)
-from .trafikverket import (FieldFilter, FieldSort, FilterOperation, NodeHelper,
-                           OrFilter, SortOrder, Trafikverket)
+from .exceptions import (
+    MultipleTrainAnnouncementFound,
+    MultipleTrainStationsFound,
+    NoTrainAnnouncementFound,
+    NoTrainStationFound,
+)
+from .trafikverket import (
+    FieldFilter,
+    FieldSort,
+    FilterOperation,
+    NodeHelper,
+    OrFilter,
+    SortOrder,
+    Trafikverket,
+)
 
 # pylint: disable=W0622, C0103
 
@@ -268,7 +278,7 @@ class TrafikverketTrain:
 
         train_announcement = train_announcements[0]
         return TrainStop.from_xml_node(train_announcement)
-    
+
     async def async_get_next_train_stops(
         self,
         from_station: StationInfo,

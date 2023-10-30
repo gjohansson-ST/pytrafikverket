@@ -7,8 +7,7 @@ import aiohttp
 from lxml import etree
 
 from .exceptions import MultipleWeatherStationsFound, NoWeatherStationFound
-from .trafikverket import (FieldFilter, FilterOperation, NodeHelper,
-                           Trafikverket)
+from .trafikverket import FieldFilter, FilterOperation, NodeHelper, Trafikverket
 
 WEATHER_REQUIRED_FIELDS = [
     "Name",
