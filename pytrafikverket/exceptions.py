@@ -50,10 +50,6 @@ class NoTrainAnnouncementFound(Exception):
     """Error found no train announcement."""
 
 
-class MultipleTrainAnnouncementFound(Exception):
-    """Error found multiple train announcements."""
-
-
 class InvalidAuthentication(Exception):
     """Error found multiple train announcements."""
 
