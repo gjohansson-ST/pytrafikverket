@@ -90,22 +90,26 @@ class WeatherStationInfoModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Weather info."""
 
     weather_station_id: str
-    station_name: str | None
-    station_id: str | None
-    road_temp: float | None
-    air_temp: float | None
-    humidity: float | None
+    station_name: str
+    road_temp: float | None  # celsius
+    air_temp: float | None  # celsius
+    dew_point: float | None  # celsius
+    humidity: float | None  # %
+    visible_distance: float | None  # meter
     precipitationtype: str | None
-    precipitationtype_translated: str | None
-    winddirection: str | None
-    winddirectiontext: str | None
-    winddirectiontext_translated: str | None
-    windforce: float | None
-    windforcemax: float | None
-    active: bool
-    deleted: bool
+    raining: bool
+    snowing: bool
+    road_ice: bool
+    road_ice_depth: float | None  # mm
+    road_snow: bool
+    road_snow_depth: float | None  # mm
+    road_water: bool
+    road_water_depth: float | None  # mm
+    road_water_equivalent_depth: float | None  # mm
+    winddirection: str | None  # degrees
+    wind_height: int | None  # m
+    windforce: float | None  # m/s
+    windforcemax: float | None  # m/s
     measure_time: datetime | None
-    precipitation_amount: float | None
-    precipitation_amountname: str | None
-    precipitation_amountname_translated: str | None
+    precipitation_amount: float | None  # mm/30min translated to mm/h
     modified_time: datetime | None

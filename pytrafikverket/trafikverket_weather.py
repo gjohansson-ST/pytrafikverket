@@ -10,60 +10,40 @@ from .exceptions import MultipleWeatherStationsFound, NoWeatherStationFound
 from .trafikverket import FieldFilter, FilterOperation, NodeHelper, Trafikverket
 
 WEATHER_REQUIRED_FIELDS = [
-    "Name",
-    "Id",
-    "Measurement.Road.Temp",
-    "Measurement.Air.Temp",
-    "Measurement.Air.RelativeHumidity",
-    "Measurement.Precipitation.Type",
-    "Measurement.Wind.Direction",
-    "Measurement.Wind.DirectionText",
-    "Measurement.Wind.Force",
-    "Measurement.Wind.ForceMax",
-    "Active",
-    "Measurement.MeasureTime",
-    "Measurement.Precipitation.Amount",
-    "Measurement.Precipitation.AmountName",
+    "Name",  # string, replaced
+    "Id",  # string, replaced
+    "ModifiedTime",  # datetime, new, Tidpunkt då dataposten ändrades i cachen
+    "Observation.Sample",  # datetime, replaced, Tidpunkt som observationen avser, inklusive tidzon för att hantera sommartid och normaltid.
+    "Observation.Air.Temperature.Value",  # float, replaced, Lufttemperatur. Value [C]
+    "Observation.Air.RelativeHumidity.Value",  # float, replaced, Relativ luftfuktighet. Andel av den fukt som luften kan bära. Vid 100% är luften mättad. Value [%]
+    "Observation.Air.Dewpoint.Value",  # float, new, Daggpunkt, den temperatur där vatten kondenserar. Value [C]
+    "Observation.Air.VisibleDistance.Value",  # float, new, Den sträcka det finns sikt. Value [m]
+    "Observation.Wind.Direction.Value",  # int, replaced, Mått på vindriktning vid en viss tidpunkt. Medelvärde över tiominutersperiod t.o.m. tidpunkten. Value [grader]
+    "Observation.Wind.Height",  # int, new, Vindsensorns höjdplacering [m]
+    "Observation.Wind.Speed.Value",  # float, replaced, Mått på vindhastighet vid en viss tidpunkt. Medelvärde över tiominutersperiod t.o.m. tidpunkten. Value [m/s]
+    "Observation.Aggregated30minutes.Wind.SpeedMax.Value",  # float, replaced, Högst uppmätt 3-sekundersmedelvärde under perioden. Value [m/s]
+    "Observation.Weather.Precipitation",  # string, replaced, Vilken typ av nederbörd som detekterats
+    "Observation.Aggregated30minutes.Precipitation.TotalWaterEquivalent.Value",  # float, replaced, Mängd vatten som nederbörden under perioden motsvarar. Value [mm]
+    "Observation.Aggregated30minutes.Precipitation.Rain"  # bool, new, Förekomst av regn.
+    "Observation.Aggregated30minutes.Precipitation.Snow"  # bool, new, Förekomst av snö.
+    "Observation.Surface.Temperature.Value",  # float, replaced, Vägytans temperatur. Value [C]
+    "Observation.Surface.Ice",  # bool, new, Förekomst av is på vägytan.
+    "Observation.Surface.IceDepth.Value",  # float, new, Isdjup på vägytan. Value [mm]
+    "Observation.Surface.Snow",  # bool, new, Förekomst av snö på vägytan.
+    "Observation.Surface.SnowDepth.Solid.Value",  # float, new, Mängd snö. Value [mm]
+    "Observation.Surface.SnowDepth.WaterEquivalent.Value",  # float, new, Mängd vatten som snön motsvarar i smält form. Value [mm]
+    "Observation.Surface.Water",  # bool, new, Förekomst av vatten på vägytan.
+    "Observation.Surface.WaterDepth.Value",  # float, new, Vattendjup på vägytan. Value [mm]
 ]
-
-WIND_DIRECTION_TRANSLATION = {
-    "Öst": "east",
-    "Nordöst": "north_east",
-    "Östsydöst": "east_south_east",
-    "Norr": "north",
-    "Nordnordöst": "north_north_east",
-    "Nordnordväst": "north_north_west",
-    "Nordväst": "north_west",
-    "Söder": "south",
-    "Sydöst": "south_east",
-    "Sydsydväst": "south_south_west",
-    "Sydväst": "south_west",
-    "Väst": "west",
-}
-PRECIPITATION_AMOUNTNAME_TRANSLATION = {
-    "Givare saknas/Fel på givare": "error",
-    "Lätt regn": "mild_rain",
-    "Måttligt regn": "moderate_rain",
-    "Kraftigt regn": "heavy_rain",
-    "Lätt snöblandat regn": "mild_snow_rain",
-    "Måttligt snöblandat regn": "moderate_snow_rain",
-    "Kraftigt snöblandat regn": "heavy_snow_rain",
-    "Lätt snöfall": "mild_snow",
-    "Måttligt snöfall": "moderate_snow",
-    "Kraftigt snöfall": "heavy_snow",
-    "Annan nederbördstyp": "other",
-    "Ingen nederbörd": "none",
-    "Okänd nederbördstyp": "error",
-}
-PRECIPITATION_TYPE_TRANSLATION = {
-    "Duggregn": "drizzle",
-    "Hagel": "hail",
-    "Ingen nederbörd": "none",
-    "Regn": "rain",
-    "Snö": "snow",
-    "Snöblandat regn": "rain_snow_mixed",
-    "Underkylt regn": "freezing_rain",
-}
+"""
+Precipitation possible values are:
+  no
+  rain
+  freezing_rain
+  snow
+  sleet
+  yes
+"""
 
 
 class WeatherStationInfo:  # pylint: disable=R0902
@@ -71,23 +51,29 @@ class WeatherStationInfo:  # pylint: disable=R0902
 
     def __init__(  # pylint: disable=R0914, R0913
         self,
-        station_name: str | None,
-        station_id: str | None,
-        road_temp: float | None,
-        air_temp: float | None,
-        humidity: float | None,
+        station_name: str,
+        station_id: str,
+        road_temp: float | None,  # celsius
+        air_temp: float | None,  # celsius
+        dew_point: float | None,  # celsius
+        humidity: float | None,  # %
+        visible_distance: float | None,  # meter
         precipitationtype: str | None,
-        precipitationtype_translated: str | None,
-        winddirection: str | None,
-        winddirectiontext: str | None,
-        winddirectiontext_translated: str | None,
-        windforce: float | None,
-        windforcemax: float | None,
-        active: bool,
+        raining: bool,
+        snowing: bool,
+        road_ice: bool,
+        road_ice_depth: float | None,  # mm
+        road_snow: bool,
+        road_snow_depth: float | None,  # mm
+        road_water: bool,
+        road_water_depth: float | None,  # mm
+        road_water_equivalent_depth: float | None,  # mm
+        winddirection: str | None,  # degrees
+        wind_height: int | None,  # m
+        windforce: float | None,  # m/s
+        windforcemax: float | None,  # m/s
         measure_time: datetime | None,
-        precipitation_amount: float | None,
-        precipitation_amountname: str | None,
-        precipitation_amountname_translated: str | None,
+        precipitation_amount: float | None,  # mm/30min translated to mm/h
         modified_time: datetime | None,
     ) -> None:
         """Initialize the class."""
@@ -95,19 +81,25 @@ class WeatherStationInfo:  # pylint: disable=R0902
         self.station_id = station_id
         self.road_temp = road_temp
         self.air_temp = air_temp
+        self.dew_point = dew_point
         self.humidity = humidity
+        self.visible_distance = visible_distance
         self.precipitationtype = precipitationtype
-        self.precipitationtype_translated = precipitationtype_translated
+        self.raining = raining
+        self.snowing = snowing
+        self.road_ice = road_ice
+        self.road_ice_depth = road_ice_depth
+        self.road_snow = road_snow
+        self.road_snow_depth = road_snow_depth
+        self.road_water = road_water
+        self.road_water_depth = road_water_depth
+        self.road_water_equivalent_depth = road_water_equivalent_depth
         self.winddirection = winddirection
-        self.winddirectiontext = winddirectiontext
-        self.winddirectiontext_translated = winddirectiontext_translated
+        self.wind_height = wind_height
         self.windforce = windforce
         self.windforcemax = windforcemax
-        self.active = active
         self.measure_time = measure_time
         self.precipitation_amount = precipitation_amount
-        self.precipitation_amountname = precipitation_amountname
-        self.precipitation_amountname_translated = precipitation_amountname_translated
         self.modified_time = modified_time
 
     @classmethod
@@ -118,53 +110,70 @@ class WeatherStationInfo:  # pylint: disable=R0902
         node_helper = NodeHelper(node)
         station_name = node_helper.get_text("Name")
         station_id = node_helper.get_text("Id")
-        air_temp = node_helper.get_number("Measurement/Air/Temp")
-        road_temp = node_helper.get_number("Measurement/Road/Temp")
-        humidity = node_helper.get_number("Measurement/Air/RelativeHumidity")
-        precipitationtype_translated = None
-        if precipitationtype := node_helper.get_text("Measurement/Precipitation/Type"):
-            precipitationtype_translated = PRECIPITATION_TYPE_TRANSLATION.get(
-                precipitationtype
-            )
-        winddirection = node_helper.get_text("Measurement/Wind/Direction")
-        winddirectiontext_translated = None
-        if winddirectiontext := node_helper.get_text("Measurement/Wind/DirectionText"):
-            winddirectiontext_translated = WIND_DIRECTION_TRANSLATION.get(
-                winddirectiontext
-            )
-        windforce = node_helper.get_number("Measurement/Wind/Force")
-        windforcemax = node_helper.get_number("Measurement/Wind/ForceMax")
-        active = node_helper.get_bool("Active")
-        measure_time = node_helper.get_datetime("Measurement/MeasureTime")
-        precipitation_amount = node_helper.get_number(
-            "Measurement/Precipitation/Amount"
+        air_temp = node_helper.get_number("Observation/Air/Temperature/Value")
+        road_temp = node_helper.get_number("Observation/Surface/Temperature/Value")
+        dew_point = node_helper.get_number("Observation/Air/Dewpoint/Value")
+        humidity = node_helper.get_number("Observation/Air/RelativeHumidity/Value")
+        visible_distance = node_helper.get_number(
+            "Observation/Air/VisibleDistance/Value"
         )
-        precipitation_amountname_translated = None
-        if precipitation_amountname := node_helper.get_text(
-            "Measurement/Precipitation/AmountName"
-        ):
-            precipitation_amountname_translated = (
-                PRECIPITATION_AMOUNTNAME_TRANSLATION.get(precipitation_amountname)
-            )
+        precipitationtype = node_helper.get_text("Observation/Weather/Precipitation")
+        raining = node_helper.get_bool(
+            "Observation/Aggregated30minutes/Precipitation/Rain"
+        )
+        snowing = node_helper.get_bool(
+            "Observation/Aggregated30minutes/Precipitation/Snow"
+        )
+        road_ice = node_helper.get_bool("Observation/Surface/Ice")
+        road_ice_depth = node_helper.get_number("Observation/Surface/IceDepth/Value")
+        road_snow = node_helper.get_bool("Observation/Surface/Snow")
+        road_snow_depth = node_helper.get_number(
+            "Observation/Surface/SnowDepth.Solid/Value"
+        )
+        road_water = node_helper.get_bool("Observation/Surface/Water")
+        road_water_depth = node_helper.get_number(
+            "Observation/Surface/WaterDepth/Value"
+        )
+        road_water_equivalent_depth = node_helper.get_number(
+            "Observation/Surface/SnowDepth/WaterEquivalent/Value"
+        )
+        winddirection = node_helper.get_text("Observation/Wind/Direction/Value")
+        wind_height = node_helper.get_number("Observation/Wind/Height")
+        windforce = node_helper.get_number("Observation/Wind/Speed/Value")
+        windforcemax = node_helper.get_number(
+            "Observation/Aggregated30minutes/Wind/SpeedMax/Value"
+        )
+        measure_time = node_helper.get_datetime("Observation/Sample")
+        precipitation_amount = node_helper.get_number(
+            "Observation/Aggregated30minutes/Precipitation/TotalWaterEquivalent/Value"
+        )
+        if precipitation_amount:
+            precipitation_amount = precipitation_amount * 2  # mm/30min to mm/h
         modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
         return cls(
             station_name,
             station_id,
             road_temp,
             air_temp,
+            dew_point,
             humidity,
+            visible_distance,
             precipitationtype,
-            precipitationtype_translated,
+            raining,
+            snowing,
+            road_ice,
+            road_ice_depth,
+            road_snow,
+            road_snow_depth,
+            road_water,
+            road_water_depth,
+            road_water_equivalent_depth,
             winddirection,
-            winddirectiontext,
-            winddirectiontext_translated,
+            wind_height,
             windforce,
             windforcemax,
-            active,
             measure_time,
             precipitation_amount,
-            precipitation_amountname,
-            precipitation_amountname_translated,
             modified_time,
         )
 
@@ -179,8 +188,8 @@ class TrafikverketWeather:
     async def async_get_weather(self, location_name: str) -> WeatherStationInfo:
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
-            "WeatherStation",
-            "1.0",
+            "WeatherMeasurepoint",
+            "2.0",
             WEATHER_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Name", location_name)],
         )
