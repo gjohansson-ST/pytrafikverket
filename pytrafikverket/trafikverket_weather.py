@@ -24,8 +24,8 @@ WEATHER_REQUIRED_FIELDS = [
     "Observation.Aggregated30minutes.Wind.SpeedMax.Value",  # float, replaced, Högst uppmätt 3-sekundersmedelvärde under perioden. Value [m/s]
     "Observation.Weather.Precipitation",  # string, replaced, Vilken typ av nederbörd som detekterats
     "Observation.Aggregated30minutes.Precipitation.TotalWaterEquivalent.Value",  # float, replaced, Mängd vatten som nederbörden under perioden motsvarar. Value [mm]
-    "Observation.Aggregated30minutes.Precipitation.Rain"  # bool, new, Förekomst av regn.
-    "Observation.Aggregated30minutes.Precipitation.Snow"  # bool, new, Förekomst av snö.
+    "Observation.Aggregated30minutes.Precipitation.Rain",  # bool, new, Förekomst av regn.
+    "Observation.Aggregated30minutes.Precipitation.Snow",  # bool, new, Förekomst av snö.
     "Observation.Surface.Temperature.Value",  # float, replaced, Vägytans temperatur. Value [C]
     "Observation.Surface.Ice",  # bool, new, Förekomst av is på vägytan.
     "Observation.Surface.IceDepth.Value",  # float, new, Isdjup på vägytan. Value [mm]
