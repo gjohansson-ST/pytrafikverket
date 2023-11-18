@@ -1,9 +1,9 @@
-aiohttp==3.8.4
-attrs==22.2.0
+aiohttp==3.8.5
+attrs==23.1.0
 chardet==3.0.4
 idna>=2.6
 idna-ssl>=1.0.1
-lxml>=4.9.1
+lxml>=4.9.3
 multidict==4.5.0
 pip
 setuptools
