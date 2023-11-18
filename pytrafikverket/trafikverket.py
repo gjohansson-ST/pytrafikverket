@@ -5,11 +5,14 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from enum import Enum
 from typing import Any, cast
+import logging
 
 import aiohttp
 from lxml import etree
 
 from .exceptions import InvalidAuthentication, UnknownError
+
+LOGGER = logging.getLogger(__name__)
 
 
 class FilterOperation(Enum):
@@ -162,11 +165,13 @@ class Trafikverket:
             objecttype, schemaversion, includes, filters, limit, sorting
         )
         request_data_text = etree.tostring(request_data, pretty_print=False)
+        LOGGER.debug("Sending query with: %s", request_data_text)
         headers = {"content-type": "text/xml"}
         async with self._client_session.post(
             Trafikverket._api_url, data=request_data_text, headers=headers
         ) as response:
             content = await response.text()
+            LOGGER.debug("Response recieved withwith: %s", content)
             error_nodes = etree.fromstring(content).xpath("/RESPONSE/RESULT/ERROR")
             if len(error_nodes) > 0:
                 error_node = error_nodes[0]
