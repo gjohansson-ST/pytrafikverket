@@ -132,7 +132,7 @@ class TrafikverketCamera:
 
         return CameraInfo.from_xml_node(cameras[0])
 
-    async def async_get_cameras(self, search_string: str) -> CameraInfo:
+    async def async_get_cameras(self, search_string: str) -> list[CameraInfo]:
         """Retrieve multipple cameras from API."""
         cameras = await self._api.async_make_request(
             "Camera",
