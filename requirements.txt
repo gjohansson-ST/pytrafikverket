@@ -1,4 +1,4 @@
-aiohttp==3.8.5
+aiohttp==3.9.1
 attrs==23.1.0
 chardet==3.0.4
 idna>=2.6
@@ -7,4 +7,4 @@ lxml>=4.9.3
 multidict==4.5.0
 pip
 setuptools
-yarl==1.9.2
+yarl==1.9.4
