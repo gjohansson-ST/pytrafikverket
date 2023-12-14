@@ -109,7 +109,7 @@ class TrafikverketCamera:
         """Initialize Camera object."""
         self._api = Trafikverket(client_session, api_key)
 
-    async def async_get_camera(self, location_name: str) -> CameraInfo:
+    async def async_get_camera(self, search_string: str) -> CameraInfo:
         """Retrieve camera from API."""
         cameras = await self._api.async_make_request(
             "Camera",
@@ -118,9 +118,9 @@ class TrafikverketCamera:
             [
                 OrFilter(
                     [
-                        FieldFilter(FilterOperation.LIKE, "Name", location_name),
-                        FieldFilter(FilterOperation.LIKE, "Location", location_name),
-                        FieldFilter(FilterOperation.EQUAL, "Id", location_name),
+                        FieldFilter(FilterOperation.LIKE, "Name", search_string),
+                        FieldFilter(FilterOperation.LIKE, "Location", search_string),
+                        FieldFilter(FilterOperation.LIKE, "Id", search_string),
                     ]
                 )
             ],
@@ -132,8 +132,8 @@ class TrafikverketCamera:
 
         return CameraInfo.from_xml_node(cameras[0])
 
-    async def async_get_cameras(self, location_name: str) -> CameraInfo:
-        """Retrieve camera from API."""
+    async def async_get_cameras(self, search_string: str) -> CameraInfo:
+        """Retrieve multipple cameras from API."""
         cameras = await self._api.async_make_request(
             "Camera",
             "1.0",
@@ -141,9 +141,9 @@ class TrafikverketCamera:
             [
                 OrFilter(
                     [
-                        FieldFilter(FilterOperation.LIKE, "Name", location_name),
-                        FieldFilter(FilterOperation.LIKE, "Location", location_name),
-                        FieldFilter(FilterOperation.EQUAL, "Id", location_name),
+                        FieldFilter(FilterOperation.LIKE, "Name", search_string),
+                        FieldFilter(FilterOperation.LIKE, "Location", search_string),
+                        FieldFilter(FilterOperation.LIKE, "Id", search_string),
                     ]
                 )
             ],
