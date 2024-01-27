@@ -211,7 +211,7 @@ class NodeHelper:
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         value = nodes[0].text
-        return cast(str, value)
+        return value
 
     def get_number(self, field: str) -> float | None:
         """Return the number in 'field' from the node or None if not found."""
@@ -222,8 +222,11 @@ class NodeHelper:
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
-        value = nodes[0].text
-        return cast(float, value)
+        try:
+            value = float(nodes[0].text)
+        except ValueError:
+            return None
+        return value
 
     def get_texts(self, field: str) -> list[str] | None:
         """Return a list of texts from the node selected by 'field' or None."""
@@ -272,4 +275,4 @@ class NodeHelper:
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         value = nodes[0].text.lower() == "true"
-        return cast(bool, value)
+        return value
