@@ -4,7 +4,7 @@ chardet==3.0.4
 idna>=2.6
 idna-ssl>=1.0.1
 lxml>==5.1.0
-multidict==4.5.0
+multidict==4.7.6
 pip
 setuptools
 yarl==1.9.4
