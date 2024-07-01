@@ -5,7 +5,7 @@ name: Linting
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
   workflow_dispatch:
 
@@ -88,7 +88,7 @@ jobs:
       - name: 🚀 Check docstring is first
         run: poetry run pre-commit run check-docstring-first --all-files
       - name: 🚀 Check that executables have shebangs
-        run: poetry run pre-commit run check-executables-have-shebangs --all-files
+        run: poetry run pre-commit run check-executables-have-shebangs --all-files  # yamllint disable-line rule:line-length
       - name: 🚀 Check JSON files
         run: poetry run pre-commit run check-json --all-files
       - name: 🚀 Check for merge conflicts
@@ -175,7 +175,7 @@ jobs:
       - name: 🏗 Install Python dependencies
         run: poetry install --no-interaction
       - name: 🏗 Set up Node.js
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4
         with:
           node-version-file: ".nvmrc"
           cache: "npm"
