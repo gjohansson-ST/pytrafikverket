@@ -1,6 +1,6 @@
 aiohttp>=3.9.2
 attrs>=23.2.0
-chardet==3.0.4
+chardet==5.2.0
 idna>=2.6
 idna-ssl>=1.0.1
 lxml>==5.1.0
