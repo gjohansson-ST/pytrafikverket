@@ -1,0 +1,164 @@
+[tool.poetry]
+name = "pytrafikverket"
+version = "0.3.10"
+description = "Retreive values from public API at the Swedish Transport Administration (Trafikverket)."
+authors = [
+    "G Johansson <goran.johansson@shiftit.se>",
+    "Peter Andersson",
+    "Jonas Karlsson",
+]
+maintainers = ["G Johansson <goran.johansson@shiftit.se>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/gjohansson-ST/pytrafikverket"
+repository = "https://github.com/gjohansson-ST/pytrafikverket"
+documentation = "https://github.com/gjohansson-ST/pytrafikverket"
+keywords = ["trafikverket", "api", "async", "client"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+packages = [
+    { include = "pytrafikverket", from = "." },
+]
+
+[tool.poetry.scripts]
+pytrafikverket = "pytrafikverket.pytrafikverket:main"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiohttp = ">=3.9.2"
+lxml = ">=5.1.0"
+yarl = ">=1.9.4"
+
+[tool.poetry.group.dev.dependencies]
+aresponses = "3.0.0"
+codespell = "2.3.0"
+covdefaults = "2.3.0"
+coverage = {version = "7.5.4", extras = ["toml"]}
+mypy = "1.10.1"
+pre-commit = "3.7.1"
+pre-commit-hooks = "4.6.0"
+pylint = "3.2.5"
+pytest = "8.2.2"
+pytest-asyncio = "0.23.7"
+pytest-cov = "5.0.0"
+ruff = "0.5.0"
+safety = "3.2.3"
+yamllint = "1.35.1"
+syrupy = "4.6.1"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/gjohansson-ST/pytrafikverket/issues"
+Changelog = "https://github.com/gjohansson-ST/pytrafikverket/releases"
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.coverage.run]
+plugins = ["covdefaults"]
+source = ["pytrafikverket"]
+
+[tool.mypy]
+# Specify the target platform details in config, so your developers are
+# free to run mypy on Windows, Linux, or macOS and get consistent
+# results.
+platform = "linux"
+python_version = "3.11"
+
+# show error messages from unrelated files
+follow_imports = "normal"
+
+# suppress errors about unsatisfied imports
+ignore_missing_imports = true
+
+# be strict
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+no_implicit_reexport = true
+strict_optional = true
+warn_incomplete_stub = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pylint.MASTER]
+ignore = [
+  "tests",
+]
+
+[tool.pylint.BASIC]
+good-names = [
+  "_",
+  "ex",
+  "fp",
+  "i",
+  "id",
+  "j",
+  "k",
+  "on",
+  "Run",
+  "T",
+]
+
+[tool.pylint.DESIGN]
+max-attributes = 8
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+  "duplicate-code",
+  "format",
+  "unsubscriptable-object",
+]
+
+[tool.pylint.SIMILARITIES]
+ignore-imports = true
+
+[tool.pylint.FORMAT]
+max-line-length = 88
+
+[tool.pytest.ini_options]
+addopts = "--cov"
+asyncio_mode = "auto"
+
+[tool.ruff.lint]
+ignore = [
+  "ANN101", # Self... explanatory
+  "ANN102", # cls... just as useless
+  "ANN401", # Opinioated warning on disallowing dynamically typed expressions
+  "COM812", # Conflicts with formatter
+  "D203", # Conflicts with other rules
+  "D213", # Conflicts with other rules
+  "D417", # False positives in some occasions
+  "PLR2004", # Just annoying, not really useful
+  "TCH001",
+  "ISC001", # Conflicts with formatter
+]
+select = ["ALL"]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.ruff.lint.isort]
+known-first-party = ["pytrafikverket"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 25
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
