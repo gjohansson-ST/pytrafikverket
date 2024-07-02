@@ -211,6 +211,7 @@ class NodeHelper:
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return text value %s", nodes[0].text)
         value: str = nodes[0].text
         return value
 
@@ -223,6 +224,7 @@ class NodeHelper:
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return number value %s", nodes[0].text)
         try:
             value = float(nodes[0].text)
         except ValueError:
@@ -237,6 +239,7 @@ class NodeHelper:
         result = []
         for line in nodes:
             result.append(line.text)
+        LOGGER.debug("Return texts value %s", result)
         return result
 
     def get_datetime_for_modified(self, field: str) -> datetime | None:
@@ -251,6 +254,7 @@ class NodeHelper:
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return modified value %s", nodes[0].text)
         return datetime.strptime(
             nodes[0].text, Trafikverket.date_time_format_for_modified
         )
@@ -264,6 +268,7 @@ class NodeHelper:
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return datetime value %s", nodes[0].text)
         return datetime.strptime(nodes[0].text, Trafikverket.date_time_format)
 
     def get_bool(self, field: str) -> bool:
@@ -275,5 +280,6 @@ class NodeHelper:
             return False
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return bool value %s", nodes[0].text)
         value: bool = nodes[0].text.lower() == "true"
         return value
