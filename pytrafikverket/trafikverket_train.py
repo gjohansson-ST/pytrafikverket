@@ -5,7 +5,6 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from enum import Enum
 
-import aiohttp
 from lxml import etree
 
 from .exceptions import (
@@ -21,6 +20,7 @@ from .trafikverket import (
     OrFilter,
     SortOrder,
     Trafikverket,
+    TrafikverketBase,
 )
 
 # pylint: disable=W0622, C0103
@@ -158,12 +158,8 @@ class TrainStop:  # pylint: disable=too-many-instance-attributes
         )
 
 
-class TrafikverketTrain:
+class TrafikverketTrain(TrafikverketBase):
     """Class used to communicate with trafikverket's train api."""
-
-    def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
-        """Initialize TrainInfo object."""
-        self._api = Trafikverket(client_session, api_key)
 
     async def async_get_train_station(self, location_name: str) -> StationInfo:
         """Retrieve train station id based on name."""

@@ -4,11 +4,15 @@ from __future__ import annotations
 
 from datetime import datetime
 
-import aiohttp
 from lxml import etree
 
 from .exceptions import MultipleWeatherStationsFound, NoWeatherStationFound
-from .trafikverket import FieldFilter, FilterOperation, NodeHelper, Trafikverket
+from .trafikverket import (
+    FieldFilter,
+    FilterOperation,
+    NodeHelper,
+    TrafikverketBase,
+)
 
 WEATHER_REQUIRED_FIELDS = [
     "Name",  # string, replaced
@@ -173,12 +177,8 @@ class WeatherStationInfo:  # pylint: disable=R0902
         )
 
 
-class TrafikverketWeather:
+class TrafikverketWeather(TrafikverketBase):
     """Class used to communicate with trafikverket's weather api."""
-
-    def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
-        """Initialize Weather object."""
-        self._api = Trafikverket(client_session, api_key)
 
     async def async_get_weather(self, location_name: str) -> WeatherStationInfo:
         """Retrieve weather from API."""

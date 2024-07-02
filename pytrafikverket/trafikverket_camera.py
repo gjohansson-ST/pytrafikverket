@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from datetime import datetime
 
-import aiohttp
 from lxml import etree
 
 from .exceptions import MultipleCamerasFound, NoCameraFound
@@ -13,7 +12,7 @@ from .trafikverket import (
     FilterOperation,
     NodeHelper,
     OrFilter,
-    Trafikverket,
+    TrafikverketBase,
 )
 
 CAMERA_INFO_REQUIRED_FIELDS = [
@@ -101,12 +100,8 @@ class CameraInfo:  # pylint: disable=R0902
         )
 
 
-class TrafikverketCamera:
+class TrafikverketCamera(TrafikverketBase):
     """Class used to communicate with trafikverket's camera api."""
-
-    def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
-        """Initialize Camera object."""
-        self._api = Trafikverket(client_session, api_key)
 
     async def async_get_camera(self, search_string: str) -> CameraInfo:
         """Retrieve camera from API."""

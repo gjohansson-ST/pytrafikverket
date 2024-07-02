@@ -195,6 +195,14 @@ class Trafikverket:
             return result
 
 
+class TrafikverketBase:
+    """Base class used to communicate with trafikverket's api."""
+
+    def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
+        """Initialize Trafikverket Base."""
+        self._api = Trafikverket(client_session, api_key)
+
+
 class NodeHelper:
     """Helper class to get node content."""
 

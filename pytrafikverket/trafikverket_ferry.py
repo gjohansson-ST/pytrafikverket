@@ -5,7 +5,6 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 
-import aiohttp
 from lxml import etree
 
 from pytrafikverket.trafikverket import (
@@ -16,6 +15,7 @@ from pytrafikverket.trafikverket import (
     NodeHelper,
     SortOrder,
     Trafikverket,
+    TrafikverketBase,
 )
 
 from .exceptions import (
@@ -178,12 +178,8 @@ class FerryStop:  # pylint: disable=R0902
         )
 
 
-class TrafikverketFerry:
+class TrafikverketFerry(TrafikverketBase):
     """Class used to communicate with trafikverket's ferry route api."""
-
-    def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
-        """Initialize FerryInfo object."""
-        self._api = Trafikverket(client_session, api_key)
 
     async def async_get_ferry_route(self, route_name: str) -> RouteInfo:
         """Retrieve ferry route id based on name."""
