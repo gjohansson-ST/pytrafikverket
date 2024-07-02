@@ -97,9 +97,7 @@ class WeatherStationInfo:  # pylint: disable=R0902
         self.modified_time = modified_time
 
     @classmethod
-    def from_xml_node(
-        cls, node: etree._ElementTree
-    ) -> WeatherStationInfo:  # pylint: disable=R0914
+    def from_xml_node(cls, node: etree._ElementTree) -> WeatherStationInfo:  # pylint: disable=R0914
         """Map XML path for values."""
         node_helper = NodeHelper(node)
         station_name = node_helper.get_text("Name")

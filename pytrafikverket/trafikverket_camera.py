@@ -68,9 +68,7 @@ class CameraInfo:  # pylint: disable=R0902
         self.camera_type = camera_type
 
     @classmethod
-    def from_xml_node(
-        cls, node: etree._ElementTree
-    ) -> CameraInfo:  # pylint: disable=too-many-locals
+    def from_xml_node(cls, node: etree._ElementTree) -> CameraInfo:  # pylint: disable=too-many-locals
         """Map XML path for values."""
         node_helper = NodeHelper(node)
         camera_name = node_helper.get_text("Name")

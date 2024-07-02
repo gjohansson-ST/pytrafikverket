@@ -9,11 +9,11 @@ repos:
         entry: poetry run ruff check --fix
         require_serial: true
         stages: [commit, push, manual]
-      - id: black
-        name: ☕️ Format using black
+      - id: ruff black
+        name: ☕️ Format using ruff
         language: system
         types: [python]
-        entry: poetry run black
+        entry: poetry run ruff format
         require_serial: true
       - id: blacken-docs
         name: ☕️ Format documentation examples using black
@@ -35,12 +35,6 @@ repos:
         language: system
         types: [python]
         entry: poetry run check-docstring-first
-      # - id: check-executables-have-shebangs
-      #   name: 🧐 Check that executables have shebangs
-      #   language: system
-      #   types: [text, executable]
-      #   entry: poetry run check-executables-have-shebangs
-      #   stages: [commit, push, manual]
       - id: check-json
         name: ｛ Check JSON files
         language: system
