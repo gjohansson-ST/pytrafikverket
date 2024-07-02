@@ -1,4 +1,5 @@
 """Retrieve weather station data from Trafikverket API."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -13,43 +14,36 @@ WEATHER_REQUIRED_FIELDS = [
     "Name",  # string, replaced
     "Id",  # string, replaced
     "ModifiedTime",  # datetime, new, Tidpunkt då dataposten ändrades i cachen
-    "Observation.Sample",  # datetime, replaced, Tidpunkt som observationen avser, inklusive tidzon för att hantera sommartid och normaltid.
+    "Observation.Sample",  # datetime, replaced, Tidpunkt som observationen avser, inklusive tidzon för att hantera sommartid och normaltid. # codespell:ignore
     "Observation.Air.Temperature.Value",  # float, replaced, Lufttemperatur. Value [C]
-    "Observation.Air.RelativeHumidity.Value",  # float, replaced, Relativ luftfuktighet. Andel av den fukt som luften kan bära. Vid 100% är luften mättad. Value [%]
-    "Observation.Air.Dewpoint.Value",  # float, new, Daggpunkt, den temperatur där vatten kondenserar. Value [C]
+    "Observation.Air.RelativeHumidity.Value",  # float, replaced, Relativ luftfuktighet. Andel av den fukt som luften kan bära. Vid 100% är luften mättad. Value [%] # codespell:ignore
+    "Observation.Air.Dewpoint.Value",  # float, new, Daggpunkt, den temperatur där vatten kondenserar. Value [C] # codespell:ignore
     "Observation.Air.VisibleDistance.Value",  # float, new, Den sträcka det finns sikt. Value [m]
     "Observation.Wind.Direction.Value",  # int, replaced, Mått på vindriktning vid en viss tidpunkt. Medelvärde över tiominutersperiod t.o.m. tidpunkten. Value [grader]
     "Observation.Wind.Height",  # int, new, Vindsensorns höjdplacering [m]
     "Observation.Wind.Speed.Value",  # float, replaced, Mått på vindhastighet vid en viss tidpunkt. Medelvärde över tiominutersperiod t.o.m. tidpunkten. Value [m/s]
     "Observation.Aggregated30minutes.Wind.SpeedMax.Value",  # float, replaced, Högst uppmätt 3-sekundersmedelvärde under perioden. Value [m/s]
-    "Observation.Weather.Precipitation",  # string, replaced, Vilken typ av nederbörd som detekterats
-    "Observation.Aggregated30minutes.Precipitation.TotalWaterEquivalent.Value",  # float, replaced, Mängd vatten som nederbörden under perioden motsvarar. Value [mm]
+    "Observation.Weather.Precipitation",  # string, replaced, Vilken typ av nederbörd som detekterats # codespell:ignore
+    "Observation.Aggregated30minutes.Precipitation.TotalWaterEquivalent.Value",  # float, replaced, Mängd vatten som nederbörden under perioden motsvarar. Value [mm] # codespell:ignore
     "Observation.Aggregated30minutes.Precipitation.Rain",  # bool, new, Förekomst av regn.
     "Observation.Aggregated30minutes.Precipitation.Snow",  # bool, new, Förekomst av snö.
-    "Observation.Surface.Temperature.Value",  # float, replaced, Vägytans temperatur. Value [C]
+    "Observation.Surface.Temperature.Value",  # float, replaced, Vägytans temperatur. Value [C] # codespell:ignore
     "Observation.Surface.Ice",  # bool, new, Förekomst av is på vägytan.
     "Observation.Surface.IceDepth.Value",  # float, new, Isdjup på vägytan. Value [mm]
     "Observation.Surface.Snow",  # bool, new, Förekomst av snö på vägytan.
     "Observation.Surface.SnowDepth.Solid.Value",  # float, new, Mängd snö. Value [mm]
-    "Observation.Surface.SnowDepth.WaterEquivalent.Value",  # float, new, Mängd vatten som snön motsvarar i smält form. Value [mm]
+    "Observation.Surface.SnowDepth.WaterEquivalent.Value",  # float, new, Mängd vatten som snön motsvarar i smält form. Value [mm] # codespell:ignore
     "Observation.Surface.Water",  # bool, new, Förekomst av vatten på vägytan.
     "Observation.Surface.WaterDepth.Value",  # float, new, Vattendjup på vägytan. Value [mm]
 ]
-"""
-Precipitation possible values are:
-  no
-  rain
-  freezing_rain
-  snow
-  sleet
-  yes
-"""
+
+# Precipitation possible values are: no, rain, freezing_rain, snow, sleet, yes
 
 
 class WeatherStationInfo:  # pylint: disable=R0902
     """Fetch Weather data from specified weather station."""
 
-    def __init__(  # pylint: disable=R0914, R0913
+    def __init__(
         self,
         station_name: str,
         station_id: str,
@@ -150,6 +144,9 @@ class WeatherStationInfo:  # pylint: disable=R0902
         if precipitation_amount:
             precipitation_amount = precipitation_amount * 2  # mm/30min to mm/h
         modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
+        assert station_name
+        assert station_id
+        assert wind_height and isinstance(wind_height, int)
         return cls(
             station_name,
             station_id,

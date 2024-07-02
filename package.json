@@ -2,7 +2,7 @@
   "name": "pytrafikverket",
   "version": "0.0.0",
   "private": true,
-  "description": "Retreive values from public API at the Swedish Transport Administration (Trafikverket)",
+  "description": "Retrieve values from public API at the Swedish Transport Administration (Trafikverket)",
   "scripts": {
     "prettier": "prettier --write **/*.{json,js,md,yml,yaml}"
   },

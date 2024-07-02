@@ -1,4 +1,5 @@
-"""Enables retreival of train departure information from Trafikverket API."""
+"""Enables retrieval of train departure information from Trafikverket API."""
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -165,7 +166,7 @@ class TrafikverketTrain:
         self._api = Trafikverket(client_session, api_key)
 
     async def async_get_train_station(self, location_name: str) -> StationInfo:
-        """Retreive train station id based on name."""
+        """Retrieve train station id based on name."""
         train_stations = await self._api.async_make_request(
             "TrainStation",
             "1.4",
@@ -285,7 +286,7 @@ class TrafikverketTrain:
         exclude_canceled: bool = False,
         number_of_stops: int = 1,
     ) -> list[TrainStop]:
-        """Enable retreival of next departures."""
+        """Enable retrieval of next departures."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
         filters = [
@@ -352,7 +353,7 @@ class TrafikverketTrain:
         product_description: str | None = None,
         exclude_canceled: bool = False,
     ) -> TrainStop:
-        """Enable retreival of next departure."""
+        """Enable retrieval of next departure."""
 
         stops = await self.async_get_next_train_stops(
             from_station,

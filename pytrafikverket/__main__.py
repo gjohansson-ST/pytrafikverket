@@ -1,4 +1,5 @@
 """CLI enabler for pytrafikverket."""
+
 from __future__ import annotations
 
 import argparse
@@ -74,8 +75,8 @@ async def async_main(loop: Any) -> None:  # pylint: disable=R0912, R0914, R0915
                     args.from_station
                 )
                 to_station = await train_api.async_get_train_station(args.to_station)
-                print(f"from_station_signature: {from_station.signature}")
-                print(f"to_station_signature:   {to_station.signature}")
+                print(f"from_station_signature: {from_station.signature}")  # noqa: T201
+                print(f"to_station_signature:   {to_station.signature}")  # noqa: T201
 
                 time = datetime.strptime(args.date_time, DATE_TIME_INPUT)
 
@@ -93,8 +94,8 @@ async def async_main(loop: Any) -> None:  # pylint: disable=R0912, R0914, R0915
                     args.from_station
                 )
                 to_station = await train_api.async_get_train_station(args.to_station)
-                print(f"from_station_signature: {from_station.signature}")
-                print(f"to_station_signature:   {to_station.signature}")
+                print(f"from_station_signature: {from_station.signature}")  # noqa: T201
+                print(f"to_station_signature:   {to_station.signature}")  # noqa: T201
 
                 if args.date_time is not None:
                     time = datetime.strptime(args.date_time, DATE_TIME_INPUT)
@@ -133,7 +134,7 @@ async def async_main(loop: Any) -> None:  # pylint: disable=R0912, R0914, R0915
                 routes = await ferry_api.async_search_ferry_routes(args.route)
                 for route in routes:
                     print_values(route)
-                    print(f"{route.name} {route.id}")
+                    print(f"{route.name} {route.id}")  # noqa: T201
 
             elif args.method == GET_NEXT_FERRY_STOP:
                 if args.from_harbor is None:
@@ -154,7 +155,7 @@ async def async_main(loop: Any) -> None:  # pylint: disable=R0912, R0914, R0915
 
 def print_values(result: Any) -> None:
     """Print out values for all object members."""
-    print(json.dumps(result.__dict__, indent=4, ensure_ascii=False))
+    print(json.dumps(result.__dict__, indent=4, ensure_ascii=False))  # noqa: T201
 
 
 def main() -> None:

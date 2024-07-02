@@ -1,4 +1,5 @@
 """Retrieve camera data from Trafikverket API."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -35,7 +36,7 @@ CAMERA_INFO_REQUIRED_FIELDS = [
 class CameraInfo:  # pylint: disable=R0902
     """Fetch Camera data."""
 
-    def __init__(  # pylint: disable=R0913
+    def __init__(
         self,
         camera_name: str | None,
         camera_id: str | None,
