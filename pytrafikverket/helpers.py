@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import aiozoneinfo
 from lxml import etree
 
-from .models import WeatherStationInfoModel
+from .models import CameraInfoModel, WeatherStationInfoModel
 from .trafikverket import NodeHelper
 
 SWEDEN_TIMEZONE = "Europe/Stockholm"
@@ -85,4 +85,48 @@ async def weather_from_xml_node(node: etree._ElementTree) -> WeatherStationInfoM
         measure_time=measure_time,
         precipitation_amount=precipitation_amount,
         modified_time=modified_time,
+    )
+
+
+async def camera_from_xml_node(node: etree._ElementTree) -> CameraInfoModel:
+    """Map XML path for values."""
+    node_helper = NodeHelper(node)
+    camera_name = node_helper.get_text("Name")
+    camera_id = node_helper.get_text("Id")
+    active = node_helper.get_bool("Active")
+    deleted = node_helper.get_bool("Deleted")
+    description = node_helper.get_text("Description")
+    direction = node_helper.get_text("Direction")
+    fullsizephoto = node_helper.get_bool("HasFullSizePhoto")
+    location = node_helper.get_text("Location")
+    modified = node_helper.get_datetime_for_modified("ModifiedTime")
+    phototime = node_helper.get_datetime("PhotoTime")
+    photourl = node_helper.get_text("PhotoUrl")
+    status = node_helper.get_text("Status")
+    camera_type = node_helper.get_text("Type")
+
+    zoneinfo = await aiozoneinfo.async_get_time_zone(SWEDEN_TIMEZONE)
+    if phototime:
+        phototime = phototime.replace(tzinfo=zoneinfo)
+    if modified:
+        modified = modified.replace(tzinfo=datetime.UTC)
+
+    if TYPE_CHECKING:
+        assert camera_name
+        assert camera_id
+
+    return CameraInfoModel(
+        camera_name=camera_name,
+        camera_id=camera_id,
+        active=active,
+        deleted=deleted,
+        description=description,
+        direction=direction,
+        fullsizephoto=fullsizephoto,
+        location=location,
+        modified=modified,
+        phototime=phototime,
+        photourl=photourl,
+        status=status,
+        camera_type=camera_type,
     )
