@@ -7,11 +7,11 @@ from datetime import datetime
 
 
 @dataclass
-class CameraInfoModel:  # pylint: disable=R0902
+class CameraInfoModel:
     """Dataclass for Trafikverket Camera."""
 
-    camera_name: str | None
-    camera_id: str | None
+    camera_name: str
+    camera_id: str
     active: bool
     deleted: bool
     description: str | None
@@ -26,7 +26,7 @@ class CameraInfoModel:  # pylint: disable=R0902
 
 
 @dataclass
-class FerryRouteInfoModel:  # pylint: disable=R0902
+class FerryRouteInfoModel:
     """Dataclass for Trafikverket Ferry route info."""
 
     ferry_route_id: str | None
@@ -36,7 +36,7 @@ class FerryRouteInfoModel:  # pylint: disable=R0902
 
 
 @dataclass
-class DeviationInfoModel:  # pylint: disable=R0902
+class DeviationInfoModel:
     """Dataclass for Trafikverket Ferry deviations."""
 
     deviation_id: str | None
@@ -49,7 +49,7 @@ class DeviationInfoModel:  # pylint: disable=R0902
 
 
 @dataclass
-class FerryStopModel:  # pylint: disable=R0902
+class FerryStopModel:
     """Dataclass for Trafikverket Ferry stop."""
 
     ferry_stop_id: str | None
@@ -63,7 +63,7 @@ class FerryStopModel:  # pylint: disable=R0902
 
 
 @dataclass
-class StationInfoModel:  # pylint: disable=R0902
+class StationInfoModel:
     """Dataclass for Trafikverket Train Station info."""
 
     signature: str | None
@@ -72,7 +72,7 @@ class StationInfoModel:  # pylint: disable=R0902
 
 
 @dataclass
-class TrainStopModel:  # pylint: disable=R0902
+class TrainStopModel:
     """Dataclass for Trafikverket Train stop."""
 
     train_stop_id: str | None
@@ -87,7 +87,7 @@ class TrainStopModel:  # pylint: disable=R0902
 
 
 @dataclass
-class WeatherStationInfoModel:  # pylint: disable=R0902
+class WeatherStationInfoModel:
     """Dataclass for Trafikverket Weather info."""
 
     station_name: str
