@@ -1,4 +1,5 @@
-"""Enables retreival of ferry departure information from Trafikverket API."""
+"""Enables retrieval of ferry departure information from Trafikverket API."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -185,7 +186,7 @@ class TrafikverketFerry:
         self._api = Trafikverket(client_session, api_key)
 
     async def async_get_ferry_route(self, route_name: str) -> RouteInfo:
-        """Retreive ferry route id based on name."""
+        """Retrieve ferry route id based on name."""
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
@@ -200,7 +201,7 @@ class TrafikverketFerry:
         return RouteInfo.from_xml_node(routes[0])
 
     async def async_get_ferry_route_id(self, route_id: int) -> RouteInfo:
-        """Retreive ferry route id based on routeId."""
+        """Retrieve ferry route id based on routeId."""
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
@@ -239,7 +240,7 @@ class TrafikverketFerry:
         after_time: datetime = datetime.now(),
         number_of_stops: int = 1,
     ) -> list[FerryStop]:
-        """Enable retreival of next departures."""
+        """Enable retrieval of next departures."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
         filters: list[FieldFilter | Filter] = [
@@ -277,14 +278,14 @@ class TrafikverketFerry:
         to_harnbor_name: str = "",
         after_time: datetime = datetime.now(),
     ) -> FerryStop:
-        """Enable retreival of next departure."""
+        """Enable retrieval of next departure."""
         stops = await self.async_get_next_ferry_stops(
             from_harbor_name, to_harnbor_name, after_time, 1
         )
         return stops[0]
 
     async def async_get_deviation(self, id: str) -> DeviationInfo:
-        """Retreive deviation info from Deviation Id."""
+        """Retrieve deviation info from Deviation Id."""
         filters: list[FieldFilter | Filter] = [
             FieldFilter(FilterOperation.EQUAL, "Deviation.Id", id)
         ]

@@ -1,11 +1,12 @@
 """Module for communication with Trafikverket official API."""
+
 from __future__ import annotations
 
+import logging
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from enum import Enum
-from typing import Any, cast
-import logging
+from typing import Any
 
 import aiohttp
 from lxml import etree
@@ -27,8 +28,8 @@ class FilterOperation(Enum):
     NOT_EQUAL = "NE"
     LIKE = "LIKE"
     NOT_LIKE = "NOTLIKE"
-    #    IN = "IN"
-    NOT_IN = "NOTIN"
+    #    IN = "IN"  # noqa: ERA001
+    NOT_IN = "NOTIN"  # codespell:ignore
     WITH_IN = "WITHIN"
 
 
@@ -36,7 +37,7 @@ class SortOrder(Enum):
     """Specifies how rows of data are sorted."""
 
     ASCENDING = "asc"
-    DECENDING = "desc"
+    DESCENDING = "desc"
 
 
 class FieldSort:
@@ -151,7 +152,7 @@ class Trafikverket:
 
         return root_node
 
-    async def async_make_request(  # pylint: disable=too-many-locals
+    async def async_make_request(
         self,
         objecttype: str,
         schemaversion: str,
@@ -171,7 +172,7 @@ class Trafikverket:
             Trafikverket._api_url, data=request_data_text, headers=headers
         ) as response:
             content = await response.text()
-            LOGGER.debug("Response recieved withwith: %s", content)
+            LOGGER.debug("Response received with: %s", content)
             error_nodes = etree.fromstring(content).xpath("/RESPONSE/RESULT/ERROR")
             if len(error_nodes) > 0:
                 error_node = error_nodes[0]
@@ -210,7 +211,7 @@ class NodeHelper:
             return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
-        value = nodes[0].text
+        value: str = nodes[0].text
         return value
 
     def get_number(self, field: str) -> float | None:
@@ -274,5 +275,5 @@ class NodeHelper:
             return False
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
-        value = nodes[0].text.lower() == "true"
+        value: bool = nodes[0].text.lower() == "true"
         return value
