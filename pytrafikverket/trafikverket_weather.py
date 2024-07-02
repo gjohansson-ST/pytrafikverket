@@ -2,27 +2,10 @@
 
 from __future__ import annotations
 
-<<<<<<< HEAD
-from datetime import datetime
-
-from lxml import etree
-
 from .exceptions import MultipleWeatherStationsFound, NoWeatherStationFound
-from .trafikverket import (
-    FieldFilter,
-    FilterOperation,
-    NodeHelper,
-    TrafikverketBase,
-)
-=======
-import aiohttp
-
-from pytrafikverket.helpers import weather_from_xml_node
-from pytrafikverket.models import WeatherStationInfoModel
-
-from .exceptions import MultipleWeatherStationsFound, NoWeatherStationFound
-from .trafikverket import FieldFilter, FilterOperation, Trafikverket
->>>>>>> 6d88309 (Move weather to dataclass)
+from .helpers import weather_from_xml_node
+from .models import WeatherStationInfoModel
+from .trafikverket import FieldFilter, FilterOperation, TrafikverketBase
 
 WEATHER_REQUIRED_FIELDS = [
     "Name",  # string, replaced
@@ -53,11 +36,11 @@ WEATHER_REQUIRED_FIELDS = [
 
 # Precipitation possible values are: no, rain, freezing_rain, snow, sleet, yes
 
+
 class TrafikverketWeather(TrafikverketBase):
     """Class used to communicate with trafikverket's weather api."""
 
     async def async_get_weather(self, location_name: str) -> WeatherStationInfoModel:
-
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
             "WeatherMeasurepoint",
