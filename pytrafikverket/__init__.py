@@ -20,4 +20,5 @@ from .trafikverket_train import (
     TrainStop,
     TrainStopStatus,
 )
-from .trafikverket_weather import TrafikverketWeather, WeatherStationInfo
+from .trafikverket_weather import TrafikverketWeather
+from .models import WeatherStationInfoModel
