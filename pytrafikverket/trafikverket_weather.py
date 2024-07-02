@@ -2,17 +2,10 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-
-from lxml import etree
-
 from .exceptions import MultipleWeatherStationsFound, NoWeatherStationFound
-from .trafikverket import (
-    FieldFilter,
-    FilterOperation,
-    NodeHelper,
-    TrafikverketBase,
-)
+from .helpers import weather_from_xml_node
+from .models import WeatherStationInfoModel
+from .trafikverket import FieldFilter, FilterOperation, TrafikverketBase
 
 WEATHER_REQUIRED_FIELDS = [
     "Name",  # string, replaced
@@ -44,143 +37,10 @@ WEATHER_REQUIRED_FIELDS = [
 # Precipitation possible values are: no, rain, freezing_rain, snow, sleet, yes
 
 
-class WeatherStationInfo:  # pylint: disable=R0902
-    """Fetch Weather data from specified weather station."""
-
-    def __init__(
-        self,
-        station_name: str,
-        station_id: str,
-        road_temp: float | None,  # celsius
-        air_temp: float | None,  # celsius
-        dew_point: float | None,  # celsius
-        humidity: float | None,  # %
-        visible_distance: float | None,  # meter
-        precipitationtype: str | None,
-        raining: bool,
-        snowing: bool,
-        road_ice: bool,
-        road_ice_depth: float | None,  # mm
-        road_snow: bool,
-        road_snow_depth: float | None,  # mm
-        road_water: bool,
-        road_water_depth: float | None,  # mm
-        road_water_equivalent_depth: float | None,  # mm
-        winddirection: str | None,  # degrees
-        wind_height: int | None,  # m
-        windforce: float | None,  # m/s
-        windforcemax: float | None,  # m/s
-        measure_time: datetime | None,
-        precipitation_amount: float | None,  # mm/30min translated to mm/h
-        modified_time: datetime | None,
-    ) -> None:
-        """Initialize the class."""
-        self.station_name = station_name
-        self.station_id = station_id
-        self.road_temp = road_temp
-        self.air_temp = air_temp
-        self.dew_point = dew_point
-        self.humidity = humidity
-        self.visible_distance = visible_distance
-        self.precipitationtype = precipitationtype
-        self.raining = raining
-        self.snowing = snowing
-        self.road_ice = road_ice
-        self.road_ice_depth = road_ice_depth
-        self.road_snow = road_snow
-        self.road_snow_depth = road_snow_depth
-        self.road_water = road_water
-        self.road_water_depth = road_water_depth
-        self.road_water_equivalent_depth = road_water_equivalent_depth
-        self.winddirection = winddirection
-        self.wind_height = wind_height
-        self.windforce = windforce
-        self.windforcemax = windforcemax
-        self.measure_time = measure_time
-        self.precipitation_amount = precipitation_amount
-        self.modified_time = modified_time
-
-    @classmethod
-    def from_xml_node(cls, node: etree._ElementTree) -> WeatherStationInfo:  # pylint: disable=R0914
-        """Map XML path for values."""
-        node_helper = NodeHelper(node)
-        station_name = node_helper.get_text("Name")
-        station_id = node_helper.get_text("Id")
-        air_temp = node_helper.get_number("Observation/Air/Temperature/Value")
-        road_temp = node_helper.get_number("Observation/Surface/Temperature/Value")
-        dew_point = node_helper.get_number("Observation/Air/Dewpoint/Value")
-        humidity = node_helper.get_number("Observation/Air/RelativeHumidity/Value")
-        visible_distance = node_helper.get_number(
-            "Observation/Air/VisibleDistance/Value"
-        )
-        precipitationtype = node_helper.get_text("Observation/Weather/Precipitation")
-        raining = node_helper.get_bool(
-            "Observation/Aggregated30minutes/Precipitation/Rain"
-        )
-        snowing = node_helper.get_bool(
-            "Observation/Aggregated30minutes/Precipitation/Snow"
-        )
-        road_ice = node_helper.get_bool("Observation/Surface/Ice")
-        road_ice_depth = node_helper.get_number("Observation/Surface/IceDepth/Value")
-        road_snow = node_helper.get_bool("Observation/Surface/Snow")
-        road_snow_depth = node_helper.get_number(
-            "Observation/Surface/SnowDepth.Solid/Value"
-        )
-        road_water = node_helper.get_bool("Observation/Surface/Water")
-        road_water_depth = node_helper.get_number(
-            "Observation/Surface/WaterDepth/Value"
-        )
-        road_water_equivalent_depth = node_helper.get_number(
-            "Observation/Surface/SnowDepth/WaterEquivalent/Value"
-        )
-        winddirection = node_helper.get_text("Observation/Wind/Direction/Value")
-        wind_height = node_helper.get_number("Observation/Wind/Height")
-        windforce = node_helper.get_number("Observation/Wind/Speed/Value")
-        windforcemax = node_helper.get_number(
-            "Observation/Aggregated30minutes/Wind/SpeedMax/Value"
-        )
-        measure_time = node_helper.get_datetime("Observation/Sample")
-        precipitation_amount = node_helper.get_number(
-            "Observation/Aggregated30minutes/Precipitation/TotalWaterEquivalent/Value"
-        )
-        if precipitation_amount:
-            precipitation_amount = precipitation_amount * 2  # mm/30min to mm/h
-        modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
-        assert station_name
-        assert station_id
-        assert wind_height and isinstance(wind_height, int)
-        return cls(
-            station_name,
-            station_id,
-            road_temp,
-            air_temp,
-            dew_point,
-            humidity,
-            visible_distance,
-            precipitationtype,
-            raining,
-            snowing,
-            road_ice,
-            road_ice_depth,
-            road_snow,
-            road_snow_depth,
-            road_water,
-            road_water_depth,
-            road_water_equivalent_depth,
-            winddirection,
-            wind_height,
-            windforce,
-            windforcemax,
-            measure_time,
-            precipitation_amount,
-            modified_time,
-        )
-
-
 class TrafikverketWeather(TrafikverketBase):
     """Class used to communicate with trafikverket's weather api."""
 
-    async def async_get_weather(self, location_name: str) -> WeatherStationInfo:
+    async def async_get_weather(self, location_name: str) -> WeatherStationInfoModel:
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
             "WeatherMeasurepoint",
@@ -197,4 +57,4 @@ class TrafikverketWeather(TrafikverketBase):
                 "Found multiple weather stations with the specified name"
             )
 
-        return WeatherStationInfo.from_xml_node(weather_stations[0])
+        return await weather_from_xml_node(weather_stations[0])

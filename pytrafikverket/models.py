@@ -90,8 +90,8 @@ class TrainStopModel:  # pylint: disable=R0902
 class WeatherStationInfoModel:  # pylint: disable=R0902
     """Dataclass for Trafikverket Weather info."""
 
-    weather_station_id: str
     station_name: str
+    station_id: str
     road_temp: float | None  # celsius
     air_temp: float | None  # celsius
     dew_point: float | None  # celsius
@@ -108,7 +108,7 @@ class WeatherStationInfoModel:  # pylint: disable=R0902
     road_water_depth: float | None  # mm
     road_water_equivalent_depth: float | None  # mm
     winddirection: str | None  # degrees
-    wind_height: int | None  # m
+    wind_height: float | None  # m
     windforce: float | None  # m/s
     windforcemax: float | None  # m/s
     measure_time: datetime | None
