@@ -12,11 +12,11 @@ class CameraInfoModel:
 
     camera_name: str
     camera_id: str
-    active: bool
-    deleted: bool
+    active: bool | None
+    deleted: bool | None
     description: str | None
     direction: str | None
-    fullsizephoto: bool
+    fullsizephoto: bool | None
     location: str | None
     modified: datetime | None
     phototime: datetime | None
@@ -98,13 +98,13 @@ class WeatherStationInfoModel:
     humidity: float | None  # %
     visible_distance: float | None  # meter
     precipitationtype: str | None
-    raining: bool
-    snowing: bool
-    road_ice: bool
+    raining: bool | None
+    snowing: bool | None
+    road_ice: bool | None
     road_ice_depth: float | None  # mm
-    road_snow: bool
+    road_snow: bool | None
     road_snow_depth: float | None  # mm
-    road_water: bool
+    road_water: bool | None
     road_water_depth: float | None  # mm
     road_water_equivalent_depth: float | None  # mm
     winddirection: str | None  # degrees

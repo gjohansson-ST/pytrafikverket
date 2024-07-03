@@ -129,7 +129,7 @@ class FerryStop:  # pylint: disable=R0902
     def __init__(
         self,
         id: str | None,
-        deleted: bool,
+        deleted: bool | None,
         departure_time: datetime | None,
         other_information: list[str] | None,
         deviation_id: list[str] | None,

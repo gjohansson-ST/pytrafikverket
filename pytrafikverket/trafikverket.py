@@ -279,13 +279,13 @@ class NodeHelper:
         LOGGER.debug("Return datetime value %s", nodes[0].text)
         return datetime.strptime(nodes[0].text, Trafikverket.date_time_format)
 
-    def get_bool(self, field: str) -> bool:
+    def get_bool(self, field: str) -> bool | None:
         """Return True if value selected by field is 'true' else returns False."""
         nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
-            return False
+            return None
         if len(nodes) == 0:
-            return False
+            return None
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         LOGGER.debug("Return bool value %s", nodes[0].text)
