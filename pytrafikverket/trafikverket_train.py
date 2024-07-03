@@ -74,7 +74,7 @@ class TrainStop:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         id: str | None,
-        canceled: bool,
+        canceled: bool | None,
         advertised_time_at_location: datetime | None,
         estimated_time_at_location: datetime | None,
         time_at_location: datetime | None,
