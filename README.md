@@ -4,6 +4,7 @@ python module for communicating with the swedish trafikverket api
 Development and testing done with 3.11
 
 ## Code example
+
 ```python
 from pytrafikverket import TrafikverketTrain, StationInfo
 import aiohttp
@@ -34,14 +35,16 @@ loop.run_until_complete(main(loop))
 ```
 
 ## CLI example
-```bash
-$ py pytrafikverket.py -key <api_key> -method search-for-station -station "Kristianstad"
-$ py pytrafikverket.py -key <api_key> -method get-next-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg"
-$ py pytrafikverket.py -key <api_key> -method get-next-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg" -train-product "SJ Regional"
-$ py pytrafikverket.py -key <api_key> -method get-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg" -date-time "2017-05-19T16:38:00"
-$ py pytrafikverket.py -key <api_key> -method get-weather -station "Nöbbele"
-$ py pytrafikverket.py -key <api_key> -method search-for-ferry-route -route "sund"
-$ py pytrafikverket.py -key <api_key> -method get-ferry-route -route "Adelsöleden"
-$ py pytrafikverket.py -key <api_key> -method get-next-ferry-stop -from-harbor "Ekerö"
-$ py pytrafikverket.py -key <api_key> -method get-next-ferry-stop -from-harbor "Furusund" -date-time "2019-12-24T00:00:00"
+<!-- blacken-docs:off -->
+```python
+trafikverket_cli -key <api_key> -method search-for-station -station "Kristianstad"
+trafikverket_cli -key <api_key> -method get-next-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg"
+trafikverket_cli -key <api_key> -method get-next-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg" -train-product "SJ Regional"
+trafikverket_cli -key <api_key> -method get-train-stop -from-station "Kristianstad C" -to-station "Sölvesborg" -date-time "2017-05-19T16:38:00"
+trafikverket_cli -key <api_key> -method get-weather -station "Nöbbele"
+trafikverket_cli -key <api_key> -method search-for-ferry-route -route "sund"
+trafikverket_cli -key <api_key> -method get-ferry-route -route "Adelsöleden"
+trafikverket_cli -key <api_key> -method get-next-ferry-stop -from-harbor "Ekerö"
+trafikverket_cli -key <api_key> -method get-next-ferry-stop -from-harbor "Furusund" -date-time "2019-12-24T00:00:00"
 ```
+<!-- blacken-docs:on -->

@@ -29,3 +29,9 @@ from .trafikverket_train import (
     TrafikverketTrain,
 )
 from .trafikverket_weather import TrafikverketWeather
+
+from .__main__ import main
+
+
+def run() -> None:
+    main()

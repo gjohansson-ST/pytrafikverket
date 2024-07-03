@@ -28,7 +28,7 @@ packages = [
 ]
 
 [tool.poetry.scripts]
-pytrafikverket = "pytrafikverket:main"
+trafikverket_cli = "pytrafikverket:run"
 
 [tool.poetry.dependencies]
 python = "^3.11"
