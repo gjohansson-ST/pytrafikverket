@@ -71,7 +71,7 @@ class TrafikverketFerry(TrafikverketBase):
         if len(routes) > 1:
             raise MultipleRoutesFound("Found multiple routes with the specified name")
 
-        return ferry_route_from_xml_node(routes[0])
+        return await ferry_route_from_xml_node(routes[0])
 
     async def async_get_ferry_route_id(self, route_id: int) -> FerryRouteInfoModel:
         """Retrieve ferry route id based on routeId."""
@@ -86,7 +86,7 @@ class TrafikverketFerry(TrafikverketBase):
         if len(routes) > 1:
             raise MultipleRoutesFound("Found multiple routes with the specified name")
 
-        return ferry_route_from_xml_node(routes[0])
+        return await ferry_route_from_xml_node(routes[0])
 
     async def async_search_ferry_routes(self, name: str) -> list[FerryRouteInfoModel]:
         """Search for ferry routes based on the route name."""
@@ -102,7 +102,7 @@ class TrafikverketFerry(TrafikverketBase):
         result = []
 
         for route in routes:
-            result.append(ferry_route_from_xml_node(route))
+            result.append(await ferry_route_from_xml_node(route))
 
         return result
 
@@ -142,7 +142,7 @@ class TrafikverketFerry(TrafikverketBase):
 
         stops = []
         for announcement in ferry_announcements:
-            stops.append(ferry_stop_from_xml_node(announcement))
+            stops.append(await ferry_stop_from_xml_node(announcement))
         return stops
 
     async def async_get_next_ferry_stop(
@@ -175,4 +175,4 @@ class TrafikverketFerry(TrafikverketBase):
             raise MultipleDeviationsFound("Multiple Deviations found")
 
         deviation = deviations[0]
-        return deviation_from_xml_node(deviation)
+        return await deviation_from_xml_node(deviation)
