@@ -6,7 +6,13 @@ from typing import TYPE_CHECKING
 import aiozoneinfo
 from lxml import etree
 
-from .models import CameraInfoModel, WeatherStationInfoModel
+from .models import (
+    CameraInfoModel,
+    DeviationInfoModel,
+    FerryRouteInfoModel,
+    FerryStopModel,
+    WeatherStationInfoModel,
+)
 from .trafikverket import NodeHelper
 
 SWEDEN_TIMEZONE = "Europe/Stockholm"
@@ -129,4 +135,83 @@ async def camera_from_xml_node(node: etree._ElementTree) -> CameraInfoModel:
         photourl=photourl,
         status=status,
         camera_type=camera_type,
+    )
+
+
+def ferry_stop_from_xml_node(node: etree._ElementTree) -> FerryStopModel:
+    """Map the path in the return XML data."""
+    node_helper = NodeHelper(node)
+    id = node_helper.get_text("Id")
+    name = node_helper.get_text("Route/Name")
+    short_name = node_helper.get_text("Route/Shortname")
+    deleted = node_helper.get_bool("Deleted")
+    departure_time = node_helper.get_datetime("DepartureTime")
+    other_information = node_helper.get_texts("Info")
+    deviation_id = node_helper.get_texts("DeviationId")
+    modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
+    from_harbor_name = node_helper.get_text("FromHarbor/Name")
+    to_harbor_name = node_helper.get_text("ToHarbor/Name")
+    type_name = node_helper.get_text("Route/Type/Name")
+
+    if TYPE_CHECKING:
+        assert id
+        assert name
+
+    return FerryStopModel(
+        ferry_stop_id=id,
+        ferry_stop_name=name,
+        short_name=short_name,
+        deleted=deleted,
+        departure_time=departure_time,
+        other_information=other_information,
+        deviation_id=deviation_id,
+        modified_time=modified_time,
+        from_harbor_name=from_harbor_name,
+        to_harbor_name=to_harbor_name,
+        type_name=type_name,
+    )
+
+
+def deviation_from_xml_node(node: etree._ElementTree) -> DeviationInfoModel:
+    """Map deviation information in XML data."""
+    node_helper = NodeHelper(node)
+    id = node_helper.get_text("Deviation/Id")
+    header = node_helper.get_text("Deviation/Header")
+    message = node_helper.get_text("Deviation/Message")
+    start_time = node_helper.get_datetime("Deviation/StartTime")
+    end_time = node_helper.get_datetime("Deviation/EndTime")
+    icon_id = node_helper.get_text("Deviation/IconId")
+    location_desc = node_helper.get_text("Deviation/LocationDescriptor")
+
+    if TYPE_CHECKING:
+        assert id
+
+    return DeviationInfoModel(
+        deviation_id=id,
+        header=header,
+        message=message,
+        start_time=start_time,
+        end_time=end_time,
+        icon_id=icon_id,
+        location_desc=location_desc,
+    )
+
+
+def ferry_route_from_xml_node(node: etree._ElementTree) -> FerryRouteInfoModel:
+    """Map route information in XML data."""
+    node_helper = NodeHelper(node)
+    id = node_helper.get_text("Id")
+    name = node_helper.get_text("Name")
+    short_name = node_helper.get_text("Shortname")
+    route_type = node_helper.get_text("Type/Name")
+
+    if TYPE_CHECKING:
+        assert id
+        assert name
+
+    return FerryRouteInfoModel(
+        ferry_route_id=id,
+        ferry_route_name=name,
+        short_name=short_name,
+        route_type=route_type,
     )
