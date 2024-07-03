@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import StrEnum
 
 
 @dataclass
@@ -29,8 +30,8 @@ class CameraInfoModel:
 class FerryRouteInfoModel:
     """Dataclass for Trafikverket Ferry route info."""
 
-    ferry_route_id: str | None
-    name: str | None
+    ferry_route_id: str
+    ferry_route_name: str
     short_name: str | None
     route_type: str | None
 
@@ -39,7 +40,7 @@ class FerryRouteInfoModel:
 class DeviationInfoModel:
     """Dataclass for Trafikverket Ferry deviations."""
 
-    deviation_id: str | None
+    deviation_id: str
     header: str | None
     message: str | None
     start_time: datetime | None
@@ -52,14 +53,31 @@ class DeviationInfoModel:
 class FerryStopModel:
     """Dataclass for Trafikverket Ferry stop."""
 
-    ferry_stop_id: str | None
-    deleted: bool
+    ferry_stop_id: str
+    ferry_stop_name: str | None
+    short_name: str | None
+    deleted: bool | None
     departure_time: datetime | None
     other_information: list[str] | None
     deviation_id: list[str] | None
     modified_time: datetime | None
     from_harbor_name: str | None
     to_harbor_name: str | None
+    type_name: str | None
+
+    def get_state(self) -> FerryStopStatus:
+        """Retrieve the state of the departure."""
+        if self.deleted:
+            return FerryStopStatus.DELETED
+        return FerryStopStatus.ON_TIME
+
+
+class FerryStopStatus(StrEnum):
+    """Contain the different ferry stop statuses."""
+
+    ON_TIME = "on_time"
+    CANCELED = "canceled"
+    DELETED = "deleted"
 
 
 @dataclass

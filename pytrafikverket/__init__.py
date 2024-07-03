@@ -13,7 +13,7 @@ from .trafikverket import (
     Trafikverket,
 )
 from .trafikverket_camera import TrafikverketCamera
-from .trafikverket_ferry import FerryStop, FerryStopStatus, TrafikverketFerry
+from .trafikverket_ferry import TrafikverketFerry
 from .trafikverket_train import (
     StationInfo,
     TrafikverketTrain,
@@ -21,4 +21,11 @@ from .trafikverket_train import (
     TrainStopStatus,
 )
 from .trafikverket_weather import TrafikverketWeather
-from .models import WeatherStationInfoModel, CameraInfoModel
+from .models import (
+    WeatherStationInfoModel,
+    CameraInfoModel,
+    FerryRouteInfoModel,
+    DeviationInfoModel,
+    FerryStopModel,
+    FerryStopStatus,
+)

@@ -134,7 +134,7 @@ async def async_main(loop: Any) -> None:  # pylint: disable=R0912, R0914, R0915
                 routes = await ferry_api.async_search_ferry_routes(args.route)
                 for route in routes:
                     print_values(route)
-                    print(f"{route.name} {route.id}")  # noqa: T201
+                    print(f"{route.ferry_route_name} {route.ferry_route_id}")  # noqa: T201
 
             elif args.method == GET_NEXT_FERRY_STOP:
                 if args.from_harbor is None:
