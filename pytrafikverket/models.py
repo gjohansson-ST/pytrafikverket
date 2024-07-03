@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import StrEnum
 
 
@@ -84,17 +84,25 @@ class FerryStopStatus(StrEnum):
 class StationInfoModel:
     """Dataclass for Trafikverket Train Station info."""
 
-    signature: str | None
-    name: str | None
+    signature: str
+    station_name: str
     advertised: str | None
+
+
+class TrainStopStatus(StrEnum):
+    """Contain the different train stop statuses."""
+
+    ON_TIME = "on_time"
+    DELAYED = "delayed"
+    CANCELED = "canceled"
 
 
 @dataclass
 class TrainStopModel:
     """Dataclass for Trafikverket Train stop."""
 
-    train_stop_id: str | None
-    canceled: bool
+    train_stop_id: str
+    canceled: bool | None
     advertised_time_at_location: datetime | None
     estimated_time_at_location: datetime | None
     time_at_location: datetime | None
@@ -102,6 +110,42 @@ class TrainStopModel:
     deviations: list[str] | None
     modified_time: datetime | None
     product_description: list[str] | None
+
+    def get_state(self) -> TrainStopStatus:
+        """Retrieve the state of the departure."""
+        if self.canceled:
+            return TrainStopStatus.CANCELED
+        if (
+            self.advertised_time_at_location is not None
+            and self.time_at_location is not None
+            and self.advertised_time_at_location != self.time_at_location
+        ):
+            return TrainStopStatus.DELAYED
+        if (
+            self.advertised_time_at_location is not None
+            and self.estimated_time_at_location is not None
+            and self.advertised_time_at_location != self.estimated_time_at_location
+        ):
+            return TrainStopStatus.DELAYED
+        return TrainStopStatus.ON_TIME
+
+    def get_delay_time(self) -> timedelta | None:
+        """Calculate the delay of a departure."""
+        if self.canceled:
+            return None
+        if (
+            self.advertised_time_at_location is not None
+            and self.time_at_location is not None
+            and self.advertised_time_at_location != self.time_at_location
+        ):
+            return self.time_at_location - self.advertised_time_at_location
+        if (
+            self.advertised_time_at_location is not None
+            and self.estimated_time_at_location is not None
+            and self.advertised_time_at_location != self.estimated_time_at_location
+        ):
+            return self.estimated_time_at_location - self.advertised_time_at_location
+        return None
 
 
 @dataclass

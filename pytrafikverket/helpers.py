@@ -11,6 +11,8 @@ from .models import (
     DeviationInfoModel,
     FerryRouteInfoModel,
     FerryStopModel,
+    StationInfoModel,
+    TrainStopModel,
     WeatherStationInfoModel,
 )
 from .trafikverket import NodeHelper
@@ -138,7 +140,7 @@ async def camera_from_xml_node(node: etree._ElementTree) -> CameraInfoModel:
     )
 
 
-def ferry_stop_from_xml_node(node: etree._ElementTree) -> FerryStopModel:
+async def ferry_stop_from_xml_node(node: etree._ElementTree) -> FerryStopModel:
     """Map the path in the return XML data."""
     node_helper = NodeHelper(node)
     id = node_helper.get_text("Id")
@@ -152,6 +154,12 @@ def ferry_stop_from_xml_node(node: etree._ElementTree) -> FerryStopModel:
     from_harbor_name = node_helper.get_text("FromHarbor/Name")
     to_harbor_name = node_helper.get_text("ToHarbor/Name")
     type_name = node_helper.get_text("Route/Type/Name")
+
+    zoneinfo = await aiozoneinfo.async_get_time_zone(SWEDEN_TIMEZONE)
+    if departure_time:
+        departure_time = departure_time.replace(tzinfo=zoneinfo)
+    if modified_time:
+        modified_time = modified_time.replace(tzinfo=datetime.UTC)
 
     if TYPE_CHECKING:
         assert id
@@ -172,7 +180,7 @@ def ferry_stop_from_xml_node(node: etree._ElementTree) -> FerryStopModel:
     )
 
 
-def deviation_from_xml_node(node: etree._ElementTree) -> DeviationInfoModel:
+async def deviation_from_xml_node(node: etree._ElementTree) -> DeviationInfoModel:
     """Map deviation information in XML data."""
     node_helper = NodeHelper(node)
     id = node_helper.get_text("Deviation/Id")
@@ -182,6 +190,12 @@ def deviation_from_xml_node(node: etree._ElementTree) -> DeviationInfoModel:
     end_time = node_helper.get_datetime("Deviation/EndTime")
     icon_id = node_helper.get_text("Deviation/IconId")
     location_desc = node_helper.get_text("Deviation/LocationDescriptor")
+
+    zoneinfo = await aiozoneinfo.async_get_time_zone(SWEDEN_TIMEZONE)
+    if start_time:
+        start_time = start_time.replace(tzinfo=zoneinfo)
+    if end_time:
+        end_time = end_time.replace(tzinfo=zoneinfo)
 
     if TYPE_CHECKING:
         assert id
@@ -197,7 +211,7 @@ def deviation_from_xml_node(node: etree._ElementTree) -> DeviationInfoModel:
     )
 
 
-def ferry_route_from_xml_node(node: etree._ElementTree) -> FerryRouteInfoModel:
+async def ferry_route_from_xml_node(node: etree._ElementTree) -> FerryRouteInfoModel:
     """Map route information in XML data."""
     node_helper = NodeHelper(node)
     id = node_helper.get_text("Id")
@@ -214,4 +228,63 @@ def ferry_route_from_xml_node(node: etree._ElementTree) -> FerryRouteInfoModel:
         ferry_route_name=name,
         short_name=short_name,
         route_type=route_type,
+    )
+
+
+async def station_from_xml_node(node: etree._ElementTree) -> StationInfoModel:
+    """Map station information in XML data."""
+    node_helper = NodeHelper(node)
+    location_signature = node_helper.get_text("LocationSignature")
+    advertised_location_name = node_helper.get_text("AdvertisedLocationName")
+    location_advertised = node_helper.get_text("Advertised")
+
+    if TYPE_CHECKING:
+        assert location_signature
+        assert advertised_location_name
+
+    return StationInfoModel(
+        signature=location_signature,
+        station_name=advertised_location_name,
+        advertised=location_advertised,
+    )
+
+
+async def train_stop_from_xml_node(node: etree._ElementTree) -> TrainStopModel:
+    """Map the path in the return XML data."""
+    node_helper = NodeHelper(node)
+    activity_id = node_helper.get_text("ActivityId")
+    canceled = node_helper.get_bool("Canceled")
+    advertised_time_at_location = node_helper.get_datetime("AdvertisedTimeAtLocation")
+    estimated_time_at_location = node_helper.get_datetime("EstimatedTimeAtLocation")
+    time_at_location = node_helper.get_datetime("TimeAtLocation")
+    other_information = node_helper.get_texts("OtherInformation/Description")
+    deviations = node_helper.get_texts("Deviation/Description")
+    modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
+    product_description = node_helper.get_texts("ProductInformation/Description")
+
+    zoneinfo = await aiozoneinfo.async_get_time_zone(SWEDEN_TIMEZONE)
+    if advertised_time_at_location:
+        advertised_time_at_location = advertised_time_at_location.replace(
+            tzinfo=zoneinfo
+        )
+    if estimated_time_at_location:
+        estimated_time_at_location = estimated_time_at_location.replace(tzinfo=zoneinfo)
+    if time_at_location:
+        time_at_location = time_at_location.replace(tzinfo=zoneinfo)
+    if modified_time:
+        modified_time = modified_time.replace(tzinfo=datetime.UTC)
+
+    if TYPE_CHECKING:
+        assert activity_id
+
+    return TrainStopModel(
+        train_stop_id=activity_id,
+        canceled=canceled,
+        advertised_time_at_location=advertised_time_at_location,
+        estimated_time_at_location=estimated_time_at_location,
+        time_at_location=time_at_location,
+        other_information=other_information,
+        deviations=deviations,
+        modified_time=modified_time,
+        product_description=product_description,
     )

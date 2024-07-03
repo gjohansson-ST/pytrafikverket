@@ -1,6 +1,17 @@
 """Pytrafikverket module."""
 
 # flake8: noqa
+from .models import (
+    CameraInfoModel,
+    DeviationInfoModel,
+    FerryRouteInfoModel,
+    FerryStopModel,
+    FerryStopStatus,
+    StationInfoModel,
+    TrainStopModel,
+    TrainStopStatus,
+    WeatherStationInfoModel,
+)
 from .trafikverket import (
     AndFilter,
     FieldFilter,
@@ -15,17 +26,6 @@ from .trafikverket import (
 from .trafikverket_camera import TrafikverketCamera
 from .trafikverket_ferry import TrafikverketFerry
 from .trafikverket_train import (
-    StationInfo,
     TrafikverketTrain,
-    TrainStop,
-    TrainStopStatus,
 )
 from .trafikverket_weather import TrafikverketWeather
-from .models import (
-    WeatherStationInfoModel,
-    CameraInfoModel,
-    FerryRouteInfoModel,
-    DeviationInfoModel,
-    FerryStopModel,
-    FerryStopStatus,
-)

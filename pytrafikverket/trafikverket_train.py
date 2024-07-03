@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-from enum import Enum
+from datetime import datetime
 
-from lxml import etree
+from pytrafikverket.helpers import station_from_xml_node, train_stop_from_xml_node
+from pytrafikverket.models import StationInfoModel, TrainStopModel
 
 from .exceptions import (
     MultipleTrainStationsFound,
@@ -16,7 +16,6 @@ from .trafikverket import (
     FieldFilter,
     FieldSort,
     FilterOperation,
-    NodeHelper,
     OrFilter,
     SortOrder,
     Trafikverket,
@@ -39,129 +38,10 @@ TRAIN_STOP_REQUIRED_FIELDS = [
 ]
 
 
-class StationInfo:
-    """Contains information about a train station."""
-
-    def __init__(
-        self, signature: str | None, name: str | None, advertised: str | None
-    ) -> None:
-        """Initialize StationInfo class."""
-        self.signature = signature
-        self.name = name
-        self.advertised = advertised
-
-    @classmethod
-    def from_xml_node(cls, node: etree._ElementTree) -> StationInfo:
-        """Map station information in XML data."""
-        node_helper = NodeHelper(node)
-        location_signature = node_helper.get_text("LocationSignature")
-        advertised_location_name = node_helper.get_text("AdvertisedLocationName")
-        location_advertised = node_helper.get_text("Advertised")
-        return cls(location_signature, advertised_location_name, location_advertised)
-
-
-class TrainStopStatus(Enum):
-    """Contain the different train stop statuses."""
-
-    ON_TIME = "on_time"
-    DELAYED = "delayed"
-    CANCELED = "canceled"
-
-
-class TrainStop:  # pylint: disable=too-many-instance-attributes
-    """Contain information about a train stop."""
-
-    def __init__(
-        self,
-        id: str | None,
-        canceled: bool | None,
-        advertised_time_at_location: datetime | None,
-        estimated_time_at_location: datetime | None,
-        time_at_location: datetime | None,
-        other_information: list[str] | None,
-        deviations: list[str] | None,
-        modified_time: datetime | None,
-        product_description: list[str] | None,
-    ) -> None:
-        """Initialize TrainStop."""
-        self.id = id
-        self.canceled = canceled
-        self.advertised_time_at_location = advertised_time_at_location
-        self.estimated_time_at_location = estimated_time_at_location
-        self.time_at_location = time_at_location
-        self.other_information = other_information
-        self.deviations = deviations
-        self.modified_time = modified_time
-        self.product_description = product_description
-
-    def get_state(self) -> TrainStopStatus:
-        """Retrieve the state of the departure."""
-        if self.canceled:
-            return TrainStopStatus.CANCELED
-        if (
-            self.advertised_time_at_location is not None
-            and self.time_at_location is not None
-            and self.advertised_time_at_location != self.time_at_location
-        ):
-            return TrainStopStatus.DELAYED
-        if (
-            self.advertised_time_at_location is not None
-            and self.estimated_time_at_location is not None
-            and self.advertised_time_at_location != self.estimated_time_at_location
-        ):
-            return TrainStopStatus.DELAYED
-        return TrainStopStatus.ON_TIME
-
-    def get_delay_time(self) -> timedelta | None:
-        """Calculate the delay of a departure."""
-        if self.canceled:
-            return None
-        if (
-            self.advertised_time_at_location is not None
-            and self.time_at_location is not None
-            and self.advertised_time_at_location != self.time_at_location
-        ):
-            return self.time_at_location - self.advertised_time_at_location
-        if (
-            self.advertised_time_at_location is not None
-            and self.estimated_time_at_location is not None
-            and self.advertised_time_at_location != self.estimated_time_at_location
-        ):
-            return self.estimated_time_at_location - self.advertised_time_at_location
-        return None
-
-    @classmethod
-    def from_xml_node(cls, node: etree._ElementTree) -> TrainStop:
-        """Map the path in the return XML data."""
-        node_helper = NodeHelper(node)
-        activity_id = node_helper.get_text("ActivityId")
-        canceled = node_helper.get_bool("Canceled")
-        advertised_time_at_location = node_helper.get_datetime(
-            "AdvertisedTimeAtLocation"
-        )
-        estimated_time_at_location = node_helper.get_datetime("EstimatedTimeAtLocation")
-        time_at_location = node_helper.get_datetime("TimeAtLocation")
-        other_information = node_helper.get_texts("OtherInformation/Description")
-        deviations = node_helper.get_texts("Deviation/Description")
-        modified_time = node_helper.get_datetime_for_modified("ModifiedTime")
-        product_description = node_helper.get_texts("ProductInformation/Description")
-        return cls(
-            activity_id,
-            canceled,
-            advertised_time_at_location,
-            estimated_time_at_location,
-            time_at_location,
-            other_information,
-            deviations,
-            modified_time,
-            product_description,
-        )
-
-
 class TrafikverketTrain(TrafikverketBase):
     """Class used to communicate with trafikverket's train api."""
 
-    async def async_get_train_station(self, location_name: str) -> StationInfo:
+    async def async_get_train_station(self, location_name: str) -> StationInfoModel:
         """Retrieve train station id based on name."""
         train_stations = await self._api.async_make_request(
             "TrainStation",
@@ -183,11 +63,11 @@ class TrafikverketTrain(TrafikverketBase):
                 "Found multiple stations with the specified name"
             )
 
-        return StationInfo.from_xml_node(train_stations[0])
+        return await station_from_xml_node(train_stations[0])
 
     async def async_search_train_stations(
         self, location_name: str
-    ) -> list[StationInfo]:
+    ) -> list[StationInfoModel]:
         """Search for train stations."""
         train_stations = await self._api.async_make_request(
             "TrainStation",
@@ -208,18 +88,18 @@ class TrafikverketTrain(TrafikverketBase):
         result = []
 
         for train_station in train_stations:
-            result.append(StationInfo.from_xml_node(train_station))
+            result.append(await station_from_xml_node(train_station))
 
         return result
 
     async def async_get_train_stop(
         self,
-        from_station: StationInfo,
-        to_station: StationInfo,
+        from_station: StationInfoModel,
+        to_station: StationInfoModel,
         time_at_location: datetime,
         product_description: str | None = None,
         exclude_canceled: bool = False,
-    ) -> TrainStop:
+    ) -> TrainStopModel:
         """Retrieve the train stop."""
         date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
 
@@ -271,17 +151,17 @@ class TrafikverketTrain(TrafikverketBase):
             raise NoTrainAnnouncementFound("No TrainAnnouncement found")
 
         train_announcement = train_announcements[0]
-        return TrainStop.from_xml_node(train_announcement)
+        return await train_stop_from_xml_node(train_announcement)
 
     async def async_get_next_train_stops(
         self,
-        from_station: StationInfo,
-        to_station: StationInfo,
+        from_station: StationInfoModel,
+        to_station: StationInfoModel,
         after_time: datetime,
         product_description: str | None = None,
         exclude_canceled: bool = False,
         number_of_stops: int = 1,
-    ) -> list[TrainStop]:
+    ) -> list[TrainStopModel]:
         """Enable retrieval of next departures."""
         date_as_text = after_time.strftime(Trafikverket.date_time_format)
 
@@ -338,17 +218,17 @@ class TrafikverketTrain(TrafikverketBase):
 
         stops = []
         for announcement in train_announcements:
-            stops.append(TrainStop.from_xml_node(announcement))
+            stops.append(await train_stop_from_xml_node(announcement))
         return stops
 
     async def async_get_next_train_stop(
         self,
-        from_station: StationInfo,
-        to_station: StationInfo,
+        from_station: StationInfoModel,
+        to_station: StationInfoModel,
         after_time: datetime,
         product_description: str | None = None,
         exclude_canceled: bool = False,
-    ) -> TrainStop:
+    ) -> TrainStopModel:
         """Enable retrieval of next departure."""
 
         stops = await self.async_get_next_train_stops(
