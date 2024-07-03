@@ -1,11 +1,15 @@
 """Helpers for creating dataclasses."""
 
+from __future__ import annotations
+
 import datetime
+import logging
 from typing import TYPE_CHECKING
 
 import aiozoneinfo
 from lxml import etree
 
+from .const import DATE_TIME_FORMAT, DATE_TIME_FORMAT_FOR_MODIFIED, SWEDEN_TIMEZONE
 from .models import (
     CameraInfoModel,
     DeviationInfoModel,
@@ -15,9 +19,96 @@ from .models import (
     TrainStopModel,
     WeatherStationInfoModel,
 )
-from .trafikverket import NodeHelper
 
-SWEDEN_TIMEZONE = "Europe/Stockholm"
+LOGGER = logging.getLogger(__name__)
+
+
+class NodeHelper:
+    """Helper class to get node content."""
+
+    def __init__(self, node: etree._ElementTree) -> None:
+        """Initialize the class."""
+        self._node = node
+
+    def get_text(self, field: str) -> str | None:
+        """Return the text in 'field' from the node or None if not found."""
+        nodes: list[etree._Element] | None = self._node.xpath(field)
+        if nodes is None:
+            return None
+        if len(nodes) == 0:
+            return None
+        if len(nodes) > 1:
+            raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return text value %s", nodes[0].text)
+        value: str = nodes[0].text
+        return value
+
+    def get_number(self, field: str) -> float | None:
+        """Return the number in 'field' from the node or None if not found."""
+        nodes: list[etree._Element] | None = self._node.xpath(field)
+        if nodes is None:
+            return None
+        if len(nodes) == 0:
+            return None
+        if len(nodes) > 1:
+            raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return number value %s", nodes[0].text)
+        try:
+            value = float(nodes[0].text)
+        except ValueError:
+            return None
+        return value
+
+    def get_texts(self, field: str) -> list[str] | None:
+        """Return a list of texts from the node selected by 'field' or None."""
+        nodes: list[etree._Element] | None = self._node.xpath(field)
+        if nodes is None:
+            return None
+        result = []
+        for line in nodes:
+            result.append(line.text)
+        LOGGER.debug("Return texts value %s", result)
+        return result
+
+    def get_datetime_for_modified(self, field: str) -> datetime.datetime | None:
+        """Return datetime object from node, selected by 'field'.
+
+        Format of the text is expected to be modifiedTime-format.
+        """
+        nodes: list[etree._Element] | None = self._node.xpath(field)
+        if nodes is None:
+            return None
+        if len(nodes) == 0:
+            return None
+        if len(nodes) > 1:
+            raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return modified value %s", nodes[0].text)
+        return datetime.datetime.strptime(nodes[0].text, DATE_TIME_FORMAT_FOR_MODIFIED)
+
+    def get_datetime(self, field: str) -> datetime.datetime | None:
+        """Return a datetime object from node, selected by 'field'."""
+        nodes: list[etree._Element] | None = self._node.xpath(field)
+        if nodes is None:
+            return None
+        if len(nodes) == 0:
+            return None
+        if len(nodes) > 1:
+            raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return datetime value %s", nodes[0].text)
+        return datetime.datetime.strptime(nodes[0].text, DATE_TIME_FORMAT)
+
+    def get_bool(self, field: str) -> bool | None:
+        """Return True if value selected by field is 'true' else returns False."""
+        nodes: list[etree._Element] | None = self._node.xpath(field)
+        if nodes is None:
+            return None
+        if len(nodes) == 0:
+            return None
+        if len(nodes) > 1:
+            raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
+        LOGGER.debug("Return bool value %s", nodes[0].text)
+        value: bool = nodes[0].text.lower() == "true"
+        return value
 
 
 async def weather_from_xml_node(node: etree._ElementTree) -> WeatherStationInfoModel:

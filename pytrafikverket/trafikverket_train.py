@@ -4,38 +4,25 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pytrafikverket.helpers import station_from_xml_node, train_stop_from_xml_node
-from pytrafikverket.models import StationInfoModel, TrainStopModel
-
+from .const import (
+    DATE_TIME_FORMAT,
+    STATION_INFO_REQUIRED_FIELDS,
+    TRAIN_STOP_REQUIRED_FIELDS,
+)
 from .exceptions import (
     MultipleTrainStationsFound,
     NoTrainAnnouncementFound,
     NoTrainStationFound,
 )
+from .filters import FieldFilter, FieldSort, FilterOperation, OrFilter, SortOrder
+from .helpers import (
+    station_from_xml_node,
+    train_stop_from_xml_node,
+)
+from .models import StationInfoModel, TrainStopModel
 from .trafikverket import (
-    FieldFilter,
-    FieldSort,
-    FilterOperation,
-    OrFilter,
-    SortOrder,
-    Trafikverket,
     TrafikverketBase,
 )
-
-# pylint: disable=W0622, C0103
-
-STATION_INFO_REQUIRED_FIELDS = ["LocationSignature", "AdvertisedLocationName"]
-TRAIN_STOP_REQUIRED_FIELDS = [
-    "ActivityId",
-    "Canceled",
-    "AdvertisedTimeAtLocation",
-    "EstimatedTimeAtLocation",
-    "TimeAtLocation",
-    "OtherInformation",
-    "Deviation",
-    "ModifiedTime",
-    "ProductInformation",
-]
 
 
 class TrafikverketTrain(TrafikverketBase):
@@ -101,7 +88,7 @@ class TrafikverketTrain(TrafikverketBase):
         exclude_canceled: bool = False,
     ) -> TrainStopModel:
         """Retrieve the train stop."""
-        date_as_text = time_at_location.strftime(Trafikverket.date_time_format)
+        date_as_text = time_at_location.strftime(DATE_TIME_FORMAT)
 
         filters = [
             FieldFilter(FilterOperation.EQUAL, "ActivityType", "Avgang"),
@@ -163,7 +150,7 @@ class TrafikverketTrain(TrafikverketBase):
         number_of_stops: int = 1,
     ) -> list[TrainStopModel]:
         """Enable retrieval of next departures."""
-        date_as_text = after_time.strftime(Trafikverket.date_time_format)
+        date_as_text = after_time.strftime(DATE_TIME_FORMAT)
 
         filters = [
             FieldFilter(FilterOperation.EQUAL, "ActivityType", "Avgang"),

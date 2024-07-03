@@ -4,26 +4,12 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pytrafikverket.helpers import (
-    deviation_from_xml_node,
-    ferry_route_from_xml_node,
-    ferry_stop_from_xml_node,
+from .const import (
+    DATE_TIME_FORMAT,
+    DEVIATION_INFO_REQUIRED_FIELDS,
+    FERRY_STOP_REQUIRED_FIELDS,
+    ROUTE_INFO_REQUIRED_FIELDS,
 )
-from pytrafikverket.models import (
-    DeviationInfoModel,
-    FerryRouteInfoModel,
-    FerryStopModel,
-)
-from pytrafikverket.trafikverket import (
-    FieldFilter,
-    FieldSort,
-    Filter,
-    FilterOperation,
-    SortOrder,
-    Trafikverket,
-    TrafikverketBase,
-)
-
 from .exceptions import (
     MultipleDeviationsFound,
     MultipleRoutesFound,
@@ -31,28 +17,20 @@ from .exceptions import (
     NoFerryFound,
     NoRouteFound,
 )
-
-ROUTE_INFO_REQUIRED_FIELDS = ["Id", "Name", "Shortname", "Type.Name"]
-DEVIATION_INFO_REQUIRED_FIELDS = [
-    "Deviation.Id",
-    "Deviation.Header",
-    "Deviation.EndTime",
-    "Deviation.StartTime",
-    "Deviation.Message",
-    "Deviation.IconId",
-    "Deviation.LocationDescriptor",
-]
-FERRY_STOP_REQUIRED_FIELDS = [
-    "Id",
-    "Deleted",
-    "DepartureTime",
-    "Route.Name",
-    "DeviationId",
-    "ModifiedTime",
-    "FromHarbor",
-    "ToHarbor",
-    "Info",
-]
+from .filters import FieldFilter, FieldSort, Filter, FilterOperation, SortOrder
+from .helpers import (
+    deviation_from_xml_node,
+    ferry_route_from_xml_node,
+    ferry_stop_from_xml_node,
+)
+from .models import (
+    DeviationInfoModel,
+    FerryRouteInfoModel,
+    FerryStopModel,
+)
+from .trafikverket import (
+    TrafikverketBase,
+)
 
 
 class TrafikverketFerry(TrafikverketBase):
@@ -114,7 +92,7 @@ class TrafikverketFerry(TrafikverketBase):
         number_of_stops: int = 1,
     ) -> list[FerryStopModel]:
         """Enable retrieval of next departures."""
-        date_as_text = after_time.strftime(Trafikverket.date_time_format)
+        date_as_text = after_time.strftime(DATE_TIME_FORMAT)
 
         filters: list[FieldFilter | Filter] = [
             FieldFilter(FilterOperation.EQUAL, "FromHarbor.Name", from_harbor_name),

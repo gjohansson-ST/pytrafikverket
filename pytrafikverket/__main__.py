@@ -10,21 +10,22 @@ from typing import Any
 
 import aiohttp
 
+from .const import (
+    DATE_TIME_INPUT,
+    GET_FERRY_ROUTE,
+    GET_NEXT_FERRY_STOP,
+    GET_NEXT_TRAIN_STOP,
+    GET_TRAIN_STOP,
+    GET_WEATHER,
+    SEARCH_FOR_FERRY_ROUTE,
+    SEARCH_FOR_STATION,
+)
 from .trafikverket_ferry import TrafikverketFerry
 from .trafikverket_train import TrafikverketTrain
 from .trafikverket_weather import TrafikverketWeather
 
-SEARCH_FOR_STATION = "search-for-station"
-GET_TRAIN_STOP = "get-train-stop"
-GET_NEXT_TRAIN_STOP = "get-next-train-stop"
-GET_WEATHER = "get-weather"
-GET_FERRY_ROUTE = "get-ferry-route"
-SEARCH_FOR_FERRY_ROUTE = "search-for-ferry-route"
-GET_NEXT_FERRY_STOP = "get-next-ferry-stop"
-DATE_TIME_INPUT = "%Y-%m-%dT%H:%M:%S"
 
-
-async def async_main(loop: Any) -> None:  # pylint: disable=R0912, R0914, R0915
+async def async_main(loop: Any) -> None:
     """Set up function to handle input and get data to present."""
     async with aiohttp.ClientSession(loop=loop) as session:
         parser = argparse.ArgumentParser(

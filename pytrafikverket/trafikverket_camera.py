@@ -5,29 +5,12 @@ from __future__ import annotations
 from pytrafikverket.helpers import camera_from_xml_node
 from pytrafikverket.models import CameraInfoModel
 
+from .const import CAMERA_INFO_REQUIRED_FIELDS
 from .exceptions import MultipleCamerasFound, NoCameraFound
+from .filters import FieldFilter, FilterOperation, OrFilter
 from .trafikverket import (
-    FieldFilter,
-    FilterOperation,
-    OrFilter,
     TrafikverketBase,
 )
-
-CAMERA_INFO_REQUIRED_FIELDS = [
-    "Name",
-    "Id",
-    "Active",
-    "Deleted",
-    "Description",
-    "Direction",
-    "HasFullSizePhoto",
-    "Location",
-    "ModifiedTime",
-    "PhotoTime",
-    "PhotoUrl",
-    "Status",
-    "Type",
-]
 
 
 class TrafikverketCamera(TrafikverketBase):
