@@ -100,6 +100,9 @@ warn_unused_ignores = true
 ignore = [
   "tests"
 ]
+extension-pkg-whitelist = [
+  "lxml"
+]
 
 [tool.pylint.BASIC]
 good-names = [
