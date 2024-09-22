@@ -133,6 +133,8 @@ disable = [
     "too-few-public-methods",
     "too-many-ancestors",
     "too-many-arguments",
+    # Pylint 3.3 added check for positional arguments
+    "too-many-positional-arguments",
     "too-many-instance-attributes",
     "too-many-lines",
     "too-many-locals",
