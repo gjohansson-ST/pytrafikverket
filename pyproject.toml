@@ -100,7 +100,7 @@ warn_unused_ignores = true
 ignore = [
   "tests"
 ]
-unsafe-load-any-extension = [
+extension-pkg-whitelist = [
   "lxml"
 ]
 
