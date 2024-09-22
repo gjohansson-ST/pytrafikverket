@@ -100,6 +100,9 @@ warn_unused_ignores = true
 ignore = [
   "tests"
 ]
+unsafe-load-any-extension = [
+  "lxml"
+]
 
 [tool.pylint.BASIC]
 good-names = [
