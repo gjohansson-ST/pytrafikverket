@@ -53,6 +53,7 @@ ruff = "0.7.4"
 safety = "3.2.11"
 yamllint = "1.35.1"
 syrupy = "4.7.2"
+types-lxml = "2024.11.8"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/gjohansson-ST/pytrafikverket/issues"
