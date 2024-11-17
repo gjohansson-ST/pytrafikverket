@@ -40,7 +40,7 @@ class NodeHelper:
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         LOGGER.debug("Return text value %s", nodes[0].text)
-        value: str = nodes[0].text
+        value: str | None = nodes[0].text
         return value
 
     def get_number(self, field: str) -> float | None:
@@ -53,6 +53,8 @@ class NodeHelper:
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         LOGGER.debug("Return number value %s", nodes[0].text)
+        if TYPE_CHECKING:
+            assert nodes[0].text is not None
         try:
             value = float(nodes[0].text)
         except ValueError:
@@ -64,8 +66,10 @@ class NodeHelper:
         nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
             return None
-        result = []
+        result: list[str] = []
         for line in nodes:
+            if TYPE_CHECKING:
+                assert line.text is not None
             result.append(line.text)
         LOGGER.debug("Return texts value %s", result)
         return result
@@ -83,6 +87,8 @@ class NodeHelper:
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         LOGGER.debug("Return modified value %s", nodes[0].text)
+        if TYPE_CHECKING:
+            assert nodes[0].text is not None
         return datetime.datetime.strptime(nodes[0].text, DATE_TIME_FORMAT_FOR_MODIFIED)
 
     def get_datetime(self, field: str) -> datetime.datetime | None:
@@ -95,6 +101,8 @@ class NodeHelper:
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         LOGGER.debug("Return datetime value %s", nodes[0].text)
+        if TYPE_CHECKING:
+            assert nodes[0].text is not None
         return datetime.datetime.strptime(nodes[0].text, DATE_TIME_FORMAT)
 
     def get_bool(self, field: str) -> bool | None:
@@ -107,6 +115,8 @@ class NodeHelper:
         if len(nodes) > 1:
             raise ValueError("Found multiple nodes should only 0 or 1 is allowed")
         LOGGER.debug("Return bool value %s", nodes[0].text)
+        if TYPE_CHECKING:
+            assert nodes[0].text is not None
         value: bool = nodes[0].text.lower() == "true"
         return value
 
