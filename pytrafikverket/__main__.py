@@ -72,10 +72,10 @@ async def async_main(loop: Any) -> None:
                 for station in stations:
                     print_values(station)
             elif args.method == GET_TRAIN_STOP:
-                from_station = await train_api.async_get_train_station(
+                from_station = await train_api.async_search_train_station(
                     args.from_station
                 )
-                to_station = await train_api.async_get_train_station(args.to_station)
+                to_station = await train_api.async_search_train_station(args.to_station)
                 print(f"from_station_signature: {from_station.signature}")  # noqa: T201
                 print(f"to_station_signature:   {to_station.signature}")  # noqa: T201
 
@@ -91,10 +91,10 @@ async def async_main(loop: Any) -> None:
                 print_values(train_stop)
 
             elif args.method == GET_NEXT_TRAIN_STOP:
-                from_station = await train_api.async_get_train_station(
+                from_station = await train_api.async_search_train_station(
                     args.from_station
                 )
-                to_station = await train_api.async_get_train_station(args.to_station)
+                to_station = await train_api.async_search_train_station(args.to_station)
                 print(f"from_station_signature: {from_station.signature}")  # noqa: T201
                 print(f"to_station_signature:   {to_station.signature}")  # noqa: T201
 
