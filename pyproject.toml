@@ -135,7 +135,6 @@ disable = [
     "too-many-ancestors",
     "too-many-arguments",
     # Pylint 3.3 added check for positional arguments
-    "too-many-positional-arguments",
     "too-many-instance-attributes",
     "too-many-lines",
     "too-many-locals",
@@ -143,8 +142,6 @@ disable = [
     "too-many-boolean-expressions",
     "wrong-import-order",
     "consider-using-f-string",
-    "consider-using-namedtuple-or-dataclass",
-    "consider-using-assignment-expr",
     "possibly-used-before-assignment",
 
     # Handled by ruff
@@ -255,9 +252,7 @@ disable = [
     "wrong-import-position", # E402
     "comparison-of-constants", # PLR0133
     "comparison-with-itself", # PLR0124
-    "consider-alternative-union-syntax", # UP007
     "consider-merging-isinstance", # PLR1701
-    "consider-using-alias", # UP006
     "consider-using-dict-comprehension", # C402
     "consider-using-generator", # C417
     "consider-using-get", # SIM401
