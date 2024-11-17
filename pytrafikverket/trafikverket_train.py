@@ -27,6 +27,24 @@ from .trafikverket import (
 class TrafikverketTrain(TrafikverketBase):
     """Class used to communicate with trafikverket's train api."""
 
+    async def async_get_train_station_from_signature(
+        self, signature: str
+    ) -> StationInfoModel:
+        """Retrieve train station based on signature."""
+        train_stations = await self._api.async_make_request(
+            "TrainStation",
+            "1.4",
+            ["AdvertisedLocationName", "LocationSignature", "Advertised", "Deleted"],
+            [
+                FieldFilter(FilterOperation.EQUAL, "LocationSignature", signature),
+            ],
+        )
+        if len(train_stations) == 0:
+            raise NoTrainStationFound(
+                "Could not find a station with the specified name"
+            )
+        return await station_from_xml_node(train_stations[0])
+
     async def async_search_train_station(self, location_name: str) -> StationInfoModel:
         """Retrieve train station id based on name."""
         train_stations = await self.async_search_train_stations(location_name)
