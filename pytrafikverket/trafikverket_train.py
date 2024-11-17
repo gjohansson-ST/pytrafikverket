@@ -6,7 +6,6 @@ from datetime import datetime
 
 from .const import (
     DATE_TIME_FORMAT,
-    STATION_INFO_REQUIRED_FIELDS,
     TRAIN_STOP_REQUIRED_FIELDS,
 )
 from .exceptions import (
@@ -28,19 +27,10 @@ from .trafikverket import (
 class TrafikverketTrain(TrafikverketBase):
     """Class used to communicate with trafikverket's train api."""
 
-    async def async_get_train_station(self, location_name: str) -> StationInfoModel:
+    async def async_search_train_station(self, location_name: str) -> StationInfoModel:
         """Retrieve train station id based on name."""
-        train_stations = await self._api.async_make_request(
-            "TrainStation",
-            "1.4",
-            STATION_INFO_REQUIRED_FIELDS,
-            [
-                FieldFilter(
-                    FilterOperation.EQUAL, "AdvertisedLocationName", location_name
-                ),
-                FieldFilter(FilterOperation.EQUAL, "Advertised", "true"),
-            ],
-        )
+        train_stations = await self.async_search_train_stations(location_name)
+
         if len(train_stations) == 0:
             raise NoTrainStationFound(
                 "Could not find a station with the specified name"
@@ -50,7 +40,7 @@ class TrafikverketTrain(TrafikverketBase):
                 "Found multiple stations with the specified name"
             )
 
-        return await station_from_xml_node(train_stations[0])
+        return train_stations[0]
 
     async def async_search_train_stations(
         self, location_name: str
