@@ -34,6 +34,7 @@ class TrafikverketTrain(TrafikverketBase):
         train_stations = await self._api.async_make_request(
             "TrainStation",
             "1.4",
+            None,
             ["AdvertisedLocationName", "LocationSignature", "Advertised", "Deleted"],
             [
                 FieldFilter(FilterOperation.EQUAL, "LocationSignature", signature),
@@ -67,6 +68,7 @@ class TrafikverketTrain(TrafikverketBase):
         train_stations = await self._api.async_make_request(
             "TrainStation",
             "1.4",
+            None,
             ["AdvertisedLocationName", "LocationSignature", "Advertised", "Deleted"],
             [
                 FieldFilter(
@@ -137,6 +139,7 @@ class TrafikverketTrain(TrafikverketBase):
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
             "1.8",
+            None,
             TRAIN_STOP_REQUIRED_FIELDS,
             filters,
             1,
@@ -202,6 +205,7 @@ class TrafikverketTrain(TrafikverketBase):
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
             "1.8",
+            None,
             TRAIN_STOP_REQUIRED_FIELDS,
             filters,
             number_of_stops,

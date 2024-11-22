@@ -21,6 +21,7 @@ class TrafikverketCamera(TrafikverketBase):
         cameras = await self._api.async_make_request(
             "Camera",
             "1.0",
+            None,
             CAMERA_INFO_REQUIRED_FIELDS,
             [
                 OrFilter(
@@ -44,6 +45,7 @@ class TrafikverketCamera(TrafikverketBase):
         cameras = await self._api.async_make_request(
             "Camera",
             "1.0",
+            None,
             CAMERA_INFO_REQUIRED_FIELDS,
             [
                 OrFilter(
