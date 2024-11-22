@@ -21,13 +21,15 @@
         ],
         "settings": {
           "[python]": {
-            "editor.defaultFormatter": "charliermarsh.ruff",
             "editor.formatOnSave": true,
+            "editor.formatOnType": true,
             "editor.codeActionsOnSave": {
               "source.fixAll": "explicit",
               "source.organizeImports": "explicit"
-            }
+            },
+            "editor.defaultFormatter": "charliermarsh.ruff"
           },
+          "python.terminal.activateEnvInCurrentTerminal": true,
           "coverage-gutters.customizable.context-menu": true,
           "coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
           "coverage-gutters.showGutterCoverage": false,
@@ -42,8 +44,13 @@
           "python.testing.cwd": "${workspaceFolder}",
           "python.testing.pytestArgs": ["--cov-report=xml"],
           "python.testing.pytestEnabled": true,
-          "ruff.importStrategy": "fromEnvironment",
-          "ruff.interpreter": [".venv/bin/python"],
+          "ruff.lint.args": [
+              "--config=pyproject.toml"
+          ],
+          "ruff.organizeImports": true,
+          "ruff.fixAll": true,
+          "editor.formatOnSave": true,
+          "editor.formatOnType": true,
           "files.trimTrailingWhitespace": true,
           "terminal.integrated.defaultProfile.linux": "zsh"
         }
