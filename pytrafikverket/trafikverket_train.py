@@ -27,6 +27,8 @@ from .trafikverket import (
 class TrafikverketTrain(TrafikverketBase):
     """Class used to communicate with trafikverket's train api."""
 
+    version = "1.9"
+
     async def async_get_train_station_from_signature(
         self, signature: str
     ) -> StationInfoModel:

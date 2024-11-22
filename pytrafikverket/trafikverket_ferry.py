@@ -36,6 +36,8 @@ from .trafikverket import (
 class TrafikverketFerry(TrafikverketBase):
     """Class used to communicate with trafikverket's ferry route api."""
 
+    version = "1.2"
+
     async def async_get_ferry_route(self, route_name: str) -> FerryRouteInfoModel:
         """Retrieve ferry route id based on name."""
         routes = await self._api.async_make_request(

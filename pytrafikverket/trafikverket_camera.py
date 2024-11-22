@@ -16,6 +16,8 @@ from .trafikverket import (
 class TrafikverketCamera(TrafikverketBase):
     """Class used to communicate with trafikverket's camera api."""
 
+    version = "1.0"
+
     async def async_get_camera(self, search_string: str) -> CameraInfoModel:
         """Retrieve camera from API."""
         cameras = await self._api.async_make_request(

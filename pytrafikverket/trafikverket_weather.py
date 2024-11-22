@@ -13,6 +13,8 @@ from .trafikverket import TrafikverketBase
 class TrafikverketWeather(TrafikverketBase):
     """Class used to communicate with trafikverket's weather api."""
 
+    version = "2.1"
+
     async def async_get_weather(self, location_name: str) -> WeatherStationInfoModel:
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
