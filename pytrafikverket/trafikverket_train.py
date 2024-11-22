@@ -33,8 +33,8 @@ class TrafikverketTrain(TrafikverketBase):
         """Retrieve train station based on signature."""
         train_stations = await self._api.async_make_request(
             "TrainStation",
-            "1.4",
-            None,
+            "1.5",
+            "rail.infrastructure",
             ["AdvertisedLocationName", "LocationSignature", "Advertised", "Deleted"],
             [
                 FieldFilter(FilterOperation.EQUAL, "LocationSignature", signature),
@@ -67,8 +67,8 @@ class TrafikverketTrain(TrafikverketBase):
         """Search for train stations."""
         train_stations = await self._api.async_make_request(
             "TrainStation",
-            "1.4",
-            None,
+            "1.5",
+            "rail.infrastructure",
             ["AdvertisedLocationName", "LocationSignature", "Advertised", "Deleted"],
             [
                 FieldFilter(
@@ -138,7 +138,7 @@ class TrafikverketTrain(TrafikverketBase):
 
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
-            "1.8",
+            "1.9",
             None,
             TRAIN_STOP_REQUIRED_FIELDS,
             filters,
@@ -204,7 +204,7 @@ class TrafikverketTrain(TrafikverketBase):
         sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ASCENDING)]
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
-            "1.8",
+            "1.9",
             None,
             TRAIN_STOP_REQUIRED_FIELDS,
             filters,
