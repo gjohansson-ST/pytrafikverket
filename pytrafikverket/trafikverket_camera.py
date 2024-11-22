@@ -22,7 +22,7 @@ class TrafikverketCamera(TrafikverketBase):
         """Retrieve camera from API."""
         cameras = await self._api.async_make_request(
             "Camera",
-            "1.0",
+            self.version,
             None,
             CAMERA_INFO_REQUIRED_FIELDS,
             [
@@ -46,7 +46,7 @@ class TrafikverketCamera(TrafikverketBase):
         """Retrieve multipple cameras from API."""
         cameras = await self._api.async_make_request(
             "Camera",
-            "1.0",
+            self.version,
             None,
             CAMERA_INFO_REQUIRED_FIELDS,
             [

@@ -140,7 +140,7 @@ class TrafikverketTrain(TrafikverketBase):
 
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
-            "1.9",
+            self.version,
             None,
             TRAIN_STOP_REQUIRED_FIELDS,
             filters,
@@ -206,7 +206,7 @@ class TrafikverketTrain(TrafikverketBase):
         sorting = [FieldSort("AdvertisedTimeAtLocation", SortOrder.ASCENDING)]
         train_announcements = await self._api.async_make_request(
             "TrainAnnouncement",
-            "1.9",
+            self.version,
             None,
             TRAIN_STOP_REQUIRED_FIELDS,
             filters,

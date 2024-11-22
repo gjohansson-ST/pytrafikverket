@@ -19,7 +19,7 @@ class TrafikverketWeather(TrafikverketBase):
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
             "WeatherMeasurepoint",
-            "2.1",
+            self.version,
             None,
             WEATHER_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Name", location_name)],
@@ -41,7 +41,7 @@ class TrafikverketWeather(TrafikverketBase):
         """Retrieve weather from API."""
         weather_stations = await self._api.async_make_request(
             "WeatherMeasurepoint",
-            "2.1",
+            self.version,
             None,
             ["Name" "Id"],
             [
