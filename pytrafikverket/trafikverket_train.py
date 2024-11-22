@@ -37,7 +37,13 @@ class TrafikverketTrain(TrafikverketBase):
             "TrainStation",
             "1.5",
             "rail.infrastructure",
-            ["AdvertisedLocationName", "LocationSignature", "Advertised", "Deleted"],
+            [
+                "AdvertisedLocationName",
+                "LocationSignature",
+                "Advertised",
+                "Deleted",
+                "OfficialLocationName",
+            ],
             [
                 FieldFilter(FilterOperation.EQUAL, "LocationSignature", signature),
             ],
@@ -71,10 +77,27 @@ class TrafikverketTrain(TrafikverketBase):
             "TrainStation",
             "1.5",
             "rail.infrastructure",
-            ["AdvertisedLocationName", "LocationSignature", "Advertised", "Deleted"],
             [
-                FieldFilter(
-                    FilterOperation.LIKE, "AdvertisedLocationName", location_name
+                "AdvertisedLocationName",
+                "LocationSignature",
+                "Advertised",
+                "Deleted",
+                "OfficialLocationName",
+            ],
+            [
+                OrFilter(
+                    [
+                        FieldFilter(
+                            FilterOperation.LIKE,
+                            "AdvertisedLocationName",
+                            location_name,
+                        ),
+                        FieldFilter(
+                            FilterOperation.LIKE,
+                            "OfficialLocationName",
+                            location_name,
+                        ),
+                    ]
                 ),
                 FieldFilter(FilterOperation.EQUAL, "Advertised", "true"),
             ],
