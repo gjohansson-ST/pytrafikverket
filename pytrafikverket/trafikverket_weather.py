@@ -46,7 +46,7 @@ class TrafikverketWeather(TrafikverketBase):
             ["Name" "Id"],
             [
                 FieldFilter(FilterOperation.LIKE, "Name", location_name),
-                FieldFilter(FilterOperation.EQUAL, "Deleted", False),
+                FieldFilter(FilterOperation.EQUAL, "Deleted", "false"),
             ],
         )
         if len(weather_stations) == 0:
