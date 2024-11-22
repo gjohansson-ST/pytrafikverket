@@ -102,6 +102,8 @@ class Trafikverket:
 class TrafikverketBase:
     """Base class used to communicate with trafikverket's api."""
 
+    version = "1.0"
+
     def __init__(self, client_session: aiohttp.ClientSession, api_key: str) -> None:
         """Initialize Trafikverket Base."""
         self._api = Trafikverket(client_session, api_key)

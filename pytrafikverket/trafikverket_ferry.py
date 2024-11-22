@@ -36,11 +36,13 @@ from .trafikverket import (
 class TrafikverketFerry(TrafikverketBase):
     """Class used to communicate with trafikverket's ferry route api."""
 
+    version = "1.2"
+
     async def async_get_ferry_route(self, route_name: str) -> FerryRouteInfoModel:
         """Retrieve ferry route id based on name."""
         routes = await self._api.async_make_request(
             "FerryRoute",
-            "1.2",
+            self.version,
             None,
             ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Name", route_name)],
@@ -56,7 +58,7 @@ class TrafikverketFerry(TrafikverketBase):
         """Retrieve ferry route id based on routeId."""
         routes = await self._api.async_make_request(
             "FerryRoute",
-            "1.2",
+            self.version,
             None,
             ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Id", str(route_id))],
@@ -72,7 +74,7 @@ class TrafikverketFerry(TrafikverketBase):
         """Search for ferry routes based on the route name."""
         routes = await self._api.async_make_request(
             "FerryRoute",
-            "1.2",
+            self.version,
             None,
             ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.LIKE, "Name", name)],
@@ -111,7 +113,7 @@ class TrafikverketFerry(TrafikverketBase):
         sorting = [FieldSort("DepartureTime", SortOrder.ASCENDING)]
         ferry_announcements = await self._api.async_make_request(
             "FerryAnnouncement",
-            "1.2",
+            self.version,
             None,
             FERRY_STOP_REQUIRED_FIELDS,
             filters,
