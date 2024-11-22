@@ -41,6 +41,7 @@ class TrafikverketFerry(TrafikverketBase):
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
+            None,
             ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Name", route_name)],
         )
@@ -56,6 +57,7 @@ class TrafikverketFerry(TrafikverketBase):
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
+            None,
             ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.EQUAL, "Id", str(route_id))],
         )
@@ -71,6 +73,7 @@ class TrafikverketFerry(TrafikverketBase):
         routes = await self._api.async_make_request(
             "FerryRoute",
             "1.2",
+            None,
             ROUTE_INFO_REQUIRED_FIELDS,
             [FieldFilter(FilterOperation.LIKE, "Name", name)],
         )
@@ -109,6 +112,7 @@ class TrafikverketFerry(TrafikverketBase):
         ferry_announcements = await self._api.async_make_request(
             "FerryAnnouncement",
             "1.2",
+            None,
             FERRY_STOP_REQUIRED_FIELDS,
             filters,
             number_of_stops,
@@ -143,6 +147,7 @@ class TrafikverketFerry(TrafikverketBase):
         deviations = await self._api.async_make_request(
             "Situation",
             "1.5",
+            None,
             DEVIATION_INFO_REQUIRED_FIELDS,
             filters,
         )

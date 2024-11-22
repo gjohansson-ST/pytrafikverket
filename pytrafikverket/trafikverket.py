@@ -27,6 +27,7 @@ class Trafikverket:
         self,
         objecttype: str,
         schemaversion: str,
+        namespace: str | None,
         includes: list[str],
         filters: list[Filter],
         limit: int | None = None,
@@ -38,6 +39,9 @@ class Trafikverket:
         query_node = etree.SubElement(root_node, "QUERY")
         query_node.attrib["objecttype"] = objecttype
         query_node.attrib["schemaversion"] = schemaversion
+        if namespace is not None:
+            # Only used in some queries
+            query_node.attrib["namespace"] = namespace
         if limit is not None:
             query_node.attrib["limit"] = str(limit)
         if sorting is not None and len(sorting) > 0:
@@ -55,6 +59,7 @@ class Trafikverket:
         self,
         objecttype: str,
         schemaversion: str,
+        namespace: str | None,
         includes: list[str],
         filters: list[Filter | FieldFilter],
         limit: int | None = None,
@@ -62,7 +67,7 @@ class Trafikverket:
     ) -> list[etree._ElementTree]:
         """Send request to trafikverket api and return a element node."""
         request_data = self._generate_request_data(
-            objecttype, schemaversion, includes, filters, limit, sorting
+            objecttype, schemaversion, namespace, includes, filters, limit, sorting
         )
         request_data_text = etree.tostring(request_data, pretty_print=False)
         LOGGER.debug("Sending query with: %s", request_data_text)
