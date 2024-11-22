@@ -31,3 +31,26 @@ class TrafikverketWeather(TrafikverketBase):
             )
 
         return await weather_from_xml_node(weather_stations[0])
+
+    async def async_search_weather_stations(
+        self, location_name: str
+    ) -> list[WeatherStationInfoModel]:
+        """Retrieve weather from API."""
+        weather_stations = await self._api.async_make_request(
+            "WeatherMeasurepoint",
+            "2.0",
+            ["Name" "Id"],
+            [
+                FieldFilter(FilterOperation.LIKE, "Name", location_name),
+                FieldFilter(FilterOperation.EQUAL, "Deleted", False),
+            ],
+        )
+        if len(weather_stations) == 0:
+            raise NoWeatherStationFound(
+                "Could not find a weather station with the specified name"
+            )
+
+        result = []
+        for weather_station in weather_stations:
+            result.append(await weather_from_xml_node(weather_station))
+        return result
