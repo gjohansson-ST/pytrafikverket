@@ -124,13 +124,13 @@ frozenlist = ">=1.1.0"
 
 [[package]]
 name = "aiozoneinfo"
-version = "0.2.1"
+version = "0.2.3"
 description = "Tools to fetch zoneinfo with asyncio"
 optional = false
-python-versions = "<4.0,>=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "aiozoneinfo-0.2.1-py3-none-any.whl", hash = "sha256:04579f855f030cd0edb1758659c513142ef1aaf7fcc97b59eb2262ed0c453cce"},
-    {file = "aiozoneinfo-0.2.1.tar.gz", hash = "sha256:457e2c665a2c7e093119efb87cc5e0da29e6f59aac504a544bec822c5be1cb6b"},
+    {file = "aiozoneinfo-0.2.3-py3-none-any.whl", hash = "sha256:5423f0354c9eed982e3f1c35edeeef1458d4cc6a10f106616891a089a8455661"},
+    {file = "aiozoneinfo-0.2.3.tar.gz", hash = "sha256:987ce2a7d5141f3f4c2e9d50606310d0bf60d688ad9f087aa7267433ba85fff3"},
 ]
 
 [package.dependencies]
