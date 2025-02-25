@@ -52,7 +52,7 @@ pytest-cov = "6.0.0"
 ruff = "0.9.7"
 safety = "3.3.1"
 yamllint = "1.35.1"
-syrupy = "4.8.1"
+syrupy = "4.8.2"
 types-lxml = "2024.12.13"
 
 [tool.poetry.urls]
