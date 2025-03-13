@@ -215,6 +215,28 @@ files = [
 cryptography = "*"
 
 [[package]]
+name = "beautifulsoup4"
+version = "4.13.3"
+description = "Screen-scraping library"
+optional = false
+python-versions = ">=3.7.0"
+files = [
+    {file = "beautifulsoup4-4.13.3-py3-none-any.whl", hash = "sha256:99045d7d3f08f91f0d656bc9b7efbae189426cd913d830294a15eefa0ea4df16"},
+    {file = "beautifulsoup4-4.13.3.tar.gz", hash = "sha256:1bd32405dacc920b42b83ba01644747ed77456a65760e285fbc47633ceddaf8b"},
+]
+
+[package.dependencies]
+soupsieve = ">1.2"
+typing-extensions = ">=4.0.0"
+
+[package.extras]
+cchardet = ["cchardet"]
+chardet = ["chardet"]
+charset-normalizer = ["charset-normalizer"]
+html5lib = ["html5lib"]
+lxml = ["lxml"]
+
+[[package]]
 name = "certifi"
 version = "2025.1.31"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -2191,6 +2213,17 @@ files = [
 ]
 
 [[package]]
+name = "soupsieve"
+version = "2.6"
+description = "A modern CSS selector implementation for Beautiful Soup."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "soupsieve-2.6-py3-none-any.whl", hash = "sha256:e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9"},
+    {file = "soupsieve-2.6.tar.gz", hash = "sha256:e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb"},
+]
+
+[[package]]
 name = "syrupy"
 version = "4.9.0"
 description = "Pytest Snapshot Test Utility"
@@ -2254,20 +2287,6 @@ shellingham = ">=1.3.0"
 typing-extensions = ">=3.7.4.3"
 
 [[package]]
-name = "types-beautifulsoup4"
-version = "4.12.0.20250204"
-description = "Typing stubs for beautifulsoup4"
-optional = false
-python-versions = ">=3.9"
-files = [
-    {file = "types_beautifulsoup4-4.12.0.20250204-py3-none-any.whl", hash = "sha256:57ce9e75717b63c390fd789c787d267a67eb01fa6d800a03b9bdde2e877ed1eb"},
-    {file = "types_beautifulsoup4-4.12.0.20250204.tar.gz", hash = "sha256:f083d8edcbd01279f8c3995b56cfff2d01f1bb894c3b502ba118d36fbbc495bf"},
-]
-
-[package.dependencies]
-types-html5lib = "*"
-
-[[package]]
 name = "types-html5lib"
 version = "1.1.11.20241018"
 description = "Typing stubs for html5lib"
@@ -2280,18 +2299,19 @@ files = [
 
 [[package]]
 name = "types-lxml"
-version = "2024.12.13"
+version = "2025.3.4"
 description = "Complete lxml external type annotation"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "types_lxml-2024.12.13-py3-none-any.whl", hash = "sha256:d4830c99ef6f7b9eae176297a2b8dc840b3a75986bf4449592ca09a9a449b27e"},
-    {file = "types_lxml-2024.12.13.tar.gz", hash = "sha256:e2dadb92c7f730cd369daf1efe93ebc2ebfa8b692d4415cfc91b727419152e37"},
+    {file = "types_lxml-2025.3.4-py3-none-any.whl", hash = "sha256:ef94bd705ca0f4b613ea4c72d614c3d456d833df4034e9b488f9f8ae000bed0e"},
+    {file = "types_lxml-2025.3.4.tar.gz", hash = "sha256:aee7e89b33d9fd3656aa4ef3ea4073fcef82f430e2c02ab7b803abce78fb2f94"},
 ]
 
 [package.dependencies]
+beautifulsoup4 = ">=4.13,<5.0"
 cssselect = ">=1.2,<2.0"
-types-beautifulsoup4 = ">=4.12,<5.0"
+types-html5lib = ">=1.1.11.20241018,<1.2.0.0"
 typing_extensions = {version = ">=4.10,<5.0", markers = "python_version < \"3.13\""}
 
 [package.extras]
@@ -2474,4 +2494,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b4b22932c2dbfe368bbbe6bc55096a34fdce1ce3e767890a56c6b4fb3344982c"
+content-hash = "936b53f35a211a154bd6d7699c4a12ab2e070f6fda0095c1ba85ab1a61669a15"
