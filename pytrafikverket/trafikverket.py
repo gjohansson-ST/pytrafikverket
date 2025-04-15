@@ -89,8 +89,7 @@ class Trafikverket:
                         ", status: {response.status}"
                     )
                 raise UnknownError(
-                    f"Source: {source}, message: {message}"
-                    ", status: {response.status}"
+                    f"Source: {source}, message: {message}, status: {response.status}"
                 )
 
             result: list[etree._ElementTree] = etree.fromstring(content).xpath(

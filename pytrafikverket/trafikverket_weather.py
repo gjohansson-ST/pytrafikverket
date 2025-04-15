@@ -43,7 +43,7 @@ class TrafikverketWeather(TrafikverketBase):
             "WeatherMeasurepoint",
             self.version,
             None,
-            ["Name" "Id"],
+            ["Name", "Id"],
             [
                 FieldFilter(FilterOperation.LIKE, "Name", location_name),
                 FieldFilter(FilterOperation.EQUAL, "Deleted", "false"),
