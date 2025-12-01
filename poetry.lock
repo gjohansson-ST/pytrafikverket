@@ -2791,25 +2791,25 @@ types-webencodings = "*"
 
 [[package]]
 name = "types-lxml"
-version = "2025.8.25"
+version = "2025.11.25"
 description = "Complete lxml external type annotation"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "types_lxml-2025.8.25-py3-none-any.whl", hash = "sha256:d61340e5329e102d3f8d64124e90d50c12c0bfeaa9088d65558279ef4e7138ac"},
-    {file = "types_lxml-2025.8.25.tar.gz", hash = "sha256:79b9f5b1f236f937f14fe3add9dc687bd8d4111ca5df58eb9f1bde1a3b032fd5"},
+    {file = "types_lxml-2025.11.25-py3-none-any.whl", hash = "sha256:c9e56aad336076f245e38d7f9b6bd6cdd9ffadda64ce650b9d3aa3a9ae4a8890"},
+    {file = "types_lxml-2025.11.25.tar.gz", hash = "sha256:30e7ff9a2d8d7c2ea7967c5d71c8169dd1806b58503ed4972af1ce602919b0e4"},
 ]
 
 [package.dependencies]
 beautifulsoup4 = ">=4.13,<5.0"
 cssselect = ">=1.2,<2.0"
-types-html5lib = ">=1.1.11.20241018,<1.1.11.20250516 || >1.1.11.20250516,<1.2.0.0"
-typing_extensions = {version = ">=4.10,<5.0", markers = "python_version < \"3.13\""}
+types-html5lib = ">=1.1.11.20250809,<1.2.0.0"
+typing_extensions = ">=4.15,<5.0"
 
 [package.extras]
-basedpyright = ["basedpyright (>=1.4.0)"]
-mypy = ["mypy (>=1.11,<2.0)"]
-pyright = ["pyright (>=1.1.351)"]
+basedpyright = ["basedpyright (>=1.31.6)"]
+mypy = ["mypy (>=1.18.1)"]
+pyright = ["pyright (>=1.1.406)"]
 
 [[package]]
 name = "types-webencodings"
@@ -3060,4 +3060,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "4383da81ea009b90a4742af5890add690d14b21ba604d1593c2d1af16b370f8a"
+content-hash = "600944fc18ad1b62de4519e773e65950b86aaffc666763ebd8100c10bb68d244"
