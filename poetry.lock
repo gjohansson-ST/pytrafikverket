@@ -2842,14 +2842,14 @@ types-webencodings = "*"
 
 [[package]]
 name = "types-lxml"
-version = "2026.1.1"
+version = "2026.2.16"
 description = "Complete lxml external type annotation"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "types_lxml-2026.1.1-py3-none-any.whl", hash = "sha256:b01dc6f6547713642ce3c44c77218501d7ae4a66a01b977d9df97825e8ec7f13"},
-    {file = "types_lxml-2026.1.1.tar.gz", hash = "sha256:b1066ab033bab6c046e4c9e6f0368ab5713fe0a2e30ffe8f92ff449e07662d2d"},
+    {file = "types_lxml-2026.2.16-py3-none-any.whl", hash = "sha256:5dd81ffa54830e5f361988737c5f1d6a0ae48b2742790637ec560df790ea0401"},
+    {file = "types_lxml-2026.2.16.tar.gz", hash = "sha256:b3a1340cc06db98d541c785732f6f68bea438daff4e2b7809ef748d545d01406"},
 ]
 
 [package.dependencies]
@@ -2859,7 +2859,7 @@ types-html5lib = ">=1.1.11.20250809,<1.2.0.0"
 typing_extensions = ">=4.15,<5.0"
 
 [package.extras]
-dev = ["basedpyright (>=1.31.6) ; platform_machine != \"i686\"", "html5lib (==1.1)", "hypothesis (>=6.127.7)", "lxml (>=5.0)", "mypy (>=1.18.1)", "pook (>=2.0)", "pyrefly (>=0.46.3)", "pyright (>=1.1.406)", "pytest (>=7.0,<9)", "pytest-mypy-plugins (>=3.2.0)", "pytest-revealtype-injector (>=0.7.1)", "rnc2rng", "ruff (>=0.6,<1.0)", "tox (>=4.24,<5.0)", "ty (>=0.0.7)", "tzdata", "urllib3 (>=2.0)"]
+dev = ["basedpyright (>=1.31.6) ; platform_machine != \"i686\"", "html5lib (==1.1)", "hypothesis (>=6.127.7)", "lxml (>=5.0)", "mypy (>=1.18.1)", "pook (>=2.0)", "pre-commit", "pyrefly (>=0.46.3)", "pyright (>=1.1.406)", "pytest (>=7.0,<9)", "pytest-revealtype-injector (>=0.9.0)", "rnc2rng", "tox (>=4.24,<5.0)", "ty (>=0.0.7)", "tzdata", "urllib3 (>=2.0)"]
 mypy = ["mypy (>=1.18.1)"]
 
 [[package]]
@@ -3120,4 +3120,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "d63e5d5c8021fb0582b750a52824c4666173f3ef117bc0c2e55a601fc0d688dd"
+content-hash = "bdc665de2d5ac3988148f9e24c72ae1c1fb2396d50a15ffd1c16a7a6f4766755"
