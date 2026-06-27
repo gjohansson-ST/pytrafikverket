@@ -52,7 +52,7 @@ pytest-cov = "7.1.0"
 ruff = "0.15.20"
 safety = "3.8.1"
 yamllint = "1.38.0"
-syrupy = "5.3.3"
+syrupy = "5.3.4"
 types-lxml = "2026.2.16"
 
 [tool.poetry.urls]
