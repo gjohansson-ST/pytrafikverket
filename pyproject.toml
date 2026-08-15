@@ -39,6 +39,7 @@ yarl = ">=1.9.4"
 
 [tool.poetry.group.dev.dependencies]
 aresponses = "3.0.0"
+blacken-docs = "^1.20.0"
 codespell = "2.4.3"
 covdefaults = "2.3.0"
 coverage = {version = "7.15.4", extras = ["toml"]}
@@ -402,7 +403,7 @@ ignore = [
     "TRY003", # Avoid specifying long messages outside the exception class
     "TRY400", # Use `logging.exception` instead of `logging.error`
     # Ignored due to performance: https://github.com/charliermarsh/ruff/issues/2923
-    "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
+    "CPY001", # Missing copyright notice
 
     # May conflict with the formatter, https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
     "W191",
@@ -438,7 +439,6 @@ ignore = [
     "B008", # Do not perform function call {name} in argument defaults
     "EM102", # Exception must not use an f-string literal, assign to variable first
     "DTZ007", # Naive datetime constructed using datetime.datetime.strptime() without %z
-    "S320", # Using lxml to parse untrusted data is known to be vulnerable to XML attacks
     "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
     "N818", # Exception name {name} should be named with an Error suffix
     "S101", # Use of assert detected

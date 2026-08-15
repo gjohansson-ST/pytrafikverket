@@ -44,9 +44,8 @@
           "python.testing.cwd": "${workspaceFolder}",
           "python.testing.pytestArgs": ["--cov-report=xml"],
           "python.testing.pytestEnabled": true,
-          "ruff.lint.args": [
-              "--config=pyproject.toml"
-          ],
+          "ruff.lineLength": 88,
+          "ruff.configuration": "pyproject.toml",
           "ruff.organizeImports": true,
           "ruff.fixAll": true,
           "editor.formatOnSave": true,
