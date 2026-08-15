@@ -19,7 +19,6 @@ Development and testing done with 3.13
 ## Code example
 
 ```python
-
 from pytrafikverket import TrafikverketTrain, StationInfo
 import aiohttp
 import asyncio
@@ -46,7 +45,6 @@ async def main(loop):
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main(loop))
-
 ```
 
 ## CLI example

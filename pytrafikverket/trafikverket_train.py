@@ -176,7 +176,7 @@ class TrafikverketTrain(TrafikverketBase):
         train_announcement = train_announcements[0]
         return await train_stop_from_xml_node(train_announcement)
 
-    async def async_get_next_train_stops(
+    async def async_get_next_train_stops(  # noqa: PLR0917
         self,
         from_station: StationInfoModel,
         to_station: StationInfoModel,
