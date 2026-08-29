@@ -13,17 +13,24 @@ class CameraInfoModel:
 
     camera_name: str
     camera_id: str
+    camera_group: str | None
+    camera_type: str | None
     active: bool | None
     deleted: bool | None
     description: str | None
     direction: str | None
-    fullsizephoto: bool | None
+    has_fullsizephoto: bool | None
+    has_sketchimage: bool | None
+    icon: str | None
     location: str | None
     modified: datetime | None
     phototime: datetime | None
     photourl: str | None
+    photourlfullsize: str | None
+    photourlsketch: str | None
+    photourlthumbnail: str | None
     status: str | None
-    camera_type: str | None
+    wgs84: str | None
 
 
 @dataclass
