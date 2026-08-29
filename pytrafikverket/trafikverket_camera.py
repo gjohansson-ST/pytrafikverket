@@ -16,14 +16,15 @@ from .trafikverket import (
 class TrafikverketCamera(TrafikverketBase):
     """Class used to communicate with trafikverket's camera api."""
 
-    version = "1.0"
+    version = "1.1"
+    namespace = "road.infrastructure"
 
     async def async_get_camera(self, search_string: str) -> CameraInfoModel:
         """Retrieve camera from API."""
         cameras = await self._api.async_make_request(
             "Camera",
             self.version,
-            None,
+            self.namespace,
             CAMERA_INFO_REQUIRED_FIELDS,
             [
                 OrFilter(
@@ -47,7 +48,7 @@ class TrafikverketCamera(TrafikverketBase):
         cameras = await self._api.async_make_request(
             "Camera",
             self.version,
-            None,
+            self.namespace,
             CAMERA_INFO_REQUIRED_FIELDS,
             [
                 OrFilter(

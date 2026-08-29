@@ -18,17 +18,24 @@ GET_NEXT_FERRY_STOP = "get-next-ferry-stop"
 DATE_TIME_INPUT = "%Y-%m-%dT%H:%M:%S"
 
 CAMERA_INFO_REQUIRED_FIELDS = [
-    "Name",
-    "Id",
     "Active",
+    "CameraGroup",
     "Deleted",
     "Description",
     "Direction",
+    "Geometry.WGS84",
     "HasFullSizePhoto",
+    "HasSketchImage",
+    "IconId",
+    "Id",
     "Location",
     "ModifiedTime",
+    "Name",
     "PhotoTime",
     "PhotoUrl",
+    "PhotoUrlFullsize",
+    "PhotoUrlSketch",
+    "PhotoUrlThumbnail",
     "Status",
     "Type",
 ]

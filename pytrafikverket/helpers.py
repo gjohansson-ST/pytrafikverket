@@ -202,17 +202,24 @@ async def camera_from_xml_node(node: etree._ElementTree) -> CameraInfoModel:
     node_helper = NodeHelper(node)
     camera_name = node_helper.get_text("Name")
     camera_id = node_helper.get_text("Id")
+    camera_group = node_helper.get_text("CameraGroup")
+    camera_type = node_helper.get_text("Type")
     active = node_helper.get_bool("Active")
     deleted = node_helper.get_bool("Deleted")
     description = node_helper.get_text("Description")
     direction = node_helper.get_text("Direction")
-    fullsizephoto = node_helper.get_bool("HasFullSizePhoto")
+    hasfullsizephoto = node_helper.get_bool("HasFullSizePhoto")
+    hassketchimage = node_helper.get_bool("HasSketchImage")
+    iconid = node_helper.get_text("IconId")
     location = node_helper.get_text("Location")
     modified = node_helper.get_datetime_for_modified("ModifiedTime")
     phototime = node_helper.get_datetime("PhotoTime")
     photourl = node_helper.get_text("PhotoUrl")
+    photourlfullsize = node_helper.get_text("PhotoUrlFullsize")
+    photourlsketch = node_helper.get_text("PhotoUrlSketch")
+    photourlthumbnail = node_helper.get_text("PhotoUrlThumbnail")
     status = node_helper.get_text("Status")
-    camera_type = node_helper.get_text("Type")
+    wgs84 = node_helper.get_text("Geometry/WGS84")
 
     zoneinfo = await aiozoneinfo.async_get_time_zone(SWEDEN_TIMEZONE)
     if phototime:
@@ -227,17 +234,24 @@ async def camera_from_xml_node(node: etree._ElementTree) -> CameraInfoModel:
     return CameraInfoModel(
         camera_name=camera_name,
         camera_id=camera_id,
+        camera_group=camera_group,
+        camera_type=camera_type,
         active=active,
         deleted=deleted,
         description=description,
         direction=direction,
-        fullsizephoto=fullsizephoto,
+        has_fullsizephoto=hasfullsizephoto,
+        has_sketchimage=hassketchimage,
+        icon=iconid,
         location=location,
         modified=modified,
         phototime=phototime,
         photourl=photourl,
+        photourlfullsize=photourlfullsize,
+        photourlsketch=photourlsketch,
+        photourlthumbnail=photourlthumbnail,
         status=status,
-        camera_type=camera_type,
+        wgs84=wgs84,
     )
 
 
