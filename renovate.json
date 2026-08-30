@@ -25,6 +25,11 @@
       "automerge": true
     },
     {
+      "matchManagers": ["devcontainer"],
+      "addLabels": ["python"],
+      "rangeStrategy": "pin"
+    },
+    {
       "matchManagers": ["github-actions"],
       "addLabels": ["github_actions"],
       "rangeStrategy": "pin"
