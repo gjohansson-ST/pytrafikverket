@@ -65,7 +65,7 @@ Changelog = "https://github.com/gjohansson-ST/pytrafikverket/releases"
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 0
+fail_under = 20
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
