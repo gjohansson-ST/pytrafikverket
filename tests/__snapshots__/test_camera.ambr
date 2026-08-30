@@ -1,0 +1,25 @@
+# serializer version: 1
+# name: test_api[single camera]
+  CameraInfoModel(
+    active=True,
+    camera_group=None,
+    camera_id='SE_STA_CAMERA_Orion_386',
+    camera_name='Tpl Nybygget',
+    camera_type='Trafikflödeskamera',
+    deleted=False,
+    description='Kameran är placerad på Arlandaleden vid trafikplats Nybygget och är riktad mot Arlanda flygplats.',
+    direction='40',
+    has_fullsizephoto=True,
+    has_sketchimage=True,
+    icon='trafficCamera',
+    location='Kameran är placerad på Arlandaleden vid trafikplats Nybygget och är riktad mot Arlanda flygplats.',
+    modified=datetime.datetime(2026, 8, 29, 15, 25, 34, 553000, tzinfo=datetime.timezone.utc),
+    phototime=datetime.datetime(2026, 8, 29, 17, 24, 30, tzinfo=zoneinfo.ZoneInfo(key='Europe/Stockholm')),
+    photourl='https://api.trafikinfo.trafikverket.se/v2/Images/data/road.infrastructure.camera/TrafficFlowCamera_39626507.jpg',
+    photourlfullsize='https://api.trafikinfo.trafikverket.se/v2/Images/data/road.infrastructure.camera/TrafficFlowCamera_39626507_fullsize.jpg',
+    photourlsketch='https://api.trafikinfo.trafikverket.se/v2/Images/data/road.infrastructure.camera/TrafficFlowCamera_39626507_sketch.jpg',
+    photourlthumbnail='https://api.trafikinfo.trafikverket.se/v2/Images/data/road.infrastructure.camera/TrafficFlowCamera_39626507_thumbnail.jpg',
+    status='videoOrImagesAvailable',
+    wgs84='POINT (17.921395 59.62833)',
+  )
+# ---
