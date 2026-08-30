@@ -38,7 +38,8 @@ lxml = ">=5.1.0"
 yarl = ">=1.9.4"
 
 [tool.poetry.group.dev.dependencies]
-aresponses = "3.0.0"
+aiofiles = "25.1.0"
+aiointercept = "0.1.9"
 blacken-docs = "1.20.0"
 codespell = "2.4.3"
 covdefaults = "2.3.0"
@@ -50,6 +51,8 @@ pylint = "4.0.8"
 pytest = "9.1.1"
 pytest-asyncio = "1.4.0"
 pytest-cov = "7.1.0"
+pytest-sugar = "1.1.1"
+pytest-github-actions-annotate-failures = "0.4.2"
 ruff = "0.16.5"
 safety = "3.8.1"
 yamllint = "1.38.0"
@@ -62,10 +65,14 @@ Changelog = "https://github.com/gjohansson-ST/pytrafikverket/releases"
 
 [tool.coverage.report]
 show_missing = true
+fail_under = 100
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
 source = ["pytrafikverket"]
+
+[tool.codespell]
+skip = "*.xml,*.ambr"
 
 [tool.mypy]
 # Specify the target platform details in config, so your developers are
@@ -371,8 +378,21 @@ ignore-imports = true
 max-line-length = 88
 
 [tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 addopts = "--cov"
+testpaths = [
+    "tests",
+]
+norecursedirs = [
+    ".git",
+]
+log_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(threadName)s %(name)s:%(filename)s:%(lineno)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff.lint]
 ignore = [
