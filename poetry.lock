@@ -168,14 +168,14 @@ speedups = ["Brotli (>=1.2) ; platform_python_implementation == \"CPython\" and 
 
 [[package]]
 name = "aiointercept"
-version = "0.1.9"
+version = "0.1.10"
 description = "aiohttp mock library that routes requests through a real test server"
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "aiointercept-0.1.9-py3-none-any.whl", hash = "sha256:ef89ea659e3c6aded2140cf4b66dd1ce2ceb4c3ada4f5df27696d613a1fc175c"},
-    {file = "aiointercept-0.1.9.tar.gz", hash = "sha256:4f1996e0d4dc69024f48a408a4c9749e42821022241bc722203c3c84144d44f2"},
+    {file = "aiointercept-0.1.10-py3-none-any.whl", hash = "sha256:7b87ffacd995c9beb6b990549130f56a646b81fb5b7c8cb7775989ba5ae3a69b"},
+    {file = "aiointercept-0.1.10.tar.gz", hash = "sha256:360129466937d3f12d07451a6685a59dee4823c4aa5e28ddb0ef3202e9ed1627"},
 ]
 
 [package.dependencies]
@@ -3363,4 +3363,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "d383713d95a9cc2881b36e81b88c87cf6a8acde353c92cd8e8358f6f6af5ff57"
+content-hash = "15016df1cb4d6c9d11b5ddba479e2f872c4443c11a3a9fd9c1c3790fb385ce58"
