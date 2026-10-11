@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import logging
 from typing import TYPE_CHECKING
 
@@ -74,7 +74,7 @@ class NodeHelper:
         LOGGER.debug("Return texts value %s", result)
         return result
 
-    def get_datetime_for_modified(self, field: str) -> datetime.datetime | None:
+    def get_datetime_for_modified(self, field: str) -> dt.datetime | None:
         """Return datetime object from node, selected by 'field'.
 
         Format of the text is expected to be modifiedTime-format.
@@ -89,9 +89,9 @@ class NodeHelper:
         LOGGER.debug("Return modified value %s", nodes[0].text)
         if TYPE_CHECKING:
             assert nodes[0].text is not None
-        return datetime.datetime.strptime(nodes[0].text, DATE_TIME_FORMAT_FOR_MODIFIED)
+        return dt.datetime.strptime(nodes[0].text, DATE_TIME_FORMAT_FOR_MODIFIED)
 
-    def get_datetime(self, field: str) -> datetime.datetime | None:
+    def get_datetime(self, field: str) -> dt.datetime | None:
         """Return a datetime object from node, selected by 'field'."""
         nodes: list[etree._Element] | None = self._node.xpath(field)
         if nodes is None:
@@ -103,7 +103,7 @@ class NodeHelper:
         LOGGER.debug("Return datetime value %s", nodes[0].text)
         if TYPE_CHECKING:
             assert nodes[0].text is not None
-        return datetime.datetime.strptime(nodes[0].text, DATE_TIME_FORMAT)
+        return dt.datetime.strptime(nodes[0].text, DATE_TIME_FORMAT)
 
     def get_bool(self, field: str) -> bool | None:
         """Return True if value selected by field is 'true' else returns False."""
@@ -163,7 +163,7 @@ async def weather_from_xml_node(node: etree._ElementTree) -> WeatherStationInfoM
     if measure_time:
         measure_time = measure_time.replace(tzinfo=zoneinfo)
     if modified_time:
-        modified_time = modified_time.replace(tzinfo=datetime.UTC)
+        modified_time = modified_time.replace(tzinfo=dt.UTC)
 
     if TYPE_CHECKING:
         assert station_name
@@ -225,7 +225,7 @@ async def camera_from_xml_node(node: etree._ElementTree) -> CameraInfoModel:
     if phototime:
         phototime = phototime.replace(tzinfo=zoneinfo)
     if modified:
-        modified = modified.replace(tzinfo=datetime.UTC)
+        modified = modified.replace(tzinfo=dt.UTC)
 
     if TYPE_CHECKING:
         assert camera_name
@@ -274,7 +274,7 @@ async def ferry_stop_from_xml_node(node: etree._ElementTree) -> FerryStopModel:
     if departure_time:
         departure_time = departure_time.replace(tzinfo=zoneinfo)
     if modified_time:
-        modified_time = modified_time.replace(tzinfo=datetime.UTC)
+        modified_time = modified_time.replace(tzinfo=dt.UTC)
 
     if TYPE_CHECKING:
         assert id
@@ -387,7 +387,7 @@ async def train_stop_from_xml_node(node: etree._ElementTree) -> TrainStopModel:
     if time_at_location:
         time_at_location = time_at_location.replace(tzinfo=zoneinfo)
     if modified_time:
-        modified_time = modified_time.replace(tzinfo=datetime.UTC)
+        modified_time = modified_time.replace(tzinfo=dt.UTC)
 
     if TYPE_CHECKING:
         assert activity_id
