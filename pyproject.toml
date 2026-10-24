@@ -20,6 +20,8 @@ classifiers = [
   "Natural Language :: English",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -32,7 +34,7 @@ trafikverket_cli = "pytrafikverket:run"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-aiohttp = ">=3.9.2"
+aiohttp = ">=3.13.0"
 aiozoneinfo = ">=0.2.1"
 lxml = ">=5.1.0"
 yarl = ">=1.9.4"
