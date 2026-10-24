@@ -1,69 +1,69 @@
 {
-    "containerEnv": {
-      "POETRY_VIRTUALENVS_IN_PROJECT": "true"
+  "containerEnv": {
+    "POETRY_VIRTUALENVS_IN_PROJECT": "true"
+  },
+  "runArgs": ["-e", "GIT_EDITOR=code --wait"],
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["README.md"]
     },
-    "runArgs": ["-e", "GIT_EDITOR=code --wait"],
-    "customizations": {
-      "codespaces": {
-        "openFiles": ["README.md"]
-      },
-      "vscode": {
-        "extensions": [
-          "ms-python.python",
-          "redhat.vscode-yaml",
-          "esbenp.prettier-vscode",
-          "GitHub.vscode-pull-request-github",
-          "charliermarsh.ruff",
-          "GitHub.vscode-github-actions",
-          "ryanluker.vscode-coverage-gutters",
-          "GitHub.copilot",
-          "ms-python.vscode-pylance"
-        ],
-        "settings": {
-          "[python]": {
-            "editor.formatOnSave": true,
-            "editor.formatOnType": true,
-            "editor.codeActionsOnSave": {
-              "source.fixAll": "explicit",
-              "source.organizeImports": "explicit"
-            },
-            "editor.defaultFormatter": "charliermarsh.ruff"
-          },
-          "python.terminal.activateEnvInCurrentTerminal": true,
-          "coverage-gutters.customizable.context-menu": true,
-          "coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
-          "coverage-gutters.showGutterCoverage": false,
-          "coverage-gutters.showLineCoverage": true,
-          "coverage-gutters.xmlname": "coverage.xml",
-          "python.analysis.extraPaths": ["${workspaceFolder}"],
-          "python.defaultInterpreterPath": ".venv/bin/python",
-          "python.formatting.provider": "ruff",
-          "python.linting.enabled": true,
-          "python.linting.mypyEnabled": true,
-          "python.linting.pylintEnabled": true,
-          "python.testing.cwd": "${workspaceFolder}",
-          "python.testing.pytestArgs": ["--cov-report=xml"],
-          "python.testing.pytestEnabled": true,
-          "ruff.lineLength": 88,
-          "ruff.configuration": "pyproject.toml",
-          "ruff.organizeImports": true,
-          "ruff.fixAll": true,
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "redhat.vscode-yaml",
+        "esbenp.prettier-vscode",
+        "GitHub.vscode-pull-request-github",
+        "charliermarsh.ruff",
+        "GitHub.vscode-github-actions",
+        "ryanluker.vscode-coverage-gutters",
+        "GitHub.copilot",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "[python]": {
           "editor.formatOnSave": true,
           "editor.formatOnType": true,
-          "files.trimTrailingWhitespace": true,
-          "terminal.integrated.defaultProfile.linux": "zsh"
-        }
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          },
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "coverage-gutters.customizable.context-menu": true,
+        "coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
+        "coverage-gutters.showGutterCoverage": false,
+        "coverage-gutters.showLineCoverage": true,
+        "coverage-gutters.xmlname": "coverage.xml",
+        "python.analysis.extraPaths": ["${workspaceFolder}"],
+        "python.defaultInterpreterPath": ".venv/bin/python",
+        "python.formatting.provider": "ruff",
+        "python.linting.enabled": true,
+        "python.linting.mypyEnabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.testing.cwd": "${workspaceFolder}",
+        "python.testing.pytestArgs": ["--cov-report=xml"],
+        "python.testing.pytestEnabled": true,
+        "ruff.lineLength": 88,
+        "ruff.configuration": "pyproject.toml",
+        "ruff.organizeImports": true,
+        "ruff.fixAll": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "files.trimTrailingWhitespace": true,
+        "terminal.integrated.defaultProfile.linux": "zsh"
       }
-    },
-    "features": {
-      "ghcr.io/devcontainers-extra/features/poetry:2": {},
-      "ghcr.io/devcontainers/features/github-cli:1": {},
-      "ghcr.io/devcontainers/features/node:2": {},
-      "ghcr.io/devcontainers/features/python:1": {
-        "installTools": false
-      }
-    },
-    "image": "mcr.microsoft.com/devcontainers/python:3-3.13",
-    "name": "pyTrafikverket",
-    "updateContentCommand": ". ${NVM_DIR}/nvm.sh && nvm install && nvm use && npm install && poetry install && poetry check"
-  }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers-extra/features/poetry:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:2": {},
+    "ghcr.io/devcontainers/features/python:1": {
+      "installTools": false
+    }
+  },
+  "image": "mcr.microsoft.com/devcontainers/python:3-3.13",
+  "name": "pyTrafikverket",
+  "updateContentCommand": ". ${NVM_DIR}/nvm.sh && nvm install && nvm use && npm install && poetry install && poetry check"
+}
