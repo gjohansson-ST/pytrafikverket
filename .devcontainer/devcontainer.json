@@ -63,7 +63,7 @@
       "installTools": false
     }
   },
-  "image": "mcr.microsoft.com/devcontainers/python:3-3.13",
+  "image": "mcr.microsoft.com/devcontainers/python:3-3.14",
   "name": "pyTrafikverket",
   "updateContentCommand": ". ${NVM_DIR}/nvm.sh && nvm install && nvm use && npm install && poetry install && poetry check"
 }
