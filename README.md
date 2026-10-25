@@ -48,7 +48,9 @@ loop.run_until_complete(main(loop))
 ```
 
 ## CLI example
+
 <!-- blacken-docs:off -->
+
 ```python
 
 trafikverket_cli -key <api_key> -method search-for-station -station "Kristianstad"
@@ -62,4 +64,5 @@ trafikverket_cli -key <api_key> -method get-next-ferry-stop -from-harbor "Ekerö
 trafikverket_cli -key <api_key> -method get-next-ferry-stop -from-harbor "Furusund" -date-time "2019-12-24T00:00:00"
 
 ```
+
 <!-- blacken-docs:on -->
