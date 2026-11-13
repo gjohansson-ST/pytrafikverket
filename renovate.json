@@ -25,11 +25,6 @@
       "automerge": true
     },
     {
-      "matchManagers": ["devcontainer"],
-      "addLabels": ["python"],
-      "rangeStrategy": "pin"
-    },
-    {
       "matchManagers": ["github-actions"],
       "addLabels": ["github_actions"],
       "rangeStrategy": "pin"
@@ -38,6 +33,15 @@
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
+    },
+    {
+      "matchManagers": ["devcontainer"],
+      "addLabels": ["python"],
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchPackageNames": ["homeassistant", "pytest-homeassistant"],
+      "groupName": "Home Assistant"
     }
   ]
 }
